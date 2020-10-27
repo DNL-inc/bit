@@ -1,5 +1,6 @@
 from telebot import types
 import telebot
+from models import register_user
 
 bot = telebot.TeleBot(token='992816254:AAHc_pVKMqESQ84bjp_I80-AYertBBt7F80')
 
@@ -14,6 +15,7 @@ def menu(message):
 
 @bot.message_handler(commands=['start', 'help'])
 def start(message):
+    register_user(message)
     menu(message)
 
 
