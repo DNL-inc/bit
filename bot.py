@@ -33,12 +33,12 @@ def response_schedule(message):
 def get_schedule(call):
     if call.data == 'schedule_monday':
         bot.answer_callback_query(call.id, text="""
-    
+        Ох, понедельние будет тяжёлым...
         """)
-
-
-
-
+        bot.send_message(call.from_user.id, """
+1. Арх Комп
+2. Прога
+        """)
 
 if __name__ == "__main__":
     bot.polling()
