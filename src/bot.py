@@ -27,6 +27,11 @@ def start(message):
 def response_menu(message):
     if message.text == "Рaспиcание": response_menu(message)
     elif message.text == "Админиcтрировaниe": pass
+    elif message.text == "Группa": pass
+
+def choose_group(message):
+    bot.send_message(message.from_user.id, "Выберите курс:")
+    markup = types.InlineKeyboardMarkup(row_width=1)
 
 
 def response_menu(message):

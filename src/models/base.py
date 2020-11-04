@@ -45,6 +45,7 @@ class Admin(Base):
         self.lastname = lastname
         self.group = group
 
+
 def register_user(message):
     username = message.from_user.username
     tele_id = message.from_user.id
