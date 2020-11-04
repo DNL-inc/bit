@@ -1,5 +1,6 @@
 from telebot import types
 import telebot
+from models.base import register_user, is_admin_bool
 
 bot = telebot.TeleBot(token='992816254:AAHc_pVKMqESQ84bjp_I80-AYertBBt7F80')
 
@@ -13,8 +14,8 @@ def menu(message):
         admin_item = types.KeyboardButton('Админиcтрировaниe')
         markup.add(schedule_item, admin_item, group_item)
     else:
-    bot.send_message(chat_id, "Выберіть щось", reply_markup=markup)
         markup.add(schedule_item, group_item)
+    bot.send_message(chat_id, "Выберіть щось", reply_markup=markup)
 
 
 @bot.message_handler(commands=['start', 'help'])
