@@ -1,6 +1,6 @@
 from telebot import types
 import telebot
-from models.base import register_user
+from models.base import register_user, is_admin
 
 bot = telebot.TeleBot(token='992816254:AAHc_pVKMqESQ84bjp_I80-AYertBBt7F80')
 
@@ -9,7 +9,11 @@ def menu(message):
     chat_id = message.from_user.id
     markup = types.ReplyKeyboardMarkup(row_width=1)
     schedule_item = types.KeyboardButton('/1. Расписание')
-    markup.add(schedule_item)
+    if is_admin(message):
+        admin_item = types.KeyboardButton('/2. Администрирование')
+        markup.add(schedule_item, admin_item)
+    else:
+        markup.add(schedule_item)
     bot.send_message(chat_id, "Выбери что-то", reply_markup=markup)
 
 
@@ -23,11 +27,16 @@ def start(message):
 def response_schedule(message):
     chat_id = message.from_user.id
     markup = types.InlineKeyboardMarkup(row_width=1)
-    monday = types.InlineKeyboardButton(text='Понедельник', callback_data="schedule_monday")
-    tuesday = types.InlineKeyboardButton(text='Вторник', callback_data="schedule_tuesday")
-    wednesday = types.InlineKeyboardButton(text='Среда', callback_data="schedule_wednesday")
-    thursday = types.InlineKeyboardButton(text='Четверг', callback_data="schedule_thursday")
-    friday = types.InlineKeyboardButton(text='Пятница', callback_data="schedule_friday")
+    monday = types.InlineKeyboardButton(
+        text='Понедельник', callback_data="schedule_monday")
+    tuesday = types.InlineKeyboardButton(
+        text='Вторник', callback_data="schedule_tuesday")
+    wednesday = types.InlineKeyboardButton(
+        text='Среда', callback_data="schedule_wednesday")
+    thursday = types.InlineKeyboardButton(
+        text='Четверг', callback_data="schedule_thursday")
+    friday = types.InlineKeyboardButton(
+        text='Пятница', callback_data="schedule_friday")
     markup.add(monday, tuesday, wednesday, thursday, friday)
     bot.send_message(chat_id, 'Выберите день:', reply_markup=markup)
 
@@ -37,11 +46,57 @@ def get_schedule(call):
         bot.answer_callback_query(call.id, text="""
         Ох, понедельние будет тяжёлым...
         """)
+
+
+        bot.send_photo(call.from_user.id, 'https://imgur.com/5a7A1oh')
         bot.send_message(call.from_user.id, """
-1. Арх Комп
-2. Прога
-        """)
+09:00 - 10:20 [Основи программування(Л)](https://us02web.zoom.us/j/84711450833)
+10:30 - 11:50 [Архітектура комп'ютера(Л)](https://us02web.zoom.us/j/6547310436?pwd=YXZ3OEE1ZlpqVVhPdXFqMEJxcXBXUT09)
+12:10 - 13:30 [Основи программування(П)](https://us04web.zoom.us/j/2308670388?pwd=T01hczE3ZkRjWkZiWUNLV1prNlBTUT09)
+13:40 - 15:00 [Архітектура комп'ютера(П)](https://us04web.zoom.us/j/71126649979?pwd=Ry9ScFhCblk0TDREbDRGbFIySjNBUT09)
+15:10 - to the enernity [Архітектура комп'ютера(К)](https://us02web.zoom.us/j/6547310436?pwd=YXZ3OEE1ZlpqVVhPdXFqMEJxcXBXUT09)
+        """, parse_mode='Markdown', disable_web_page_preview=True)
+
+
+    elif call.data == 'schedule_tuesday':
+        bot.send_photo(call.from_user.id, 'https://imgur.com/g24rPtv')
+        bot.send_message(call.from_user.id, """
+09:00 - 10:20 [Дискретна математика(Л)](https://us02web.zoom.us/j/9590521136?pwd=TW90dVlOU01QU1JrSHIxOFNtR2p1Zz09)
+10:30 - 11:50 [Дискретна математика(П)](https://us02web.zoom.us/j/9590521136?pwd=TW90dVlOU01QU1JrSHIxOFNtR2p1Zz09)
+12:10 - 13:30 Chill time
+13:40 - 15:00 [Іноземна мова(П)](https://us04web.zoom.us/j/7591896666?pwd=OHJhNjRRSTJxMUN3V1ZBTGdhMFVxZz09&nbsp;)
+""", parse_mode='Markdown', disable_web_page_preview=True)
+
+
+    elif call.data == 'schedule_wednesday':
+        bot.send_photo(call.from_user.id, 'https://imgur.com/OPGBKpZ')
+        bot.send_message(call.from_user.id, """
+09:00 - 10:20 Chill time
+10:30 - 11:50 [Основи математики(Л)](https://us04web.zoom.us/j/72854542678?pwd=dkswUUs1YUFmZitDVDFOcUN2amRGQT09)
+12:10 - 13:30 [Вступ до університетсьских студій](https://meet.google.com/cwj-ugif-mhr?pli=1&amp;authuser=1&amp;hma=1&amp;hmv=1)
+13:40 - 15:00 Chill time
+""", parse_mode='Markdown', disable_web_page_preview=True)
+
+
+    elif call.data == 'schedule_thursday':
+        bot.send_photo(call.from_user.id, 'https://imgur.com/Of4UgMr')
+        bot.send_message(call.from_user.id, """
+09:00 - 10:20 Chill time
+10:30 - 11:50 [Основи программування(Л)](https://us02web.zoom.us/j/84711450833)
+12:10 - 13:30 [Основи математики(П)](https://us04web.zoom.us/j/77436934907?pwd=bEdWMjg2eDFOd0N2YXBZSVdKOGZvUT09)
+13:40 - 15:00 [Основи программування(П)](https://us04web.zoom.us/j/2308670388?pwd=T01hczE3ZkRjWkZiWUNLV1prNlBTUT09)
+""", parse_mode='Markdown', disable_web_page_preview=True)
+
+
+    elif call.data == 'schedule_friday':
+        bot.send_photo(call.from_user.id, 'https://imgur.com/wVKhF2m')
+        bot.send_message(call.from_user.id, """
+09:00 - 10:20 [Іноземна мова(П)](https://us04web.zoom.us/j/7591896666?pwd=OHJhNjRRSTJxMUN3V1ZBTGdhMFVxZz09&nbsp;)
+10:30 - 11:50 [Іноземна мова(П)](https://us04web.zoom.us/j/7591896666?pwd=OHJhNjRRSTJxMUN3V1ZBTGdhMFVxZz09&nbsp;)
+12:10 - 13:30 [Іноземна мова(П)](https://us04web.zoom.us/j/7591896666?pwd=OHJhNjRRSTJxMUN3V1ZBTGdhMFVxZz09&nbsp;)
+13:40 - 15:00 Chill time
+""", parse_mode='Markdown', disable_web_page_preview=True)
+
 
 if __name__ == "__main__":
     bot.polling()
-
