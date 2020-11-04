@@ -49,7 +49,8 @@ def choose_group(message):
     group1 = types.InlineKeyboardButton(text='ІПЗ-11', callback_data="ipz11")
     group2 = types.InlineKeyboardButton(text='ІПЗ-12', callback_data="ipz12")
     group3 = types.InlineKeyboardButton(text='ІПЗ-13', callback_data="ipz13")
-    markup.add(group1, group2, group3)
+    backButton = types.InlineKeyboardButton(text='Назад', callback_data="back")
+    markup.add(group1, group2, group3, backButton)
     bot.send_message(chat_id, 'Виберіть группу:', reply_markup=markup)
 
     
@@ -121,7 +122,10 @@ def handler_calls(call):
 12:10 - 13:30 [Іноземна мова(П)](https://us04web.zoom.us/j/7591896666?pwd=OHJhNjRRSTJxMUN3V1ZBTGdhMFVxZz09&nbsp;)
 13:40 - 15:00 Chill time
 """, parse_mode='Markdown', disable_web_page_preview=True)
+
+
     elif call.data == 'first': choose_group(call)
+    elif call.data == 'back': choose_course(call)
 
 
 if __name__ == "__main__":
