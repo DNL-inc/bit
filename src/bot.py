@@ -30,8 +30,7 @@ def response_menu(message):
     elif message.text == "Админиcтрировaниe": pass
     elif message.text == "Група": choose_course(message)
 
-def choose_course(message):
-    chat_id = message.from_user.id
+def course_markup():
     markup = types.InlineKeyboardMarkup(row_width=1)
     firstCourse = types.InlineKeyboardButton(text='1-й курс', callback_data="first") 
     secondCourse = types.InlineKeyboardButton(text='2-й курс', callback_data="second") 
@@ -40,19 +39,26 @@ def choose_course(message):
     fifthCourse = types.InlineKeyboardButton(text='5-й курс', callback_data="fifth") 
     sixthCourse = types.InlineKeyboardButton(text='6-й курс', callback_data="sixth")
     markup.add(firstCourse, secondCourse, thirrdCourse, fourthCouse, fifthCourse, sixthCourse)
-    bot.send_message(chat_id, 'Виберіть курс:', reply_markup=markup)
-    
+    return markup
 
-def choose_group(message):
-    chat_id = message.from_user.id
+def group_markup():
     markup = types.InlineKeyboardMarkup(row_width=2)
     group1 = types.InlineKeyboardButton(text='ІПЗ-11', callback_data="ipz11")
     group2 = types.InlineKeyboardButton(text='ІПЗ-12', callback_data="ipz12")
     group3 = types.InlineKeyboardButton(text='ІПЗ-13', callback_data="ipz13")
     backButton = types.InlineKeyboardButton(text='Назад', callback_data="back")
     markup.add(group1, group2, group3, backButton)
-    bot.send_message(chat_id, 'Виберіть группу:', reply_markup=markup)
+    return markup
 
+def choose_course(message):
+    bot.delete_message(message_id=message.message_id, chat_id=message.from_user.id)
+    chat_id = message.from_user.id
+    bot.send_message(chat_id, 'Виберіть курс:', reply_markup=course_markup())
+    
+
+def choose_group(message):
+    chat_id = message.from_user.id
+    bot.edit_message_text(chat_id=chat_id, message_id=message.message.message_id, text='Виберіть группу:', reply_markup=group_markup())
     
 def response_schedule(message):
     bot.delete_message(message_id=message.message_id, chat_id=message.from_user.id)
@@ -125,7 +131,7 @@ def handler_calls(call):
 
 
     elif call.data == 'first': choose_group(call)
-    elif call.data == 'back': choose_course(call)
+    elif call.data == 'back': bot.edit_message_text('Виберіть группу:', chat_id=call.from_user.id, message_id=call.message.message_id, reply_markup=course_markup())
 
 
 if __name__ == "__main__":
