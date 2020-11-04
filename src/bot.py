@@ -1,6 +1,6 @@
 from telebot import types
 import telebot
-from models.base import register_user, is_admin
+from models.base import register_user, is_admin_bool
 
 bot = telebot.TeleBot(token='992816254:AAHc_pVKMqESQ84bjp_I80-AYertBBt7F80')
 
@@ -10,7 +10,7 @@ def menu(message):
     markup = types.ReplyKeyboardMarkup(row_width=2)
     schedule_item = types.KeyboardButton('Рaспиcание')
     group_item = types.KeyboardButton('Група')
-    if is_admin(message):
+    if is_admin_bool(message):
         admin_item = types.KeyboardButton('Админиcтрировaниe')
         markup.add(schedule_item, admin_item, group_item)
     else:
