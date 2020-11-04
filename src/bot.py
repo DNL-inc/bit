@@ -1,6 +1,6 @@
 from telebot import types
 import telebot
-from models.base import register_user, is_admin
+from models.base import register_user, is_admin_bool
 
 bot = telebot.TeleBot(token='992816254:AAHc_pVKMqESQ84bjp_I80-AYertBBt7F80')
 
@@ -9,7 +9,7 @@ def menu(message):
     chat_id = message.from_user.id
     markup = types.ReplyKeyboardMarkup(row_width=1)
     schedule_item = types.KeyboardButton('Рaспиcание')
-    if is_admin(message):
+    if is_admin_bool(message):
         admin_item = types.KeyboardButton('Админиcтрировaниe')
         markup.add(schedule_item, admin_item)
     else:
@@ -25,16 +25,16 @@ def start(message):
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def response_menu(message):
-    if message.text == "Рaспиcание": response_menu(message)
+    if message.text == "Рaспиcание": response_schedule(message)
     elif message.text == "Админиcтрировaниe": pass
-    elif message.text == "Группa": pass
+    elif message.text == "Группa": choose_group(message)
 
 def choose_group(message):
     bot.send_message(message.from_user.id, "Выберите курс:")
     markup = types.InlineKeyboardMarkup(row_width=1)
 
 
-def response_menu(message):
+def response_schedule(message):
     bot.delete_message(message_id=message.message_id, chat_id=message.from_user.id)
     chat_id = message.from_user.id
     markup = types.InlineKeyboardMarkup(row_width=1)
