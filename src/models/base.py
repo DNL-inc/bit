@@ -5,7 +5,8 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import exists
 from menu import get_main_menu
 
-engine = create_engine("sqlite:///db.sqlite", echo=True, connect_args={'check_same_thread': False})
+engine = create_engine("sqlite:///db.sqlite", echo=True,
+                       connect_args={'check_same_thread': False})
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -32,6 +33,7 @@ class User(Base):
 
     def __repr__(self):
         return "<User('%s')>" % (self.username)
+
 
 class Admin(Base):
 
@@ -66,6 +68,7 @@ class Group(Base):
         self.faculty = faculty
         self.course = course
 
+
 class Faculty(Base):
     __tablename__ = 'faculties'
     id = Column('id', Integer, primary_key=True)
@@ -75,11 +78,13 @@ class Faculty(Base):
     def __init__(self, title):
         self.title = title
 
+
 def is_admin_bool(message):
     if session.query(exists().where(Admin.tele_id == message.from_user.id)).scalar():
         return True
     else:
         return False
+
 
 def register_user(message):
     username = message.from_user.username
@@ -109,21 +114,23 @@ def register_fac(message):
     session.add(fac)
     session.commit()
 
+
 def register_group(message, faculty, course):
     title = message.text
-    
+
     group = Group(title, faculty.id, course)
     if session.query(exists().where(Group.title == title)).scalar():
         return False
     session.add(group)
     session.commit()
 
+
 def save_group_user(message, group):
-    user = session.query(User).filter(User.tele_id == message.from_user.id).first()
+    user = session.query(User).filter(
+        User.tele_id == message.from_user.id).first()
     user.group = group
     session.commit()
 
 
 if __name__ == "__main__":
     Base.metadata.create_all(engine)
-

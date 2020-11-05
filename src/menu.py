@@ -45,3 +45,18 @@ def group_markup():
     backButton = types.InlineKeyboardButton(text='Назад', callback_data="backChooseGroup")
     markup.add(group1, group2, group3, backButton)
     return markup
+
+def schedule_markup():
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    monday = types.InlineKeyboardButton(
+        text='Понеділок', callback_data="schedule_monday")
+    tuesday = types.InlineKeyboardButton(
+        text='Вівторок', callback_data="schedule_tuesday")
+    wednesday = types.InlineKeyboardButton(
+        text='Середа', callback_data="schedule_wednesday")
+    thursday = types.InlineKeyboardButton(
+        text='Четвер', callback_data="schedule_thursday")
+    friday = types.InlineKeyboardButton(
+        text='П\'ятниця', callback_data="schedule_friday")
+    markup.add(monday, tuesday, wednesday, thursday, friday)
+    return markup
