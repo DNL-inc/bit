@@ -1,9 +1,11 @@
 from telebot import types
 import telebot
 from models.base import register_user, is_admin_bool
+from admin import AdminPanel
+
 
 bot = telebot.TeleBot(token='992816254:AAHc_pVKMqESQ84bjp_I80-AYertBBt7F80')
-
+admin_panel = AdminPanel(bot)
 
 def menu(message):
     chat_id = message.from_user.id
@@ -27,7 +29,7 @@ def start(message):
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def response_menu(message):
     if message.text == "Рaспиcание": response_schedule(message)
-    elif message.text == "Админиcтрировaниe": pass
+    elif message.text == "Админиcтрировaниe": admin_panel.get_menu(message)
     elif message.text == "Група": choose_course(message)
 
 def course_markup():

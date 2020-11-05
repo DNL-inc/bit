@@ -19,7 +19,7 @@ class User(Base):
     firstname = Column('firstname', String, nullable=True)
     lastname = Column('lastname', String, nullable=True)
     is_admin = Column('is_admin', Boolean, nullable=True)
-    group = Column('group', ForeignKey('groups.id'))
+    has_group = Column('has_group', ForeignKey('groups.id'))
 
     def __init__(self, tele_id, username=None, firstname=None, lastname=None, group=None, is_admin=None):
         self.tele_id = tele_id
@@ -40,7 +40,8 @@ class Admin(Base):
     username = Column('username', String, unique=True, nullable=True)
     firstname = Column('firstname', String, nullable=True)
     lastname = Column('lastname', String, nullable=True)
-    group = Column('group', ForeignKey('groups.id'))
+    has_group = Column('has_group', ForeignKey('groups.id'))
+    is_supreme = Column('is_supreme', Boolean)
 
     def __init__(self, tele_id, username=None, firstname=None, lastname=None, group=None):
         self.tele_id = tele_id
@@ -57,14 +58,13 @@ class Group(Base):
     title = Column('title', String, unique=True)
     course = Column('course', Integer)
     students = relationship("User")
+    faculty = Column('faculty', String, nullable=True)
 
 def is_admin_bool(message):
-    try: 
-        session.query(Admin).filter(Admin.tele_id == message.from_user.id).first()
-    except OperationalError:
-        return False
-    else:
+    if session.query(exists().where(Admin.tele_id == message.from_user.id)).scalar():
         return True
+    else:
+        return False
 
 def register_user(message):
     username = message.from_user.username
