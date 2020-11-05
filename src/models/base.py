@@ -5,7 +5,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import exists
 from menu import get_main_menu
 
-engine = create_engine("sqlite:///db.sqlite", echo=True)
+engine = create_engine("sqlite:///db.sqlite", echo=True, connect_args={'check_same_thread': False})
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -61,8 +61,10 @@ class Group(Base):
     students = relationship("User")
     faculty = Column('faculty', ForeignKey('faculties.id'))
 
-    # def __init__(self, title, course):
-    #     pass
+    def __init__(self, title, faculty, course):
+        self.title = title
+        self.faculty = faculty
+        self.course = course
 
 class Faculty(Base):
     __tablename__ = 'faculties'
@@ -103,10 +105,18 @@ def register_fac(message):
 
     fac = Faculty(title)
     if session.query(exists().where(Faculty.title == title)).scalar():
-        return
+        return False
     session.add(fac)
     session.commit()
+
+def register_group(message, faculty, course):
+    title = message.text
     
+    group = Group(title, faculty.id, course)
+    if session.query(exists().where(Group.title == title)).scalar():
+        return False
+    session.add(group)
+    session.commit()
 
 
 if __name__ == "__main__":

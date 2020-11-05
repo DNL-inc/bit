@@ -1,9 +1,9 @@
 from telebot import types
 import telebot
-from models.base import register_user, is_admin_bool, register_group, register_fac
-from admin import AdminPanel, menu_markup
+from models.base import register_user, is_admin_bool, register_fac
+from admin import AdminPanel, menu_markup, faculties_markup, group_markup
 
-from menu import get_main_menu
+from menu import get_main_menu, course_markup
 
 bot = telebot.TeleBot(token='992816254:AAHc_pVKMqESQ84bjp_I80-AYertBBt7F80')
 admin_panel = AdminPanel(bot)
@@ -28,25 +28,6 @@ def response_menu(message):
     elif message.text == "Админиcтрировaниe": admin_panel.get_menu(message)
     elif message.text == "Група": choose_course(message)
 
-def course_markup():
-    markup = types.InlineKeyboardMarkup(row_width=1)
-    firstCourse = types.InlineKeyboardButton(text='1-й курс', callback_data="first") 
-    secondCourse = types.InlineKeyboardButton(text='2-й курс', callback_data="second") 
-    thirrdCourse = types.InlineKeyboardButton(text='3-й курс', callback_data="third") 
-    fourthCouse = types.InlineKeyboardButton(text='4-й курс', callback_data="fourth") 
-    fifthCourse = types.InlineKeyboardButton(text='5-й курс', callback_data="fifth") 
-    sixthCourse = types.InlineKeyboardButton(text='6-й курс', callback_data="sixth")
-    markup.add(firstCourse, secondCourse, thirrdCourse, fourthCouse, fifthCourse, sixthCourse)
-    return markup
-
-def group_markup():
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    group1 = types.InlineKeyboardButton(text='ІПЗ-11', callback_data="ipz11")
-    group2 = types.InlineKeyboardButton(text='ІПЗ-12', callback_data="ipz12")
-    group3 = types.InlineKeyboardButton(text='ІПЗ-13', callback_data="ipz13")
-    backButton = types.InlineKeyboardButton(text='Назад', callback_data="backChooseGroup")
-    markup.add(group1, group2, group3, backButton)
-    return markup
 
 def choose_course(message):
     bot.delete_message(message_id=message.message_id, chat_id=message.from_user.id)
@@ -79,9 +60,6 @@ def response_schedule(message):
 @bot.callback_query_handler(func=lambda call: True)
 def handler_calls(call):
     if call.data == 'schedule_monday':
-        bot.answer_callback_query(call.id, text="""
-        Ох, понедельние будет тяжёлым...
-        """)
         bot.send_photo(call.from_user.id, 'https://imgur.com/5a7A1oh')
         bot.send_message(call.from_user.id, """
 09:00 - 10:20 [Основи программування(Л)](https://us02web.zoom.us/j/84711450833)
@@ -130,11 +108,12 @@ def handler_calls(call):
 
     elif call.data == 'first': choose_group(call)
     elif call.data == 'backChooseGroup': bot.edit_message_text('Виберіть группу:', chat_id=call.from_user.id, message_id=call.message.message_id, reply_markup=course_markup())
-    elif call.data == 'add_group_btn': admin_panel.choose_course_interface(call)
+    elif call.data == 'add_group_btn': admin_panel.choose_faculty_interface(call)
 
-    elif call.data == 'backChooseCourse': bot.edit_message_text('Меню:', chat_id=call.from_user.id, message_id=call.message.message_id, reply_markup=menu_markup(admin_panel.get_admin(call)))
-    # elif call.data.endswith('_admin'): admin_panel.add_group_interface(call)
-    # elif call.data.startswith('course_'): register_group(call)
+    elif call.data == 'backChooseFaculty': bot.edit_message_text('Меню:', chat_id=call.from_user.id, message_id=call.message.message_id, reply_markup=menu_markup(admin_panel.get_admin(call)))
+    elif call.data == 'backChooseCourse': bot.edit_message_text("Выберите факультет:", chat_id=call.from_user.id, message_id=call.message.message_id, reply_markup=faculties_markup())
+    elif call.data.startswith('course-'): admin_panel.add_group_interface(call)
+    elif call.data.startswith('faculty-'): admin_panel.choose_course_interface(call)
     elif call.data == 'add_fac_btn': admin_panel.add_fac_interface(call)
 
 if __name__ == "__main__": 
