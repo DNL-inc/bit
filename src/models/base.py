@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import exists
+from menu import get_main_menu
 
 engine = create_engine("sqlite:///db.sqlite", echo=True)
 Base = declarative_base()
@@ -15,11 +16,11 @@ class User(Base):
     __tablename__ = "users"
     id = Column('id', Integer, primary_key=True)
     tele_id = Column('tele_id', Integer, unique=True)
-    username = Column('username', String, nullable=True)
+    username = Column('username', String, unique=True, nullable=True)
     firstname = Column('firstname', String, nullable=True)
     lastname = Column('lastname', String, nullable=True)
     is_admin = Column('is_admin', Boolean, nullable=True)
-    has_group = Column('has_group', ForeignKey('groups.id'))
+    group = Column('group', ForeignKey('groups.id'))
 
     def __init__(self, tele_id, username=None, firstname=None, lastname=None, group=None, is_admin=None):
         self.tele_id = tele_id
@@ -40,7 +41,7 @@ class Admin(Base):
     username = Column('username', String, nullable=True)
     firstname = Column('firstname', String, nullable=True)
     lastname = Column('lastname', String, nullable=True)
-    has_group = Column('has_group', ForeignKey('groups.id'))
+    group = Column('group', ForeignKey('groups.id'))
     is_supreme = Column('is_supreme', Boolean)
 
     def __init__(self, tele_id, username=None, firstname=None, lastname=None, group=None):
@@ -58,7 +59,19 @@ class Group(Base):
     title = Column('title', String, unique=True)
     course = Column('course', Integer)
     students = relationship("User")
-    faculty = Column('faculty', String, nullable=True)
+    faculty = Column('faculty', ForeignKey('faculties.id'))
+
+    # def __init__(self, title, course):
+    #     pass
+
+class Faculty(Base):
+    __tablename__ = 'faculties'
+    id = Column('id', Integer, primary_key=True)
+    title = Column('title', String, unique=True)
+    groups = relationship('Group')
+
+    def __init__(self, title):
+        self.title = title
 
 def is_admin_bool(message):
     if session.query(exists().where(Admin.tele_id == message.from_user.id)).scalar():
@@ -84,6 +97,16 @@ def register_user(message):
     session.add(user)
     session.commit()
 
+
+def register_fac(message):
+    title = message.text
+
+    fac = Faculty(title)
+    if session.query(exists().where(Faculty.title == title)).scalar():
+        return
+    session.add(fac)
+    session.commit()
+    
 
 
 if __name__ == "__main__":

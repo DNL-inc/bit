@@ -1,23 +1,19 @@
 from telebot import types
 import telebot
-from models.base import register_user, is_admin_bool
-from admin import AdminPanel
+from models.base import register_user, is_admin_bool, register_group, register_fac
+from admin import AdminPanel, menu_markup
 
+from menu import get_main_menu
 
 bot = telebot.TeleBot(token='992816254:AAHc_pVKMqESQ84bjp_I80-AYertBBt7F80')
 admin_panel = AdminPanel(bot)
 
 def menu(message):
     chat_id = message.from_user.id
-    markup = types.ReplyKeyboardMarkup(row_width=2)
-    schedule_item = types.KeyboardButton('Рaспиcание')
-    group_item = types.KeyboardButton('Група')
     if is_admin_bool(message):
-        admin_item = types.KeyboardButton('Админиcтрировaниe')
-        markup.add(schedule_item, admin_item, group_item)
+        bot.send_message(chat_id, "Выберіть щось", reply_markup=get_main_menu(message, True))
     else:
-        markup.add(schedule_item, group_item)
-    bot.send_message(chat_id, "Выберіть щось", reply_markup=markup)
+        bot.send_message(chat_id, "Выберіть щось", reply_markup=get_main_menu(message, False))
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -48,7 +44,7 @@ def group_markup():
     group1 = types.InlineKeyboardButton(text='ІПЗ-11', callback_data="ipz11")
     group2 = types.InlineKeyboardButton(text='ІПЗ-12', callback_data="ipz12")
     group3 = types.InlineKeyboardButton(text='ІПЗ-13', callback_data="ipz13")
-    backButton = types.InlineKeyboardButton(text='Назад', callback_data="back")
+    backButton = types.InlineKeyboardButton(text='Назад', callback_data="backChooseGroup")
     markup.add(group1, group2, group3, backButton)
     return markup
 
@@ -133,8 +129,13 @@ def handler_calls(call):
 
 
     elif call.data == 'first': choose_group(call)
-    elif call.data == 'back': bot.edit_message_text('Виберіть группу:', chat_id=call.from_user.id, message_id=call.message.message_id, reply_markup=course_markup())
+    elif call.data == 'backChooseGroup': bot.edit_message_text('Виберіть группу:', chat_id=call.from_user.id, message_id=call.message.message_id, reply_markup=course_markup())
+    elif call.data == 'add_group_btn': admin_panel.choose_course_interface(call)
 
+    elif call.data == 'backChooseCourse': bot.edit_message_text('Меню:', chat_id=call.from_user.id, message_id=call.message.message_id, reply_markup=menu_markup(admin_panel.get_admin(call)))
+    # elif call.data.endswith('_admin'): admin_panel.add_group_interface(call)
+    # elif call.data.startswith('course_'): register_group(call)
+    elif call.data == 'add_fac_btn': admin_panel.add_fac_interface(call)
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
     bot.polling()
