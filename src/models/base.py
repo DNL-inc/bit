@@ -118,6 +118,11 @@ def register_group(message, faculty, course):
     session.add(group)
     session.commit()
 
+def save_group_user(message, group):
+    user = session.query(User).filter(User.tele_id == message.from_user.id).first()
+    user.group = group
+    session.commit()
+
 
 if __name__ == "__main__":
     Base.metadata.create_all(engine)

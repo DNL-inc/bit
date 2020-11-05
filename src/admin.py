@@ -13,7 +13,7 @@ def faculties_markup():
     markup = types.InlineKeyboardMarkup(row_width=1)
     faculites = session.query(Faculty).all()
     for faculty in faculites:
-        markup.add(types.InlineKeyboardButton(text=faculty.title, callback_data="faculty-"+str(faculty.id)))
+        markup.add(types.InlineKeyboardButton(text=faculty.title, callback_data="admin-faculty-"+str(faculty.id)))
     markup.add(types.InlineKeyboardButton(text='Назад', callback_data="backChooseFaculty"))
     return markup
 
@@ -53,7 +53,7 @@ class AdminPanel:
             self.bot.send_message(msg.from_user.id, "Чтобы вносить изменения вам нужно принадлежать какой-то группе")
 
     def choose_course_interface(self, msg):
-        faculty_id = msg.data.split('-')[1]
+        faculty_id = msg.data.split('-')[2]
         self.faculty = session.query(Faculty).filter(Faculty.id == faculty_id).first()
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id, text='Виберіть курс:', reply_markup=course_markup_for_admin())
 
@@ -62,24 +62,25 @@ class AdminPanel:
 
     def call_create_fac(self, message):
         res = register_fac(message)
-        if not res:
+        if res:
             self.bot.send_message(message.from_user.id, "Факультет уже есть такой", reply_markup=get_main_menu(message, True))
         else:
             self.bot.send_message(message.from_user.id, "Факультет создан", reply_markup=get_main_menu(message, True))
 
     def add_fac_interface(self, msg):
+        markup = types.ForceReply()
         message_id = self.bot.send_message(msg.from_user.id, "Напишите название факультета (ФИТ):", reply_markup=markup)
         self.bot.register_for_reply_by_message_id(message_id.message_id, callback=self.call_create_fac)
 
     def call_create_group(self, msg):
         res = register_group(msg, self.faculty, self.course)
-        if not res:
+        if res:
             self.bot.send_message(msg.from_user.id, "Группа уже есть такая", reply_markup=get_main_menu(msg, True))
         else:
             self.bot.send_message(msg.from_user.id, "Группа создана", reply_markup=get_main_menu(msg, True))
 
     def add_group_interface(self, msg): 
-        self.course = msg.data.split('-')[1]
+        self.course = msg.data.split('-')[2]
         markup = types.ForceReply()
         message_id = self.bot.send_message(msg.from_user.id, "Напишите название группы (ІПЗ-12):", reply_markup=markup)
         self.bot.register_for_reply_by_message_id(message_id.message_id, callback=self.call_create_group)
