@@ -105,6 +105,10 @@ def register_user(message):
     session.commit()
 
 
+def get_fac(id):
+    fac = session.query(Faculty).filter(Faculty.id == id).first()
+    return fac.title
+
 def register_fac(message):
     title = message.text
 
@@ -112,6 +116,22 @@ def register_fac(message):
     if session.query(exists().where(Faculty.title == title)).scalar():
         return False
     session.add(fac)
+    session.commit()
+
+def delete_fac(message):
+    id = message.data.split('-')[2]
+
+    fac = session.query(Faculty).filter(Faculty.id == id).first()
+    session.delete(fac)
+    session.commit()
+
+def edit_fac(message, id):
+    title = message.text
+
+    fac = session.query(Faculty).filter(Faculty.id == id).first()
+    if session.query(exists().where(Faculty.title == title)).scalar():
+        return False
+    fac.title = title
     session.commit()
 
 

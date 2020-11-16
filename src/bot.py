@@ -1,7 +1,7 @@
 from telebot import types
 import telebot
 from models.base import register_user, is_admin_bool, register_fac, session, Faculty
-from admin import AdminPanel, menu_markup, group_markup
+from admin import AdminPanel, group_markup
 from group import GroupPanel, faculties_markup
 
 from menu import get_main_menu, course_markup, schedule_markup
@@ -47,24 +47,8 @@ def response_schedule(message):
 @bot.callback_query_handler(func=lambda call: True)
 def handler_calls(call):
     # admin-panel
-    # -----> button create group <-------
-    if call.data == 'add_group_btn':
-        admin_panel.choose_faculty_interface(call)
-    # -------> section choosing facutly <----------
-    elif call.data.startswith('admin-faculty-'):
-        admin_panel.choose_course_interface(call)
-    elif call.data == 'backChooseFaculty':
-        bot.edit_message_text('Меню:', chat_id=call.from_user.id, message_id=call.message.message_id,
-                              reply_markup=menu_markup(admin_panel.get_admin(call)))
-    # -------> section choosing course <----------
-    elif call.data.startswith('admin-course-'):
-        admin_panel.add_group_interface(call)
-    elif call.data.startswith('backChooseCourse-'):
-        bot.edit_message_text("Выберите факультет:", chat_id=call.from_user.id,
-                              message_id=call.message.message_id, reply_markup=faculties_markup())
-    # --------> button create faculty <--------
-    elif call.data == 'add_fac_btn':
-        admin_panel.add_fac_interface(call)
+    if call.data.startswith('admin'):
+        admin_panel.callback_handler(call)
     # group-panel
     # -------> section choosing facutly <----------
     elif call.data.startswith("faculty-"):
