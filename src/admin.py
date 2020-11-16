@@ -1,9 +1,9 @@
 from telebot import types
 import telebot
-from models.base import engine, Admin, register_fac, Faculty, register_group, delete_fac, edit_fac, get_fac
+from models.base import engine, Admin, register_fac, Faculty, register_group, delete_fac, edit_fac, get_fac, delete_group, Group, edit_group, get_group
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
-from menu import get_main_menu, group_markup, course_markup_for_admin
+from menu import get_main_menu, group_markup, course_markup
 
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -14,7 +14,7 @@ def faculties_markup(callback_for_back="backChooseFaculty", caption=""):
     faculites = session.query(Faculty).all()
     for faculty in faculites:
         markup.add(types.InlineKeyboardButton(text=faculty.title,
-                                              callback_data="admin-faculty-"+str(faculty.id) + '-' + caption))
+                                              callback_data="admin-"+caption+"-"+str(faculty.id)))
     markup.add(types.InlineKeyboardButton(
         text='Назад', callback_data=callback_for_back))
     return markup
@@ -33,6 +33,16 @@ def admin_menu_markup(admin):
     markup.add(add_event_btn)
     return markup
 
+def groups_markup(faculty_id, course, message, callback_for_back, callback):
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    groups = session.query(Group).filter(
+        Group.faculty == faculty_id, Group.course == course).all()
+    for group in groups:
+            markup.add(types.InlineKeyboardButton(
+                text=group.title, callback_data=callback+"-"+str(group.id)))
+    markup.add(types.InlineKeyboardButton(
+        text='Назад', callback_data=callback_for_back))
+    return markup
 
 class FacultyPanel:
     def __init__(self, bot):
@@ -40,14 +50,18 @@ class FacultyPanel:
 
     def actions_menu(self):
         markup = types.InlineKeyboardMarkup(row_width=1)
-        create_btn = types.InlineKeyboardButton(text="Создать факультет", callback_data="admin-faculty-add")
-        edit_btn = types.InlineKeyboardButton(text='Изменить факультет', callback_data='admin-faculty-edit')
-        delete_btn = types.InlineKeyboardButton(text="Удалить факультет", callback_data='admin-faculty-delete')
+        create_btn = types.InlineKeyboardButton(
+            text="Создать факультет", callback_data="admin-faculty-add")
+        edit_btn = types.InlineKeyboardButton(
+            text='Изменить факультет', callback_data='admin-faculty-edit')
+        delete_btn = types.InlineKeyboardButton(
+            text="Удалить факультет", callback_data='admin-faculty-delete')
         markup.add(create_btn, edit_btn, delete_btn)
         return markup
 
     def get_interface(self, msg):
-        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id, text="Выберите действия для группы:", reply_markup=self.actions_menu())
+        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
+                                   text="Выберите действия для факультета:", reply_markup=self.actions_menu())
 
     def add_faculty(self, msg):
         markup = types.ForceReply()
@@ -60,24 +74,25 @@ class FacultyPanel:
         res = register_fac(msg)
         if res:
             self.bot.send_message(
-                msg.from_user.id, "Факультет уже есть такой", reply_markup=get_main_menu(msg, True))
+                msg.from_user.id, "Факультет создан", reply_markup=get_main_menu(msg, True))
         else:
             self.bot.send_message(
-                msg.from_user.id, "Факультет создан", reply_markup=get_main_menu(msg, True))
+                msg.from_user.id, "Факультет уже есть такой", reply_markup=get_main_menu(msg, True))
 
     def execute_delete_faculty(self, msg):
         res = delete_fac(msg)
 
-        self.bot.edit_message_text("Выбирете факультет, который нужно удалить", msg.from_user.id, msg.message.message_id, reply_markup=faculties_markup('admin-faculty-back', 'delete'))
+        self.bot.edit_message_text("Выбирете факультет, который нужно удалить", msg.from_user.id,
+                                   msg.message.message_id, reply_markup=faculties_markup('admin-faculty-back', 'faculty-delete-id'))
         self.bot.send_message(
-                msg.from_user.id, "Факультет удалет", reply_markup=get_main_menu(msg, True))
+            msg.from_user.id, "Факультет удалет", reply_markup=get_main_menu(msg, True))
 
-        
     def edit_faculty(self, msg):
-        self.bot.edit_message_text("Выбирете факультет, который нужно изменить", msg.from_user.id, msg.message.message_id, reply_markup=faculties_markup('admin-faculty-back', 'edit'))
-    
+        self.bot.edit_message_text("Выбирете факультет, который нужно изменить", msg.from_user.id,
+                                   msg.message.message_id, reply_markup=faculties_markup('admin-faculty-back', 'faculty-edit-id'))
+
     def get_new_title_faculty(self, msg):
-        self.fac_id = msg.data.split('-')[2]
+        self.fac_id = msg.data.split('-')[-1]
         markup = types.ForceReply()
         message_id = self.bot.send_message(
             msg.from_user.id, "Напишите новое название факультета '{}':".format(get_fac(self.fac_id)), reply_markup=markup)
@@ -88,19 +103,24 @@ class FacultyPanel:
         res = edit_fac(msg, self.fac_id)
         if res:
             self.bot.send_message(
-                msg.from_user.id, "Факультет уже есть такой", reply_markup=get_main_menu(msg, True))
+                msg.from_user.id, "Факультет изменен", reply_markup=get_main_menu(msg, True))
         else:
             self.bot.send_message(
-                msg.from_user.id, "Факультет изменен", reply_markup=get_main_menu(msg, True))
-        
+                msg.from_user.id, "Факультет уже есть такой", reply_markup=get_main_menu(msg, True))
+
     def delete_faculty(self, msg):
-        self.bot.edit_message_text("Выбирете факультет, который нужно удалить", msg.from_user.id, msg.message.message_id, reply_markup=faculties_markup('admin-faculty-back', 'delete'))
+        self.bot.edit_message_text("Выбирете факультет, который нужно удалить", msg.from_user.id,
+                                   msg.message.message_id, reply_markup=faculties_markup('admin-faculty-back', 'faculty-delete-id'))
         self.bot.send_message(
-                msg.from_user.id, "Факультет изменен", reply_markup=get_main_menu(msg, True))
+            msg.from_user.id, "Факультет изменен", reply_markup=get_main_menu(msg, True))
 
     def callback_handler(self, call):
         if call.data == 'admin-faculty':
             self.get_interface(call)
+        elif call.data.startswith('admin-faculty-delete-id'):
+            self.execute_delete_faculty(call)
+        elif call.data.startswith('admin-faculty-edit-id'):
+            self.get_new_title_faculty(call)
         elif call.data.endswith('add'):
             self.add_faculty(call)
         elif call.data == 'admin-faculty-delete':
@@ -109,25 +129,165 @@ class FacultyPanel:
             self.edit_faculty(call)
         elif call.data == 'admin-faculty-back':
             self.get_interface(call)
-        elif call.data.endswith('delete'):
-            self.execute_delete_faculty(call)
-        elif call.data.endswith('edit'):
-            self.get_new_title_faculty(call)
+        
+
+class GroupPanel:
+    def __init__(self, bot):
+        self.bot = bot
+
+    def actions_menu(self):
+        markup = types.InlineKeyboardMarkup(row_width=1)
+        create_btn = types.InlineKeyboardButton(
+            text="Создать группу", callback_data="admin-group-add")
+        edit_btn = types.InlineKeyboardButton(
+            text='Изменить группу', callback_data='admin-group-edit')
+        delete_btn = types.InlineKeyboardButton(
+            text="Удалить группу", callback_data='admin-group-delete')
+        markup.add(create_btn, edit_btn, delete_btn)
+        return markup
+
+    def get_interface(self, msg):
+        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
+                                   text="Выберите действия для группы:", reply_markup=self.actions_menu())
+
+    def choose_faculty_add_interface(self, msg):
+        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
+                                   text="Выберите факультет:", reply_markup=faculties_markup(callback_for_back='admin-group-back', caption='group-add-id'))
+
+    def add_group(self, msg):
+        self.course = msg.data.split('-')[-1]
+        markup = types.ForceReply()
+        message_id = self.bot.send_message(
+            msg.from_user.id, "Напишите название группы (ІПЗ-12):", reply_markup=markup)
+        self.bot.register_for_reply_by_message_id(
+            message_id.message_id, callback=self.execute_add_group)
+
+    def choose_course_add_interface(self, msg):
+        faculty_id = msg.data.split('-')[-1]
+        self.faculty = session.query(Faculty).filter(
+            Faculty.id == faculty_id).first()
+        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
+                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-add", admin="admin-group-add-course"))
+
+    def execute_add_group(self, msg):
+        res = register_group(msg, self.faculty, self.course)
+        if res:
+            self.bot.send_message(
+                msg.from_user.id, "Группа уже есть такоя", reply_markup=get_main_menu(msg, True))
+        else:
+            self.bot.send_message(
+                msg.from_user.id, "Группа создана", reply_markup=get_main_menu(msg, True))
+
+    def choose_faculty_delete_interface(self, msg):
+        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
+                                   text="Выберите факультет:", reply_markup=faculties_markup(callback_for_back='admin-group-back', caption='group-delete-id'))
+
+    def choose_course_delete_interface(self, msg):
+        faculty_id = msg.data.split('-')[-1]
+        self.faculty = session.query(Faculty).filter(
+            Faculty.id == faculty_id).first()
+        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
+                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", admin="admin-group-delete-course"))
+
+    def choose_group_delete_interface(self, msg):
+        self.course = msg.data.split('-')[-1]
+        self.bot.edit_message_text("Выбирете группу, которую нужно удалить", msg.from_user.id,
+                                   msg.message.message_id, reply_markup=groups_markup(self.faculty.id, self.course, msg, 'admin-group-delete-id', "admin-group-delete-choose"))
+
+    def execute_delete_group(self, msg): 
+        res = delete_group(msg)
+
+        self.bot.edit_message_text("Выбирете группу, которую нужно удалить", msg.from_user.id,
+                                   msg.message.message_id, reply_markup=groups_markup(self.faculty.id, self.course, msg, 'admin-group-delete-id', "admin-group-delete-choose"))
+
+        self.bot.send_message(
+            msg.from_user.id, "Группа удалена", reply_markup=get_main_menu(msg, True))
 
 
+    def edit_group(self, msg):
+        self.bot.edit_message_text("Выбирете группу, которую нужно изменить", msg.from_user.id,
+                                   msg.message.message_id, reply_markup=faculties_markup('admin-group-back', 'group-edit-id'))
+
+    def choose_faculty_edit_interface(self, msg):
+        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
+                                   text="Выберите факультет:", reply_markup=faculties_markup(callback_for_back='admin-group-back', caption='group-edit-id'))
+
+    def choose_course_edit_interface(self, msg):
+        faculty_id = msg.data.split('-')[-1]
+        self.faculty = session.query(Faculty).filter(
+            Faculty.id == faculty_id).first()
+        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
+                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", admin="admin-group-edit-course"))
+
+    def choose_group_edit_interface(self, msg):
+        self.course = msg.data.split('-')[-1]
+        self.bot.edit_message_text("Выбирете группу, которую нужно удалить", msg.from_user.id,
+                                   msg.message.message_id, reply_markup=groups_markup(self.faculty.id, self.course, msg, 'admin-group-edit-id', "admin-group-edit-choose"))
+
+
+    def get_new_title_group(self, msg):
+        self.group_id = msg.data.split('-')[-1]
+        markup = types.ForceReply()
+        message_id = self.bot.send_message(
+            msg.from_user.id, "Напишите новое название группы '{}':".format(get_group(self.group_id)), reply_markup=markup)
+        self.bot.register_for_reply_by_message_id(
+            message_id.message_id, callback=self.execute_edit_group)
+
+    def execute_edit_group(self, msg):
+        res = edit_group(msg, self.group_id)
+        if not res:
+            self.bot.send_message(
+                msg.from_user.id, "Группа уже есть такая", reply_markup=get_main_menu(msg, True))
+        else:
+            self.bot.send_message(
+                msg.from_user.id, "Группа изменена", reply_markup=get_main_menu(msg, True))
+
+    def delete_group(self, msg):
+        self.bot.edit_message_text("Выбирете группу, которую нужно удалить", msg.from_user.id,
+                                   msg.message.message_id, reply_markup=faculties_markup('admin-group-back', 'group-delete-id'))
+
+    def callback_handler(self, call):
+        if call.data == 'admin-group':
+            self.get_interface(call)
+        elif call.data.startswith('admin-group-add-id'):
+            self.choose_course_add_interface(call)
+        elif call.data.startswith('admin-group-delete-id'):
+            self.choose_course_delete_interface(call)
+        elif call.data.startswith('admin-group-edit-id'):
+            self.choose_course_edit_interface(call)
+        elif call.data.startswith('admin-group-delete-choose'):
+            self.execute_delete_group(call)
+        elif call.data.startswith('admin-group-edit-choose'):
+            self.get_new_title_group(call)
+        elif call.data.startswith('admin-group-add-course'):
+            self.add_group(call)
+        elif call.data.startswith('admin-group-delete-course'):
+            self.choose_group_delete_interface(call)
+        elif call.data.startswith('admin-group-edit-course'):
+            self.choose_group_edit_interface(call)
+        elif call.data == 'admin-group-back':
+            self.get_interface(call)
+        elif call.data.startswith('admin-group-add'):
+            self.choose_faculty_add_interface(call)
+        elif call.data == 'admin-group-delete':
+            self.delete_group(call)
+        elif call.data == 'admin-group-edit':
+            self.edit_group(call)
+        elif call.data == 'admin-group-back':
+            self.get_interface(call)
+        elif call.data.endswith('add'): pass
 
 class AdminPanel:
     def __init__(self, bot):
         self.bot = bot
         self.faculty_panel = FacultyPanel(self.bot)
+        self.group_panel = GroupPanel(self.bot)
 
     def callback_handler(self, call):
         if call.data.startswith('admin-faculty'):
             self.faculty_panel.callback_handler(call)
-            
-
-        # elif call.data.startswith('admin-group'):
-        #     self.group_panel.callback_handler(call)
+        elif call.data.startswith('admin-group'):
+            self.group_panel.callback_handler(call)
         # elif call.data.startswith('admin-event'):
         #     self.event_panel.callback_handler(call)
 
@@ -144,7 +304,7 @@ class AdminPanel:
 
     def get_menu(self, msg):
         self.bot.delete_message(
-                    message_id=msg.message_id, chat_id=msg.from_user.id)
+            message_id=msg.message_id, chat_id=msg.from_user.id)
 
         admin = self.get_admin(msg)
 
@@ -156,49 +316,3 @@ class AdminPanel:
         else:
             self.bot.send_message(
                 msg.from_user.id, "Чтобы вносить изменения вам нужно принадлежать какой-то группе")
-
-    def choose_course_interface(self, msg):
-        faculty_id = msg.data.split('-')[2]
-        self.faculty = session.query(Faculty).filter(
-            Faculty.id == faculty_id).first()
-        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
-                                   text='Виберіть курс:', reply_markup=course_markup_for_admin())
-
-    def choose_faculty_interface(self, msg):
-        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
-                                   text="Выберите факультет:", reply_markup=faculties_markup())
-
-    def call_create_fac(self, message):
-        res = register_fac(message)
-        if res:
-            self.bot.send_message(
-                message.from_user.id, "Факультет уже есть такой", reply_markup=get_main_menu(message, True))
-        else:
-            self.bot.send_message(
-                message.from_user.id, "Факультет создан", reply_markup=get_main_menu(message, True))
-
-    def add_fac_interface(self, msg):
-        markup = types.ForceReply()
-        message_id = self.bot.send_message(
-            msg.from_user.id, "Напишите название факультета (ФИТ):", reply_markup=markup)
-        self.bot.register_for_reply_by_message_id(
-            message_id.message_id, callback=self.call_create_fac)
-
-    def call_create_group(self, msg):
-        res = register_group(msg, self.faculty, self.course)
-        if res:
-            self.bot.send_message(
-                msg.from_user.id, "Группа уже есть такая", reply_markup=get_main_menu(msg, True))
-        else:
-            self.bot.send_message(
-                msg.from_user.id, "Группа создана", reply_markup=get_main_menu(msg, True))
-
-    def add_group_interface(self, msg):
-        self.course = msg.data.split('-')[2]
-        markup = types.ForceReply()
-        message_id = self.bot.send_message(
-            msg.from_user.id, "Напишите название группы (ІПЗ-12):", reply_markup=markup)
-        self.bot.register_for_reply_by_message_id(
-            message_id.message_id, callback=self.call_create_group)
-
-    

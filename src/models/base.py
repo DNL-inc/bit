@@ -119,7 +119,8 @@ def register_fac(message):
     session.commit()
 
 def delete_fac(message):
-    id = message.data.split('-')[2]
+    id = message.data.split('-')[-1]
+    print(id)
 
     fac = session.query(Faculty).filter(Faculty.id == id).first()
     session.delete(fac)
@@ -144,6 +145,25 @@ def register_group(message, faculty, course):
     session.add(group)
     session.commit()
 
+def delete_group(message):
+    id = message.data.split('-')[-1]
+    group = session.query(Group).filter(Group.id == id).first()
+
+    session.delete(group)
+    session.commit()
+
+def edit_group(message, id):
+    title = message.text
+
+    group = session.query(Group).filter(Group.id == id).first()
+    if session.query(exists().where(Group.title == title)).scalar():
+        return False
+    group.title = title
+    session.commit()
+
+def get_group(id):
+    group = session.query(Group).filter(Group.id == id).first()
+    return group.title
 
 def save_group_user(message, group):
     user = session.query(User).filter(
