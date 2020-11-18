@@ -1,7 +1,7 @@
 from telebot import types
 import telebot
 from models.base import register_user, is_admin_bool, register_fac, session, Faculty
-from admin import AdminPanel, group_markup
+from admin import AdminPanel
 from group import GroupPanel, faculties_markup
 
 from menu import get_main_menu, course_markup, schedule_markup
@@ -58,7 +58,7 @@ def handler_calls(call):
                               message_id=call.message.message_id, reply_markup=faculties_markup())
 
     # -------> section choosing course <----------
-    elif call.data.startswith('course-'):
+    elif call.data.startswith('-course-'):
         group_panel.choose_group(call)
     elif call.data == 'backChooseGroup':
         bot.edit_message_text("Выберите курс:", chat_id=call.from_user.id,

@@ -27,15 +27,6 @@ def course_markup(callback_for_back='backChooseCourse', admin=''):
         markup.add(backButton)
     return markup
 
-def group_markup():
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    group1 = types.InlineKeyboardButton(text='ІПЗ-11', callback_data="ipz11")
-    group2 = types.InlineKeyboardButton(text='ІПЗ-12', callback_data="ipz12")
-    group3 = types.InlineKeyboardButton(text='ІПЗ-13', callback_data="ipz13")
-    backButton = types.InlineKeyboardButton(text='Назад', callback_data="backChooseGroup")
-    markup.add(group1, group2, group3, backButton)
-    return markup
-
 def schedule_markup(caption="", back=""):
     markup = types.InlineKeyboardMarkup(row_width=1)
     monday = types.InlineKeyboardButton(

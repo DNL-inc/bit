@@ -3,7 +3,7 @@ import telebot
 from models.base import engine, Admin, register_fac, Faculty, register_group, delete_fac, edit_fac, get_fac, delete_group, Group, edit_group, get_group, register_event, User
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
-from menu import get_main_menu, group_markup, course_markup, schedule_markup
+from menu import get_main_menu, course_markup, schedule_markup
 import re
 
 Session = sessionmaker(bind=engine)
@@ -296,7 +296,7 @@ class EventPanel:
         user = session.query(User).filter(User.tele_id == msg.from_user.id).first()
         admin = session.query(Admin).filter(Admin.tele_id == msg.from_user.id).first()
         if admin.is_supreme:
-            if user.group:
+            if not user.group: # supreme can't have group that's why we check in user
                 self.bot.send_message(msg.from_user.id, "У вас не выбранна группа. Сделать это можно в главном меню в секции 'Группа'")
                 return False
         elif admin.group:

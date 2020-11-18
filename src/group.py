@@ -42,17 +42,17 @@ class GroupPanel:
             message.from_user.id, "Выберите факультет:", reply_markup=faculties_markup())
 
     def choose_course(self, message):
-        faculty_id = message.data.split('-')[1]
+        faculty_id = message.data.split('-')[-1]
         self.faculty = faculty_id
         self.bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id,
                                    text='Виберіть курс:', reply_markup=course_markup())
 
     def choose_group(self, message):
-        self.course = message.data.split('-')[1]
+        self.course = message.data.split('-')[-1]
         self.bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id,
                                    text='Виберіть группу:', reply_markup=group_markup(self.faculty, self.course, message))
 
     def call_save_group(self, message):
-        save_group_user(message, message.data.split('-')[1])
+        save_group_user(message, message.data.split('-')[-1])
         self.bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id,
                                    text="Виберіть группу:", reply_markup=group_markup(self.faculty, self.course, message))

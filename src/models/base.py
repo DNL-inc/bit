@@ -187,7 +187,9 @@ def get_group(id):
 def save_group_user(message, group):
     user = session.query(User).filter(
         User.tele_id == message.from_user.id).first()
-    user.group = group
+    if user.group == int(group):
+        user.group = None
+    else: user.group = group
     session.commit()
 
 def register_event(message, title, time_start, day):
