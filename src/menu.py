@@ -36,17 +36,21 @@ def group_markup():
     markup.add(group1, group2, group3, backButton)
     return markup
 
-def schedule_markup():
+def schedule_markup(caption="", back=""):
     markup = types.InlineKeyboardMarkup(row_width=1)
     monday = types.InlineKeyboardButton(
-        text='Понеділок', callback_data="schedule_monday")
+        text='Понеділок', callback_data=caption+"-"+"schedule_monday")
     tuesday = types.InlineKeyboardButton(
-        text='Вівторок', callback_data="schedule_tuesday")
+        text='Вівторок', callback_data=caption+"-"+"schedule_tuesday")
     wednesday = types.InlineKeyboardButton(
-        text='Середа', callback_data="schedule_wednesday")
+        text='Середа', callback_data=caption+"-"+"schedule_wednesday")
     thursday = types.InlineKeyboardButton(
-        text='Четвер', callback_data="schedule_thursday")
+        text='Четвер', callback_data=caption+"-"+"schedule_thursday")
     friday = types.InlineKeyboardButton(
-        text='П\'ятниця', callback_data="schedule_friday")
-    markup.add(monday, tuesday, wednesday, thursday, friday)
+        text='П\'ятниця', callback_data=caption+"-"+"schedule_friday")
+    saturday = types.InlineKeyboardButton(text='Субота', callback_data=caption+"-"+"schedule_saturday")
+    sunday = types.InlineKeyboardButton(text='Неділя', callback_data=caption+"-"+"schedule_sunday")
+    markup.add(monday, tuesday, wednesday, thursday, friday, saturday, sunday)
+    if back != "":
+        markup.add(types.InlineKeyboardButton(text='Назад', callback_data=back))
     return markup

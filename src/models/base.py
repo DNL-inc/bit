@@ -1,9 +1,10 @@
-from sqlalchemy import create_engine, Table, Integer, String, Column, ForeignKey, Boolean
+from sqlalchemy import create_engine, Table, Integer, String, Column, ForeignKey, Boolean, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import exists
 from menu import get_main_menu
+from datetime import time
 
 engine = create_engine("sqlite:///db.sqlite", echo=True,
                        connect_args={'check_same_thread': False})
@@ -78,6 +79,20 @@ class Faculty(Base):
     def __init__(self, title):
         self.title = title
 
+class Event(Base):
+    __tablename__ = 'events'
+
+    id = Column('id', Integer, primary_key=True)
+    title = Column('title', String, unique=True)
+    group = Column('group', ForeignKey('groups.id'))
+    day = Column('day', String)
+    time_start = Column('time_start', Time)
+
+    def __init__(self, title, group, day, time_start):
+        self.title = title
+        self.group = group
+        self.day = day
+        self.time_start = time_start
 
 def is_admin_bool(message):
     if session.query(exists().where(Admin.tele_id == message.from_user.id)).scalar():
@@ -117,6 +132,7 @@ def register_fac(message):
         return False
     session.add(fac)
     session.commit()
+    return True
 
 def delete_fac(message):
     id = message.data.split('-')[-1]
@@ -134,6 +150,7 @@ def edit_fac(message, id):
         return False
     fac.title = title
     session.commit()
+    return True
 
 
 def register_group(message, faculty, course):
@@ -144,6 +161,7 @@ def register_group(message, faculty, course):
         return False
     session.add(group)
     session.commit()
+    return True
 
 def delete_group(message):
     id = message.data.split('-')[-1]
@@ -160,6 +178,7 @@ def edit_group(message, id):
         return False
     group.title = title
     session.commit()
+    return True
 
 def get_group(id):
     group = session.query(Group).filter(Group.id == id).first()
@@ -171,6 +190,14 @@ def save_group_user(message, group):
     user.group = group
     session.commit()
 
+def register_event(message, title, time_start, day):
+    time_start = list(map(int, time_start.split(':')))
+    group = session.query(User).filter(User.tele_id == message.from_user.id).first().group
+
+    event = Event(title, group, day, time(time_start[0], time_start[1]))
+    session.add(event)
+    session.commit()
+    return True
 
 if __name__ == "__main__":
     Base.metadata.create_all(engine)

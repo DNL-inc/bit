@@ -1,9 +1,10 @@
 from telebot import types
 import telebot
-from models.base import engine, Admin, register_fac, Faculty, register_group, delete_fac, edit_fac, get_fac, delete_group, Group, edit_group, get_group
+from models.base import engine, Admin, register_fac, Faculty, register_group, delete_fac, edit_fac, get_fac, delete_group, Group, edit_group, get_group, register_event, User
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
-from menu import get_main_menu, group_markup, course_markup
+from menu import get_main_menu, group_markup, course_markup, schedule_markup
+import re
 
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -275,21 +276,104 @@ class GroupPanel:
             self.edit_group(call)
         elif call.data == 'admin-group-back':
             self.get_interface(call)
-        elif call.data.endswith('add'): pass
+
+class EventPanel:
+    def __init__(self, bot):
+        self.bot = bot 
+
+    def actions_menu(self):
+        markup = types.InlineKeyboardMarkup(row_width=1)
+        create_btn = types.InlineKeyboardButton(
+            text="Создать события", callback_data="admin-event-add")
+        edit_btn = types.InlineKeyboardButton(
+            text='Изменить события', callback_data='admin-event-edit')
+        delete_btn = types.InlineKeyboardButton(
+            text="Удалить события", callback_data='admin-event-delete')
+        markup.add(create_btn, edit_btn, delete_btn)
+        return markup
+
+    def get_interface(self, msg):
+        user = session.query(User).filter(User.tele_id == msg.from_user.id).first()
+        admin = session.query(Admin).filter(Admin.tele_id == msg.from_user.id).first()
+        if admin.is_supreme:
+            if user.group:
+                self.bot.send_message(msg.from_user.id, "У вас не выбранна группа. Сделать это можно в главном меню в секции 'Группа'")
+                return False
+        elif admin.group:
+            self.bot.send_message(msg.from_user.id, "Вы можете редактировать события только в позволеной вам группе")
+        else:
+            self.bot.send_message(msg.from_user.id, "Кажеться, вы не СУПРИМ или вы просто не можете создавать ивенты")
+            return False
+        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
+                                   text="Выберите действия для события:", reply_markup=self.actions_menu())
+
+    def choose_schedule(self, msg):
+        self.bot.edit_message_text("Выберите день:", chat_id=msg.from_user.id, message_id=msg.message.message_id, reply_markup=schedule_markup(caption='admin-event', back="admin-event"))
+
+    def pick_up_time(self, msg):
+        try: self.day
+        except AttributeError: self.day = msg.data.split('_')[-1]
+        markup = types.ForceReply()
+        message_id = self.bot.send_message(text="Напишите время в формате 24-часов (9:00):", chat_id=msg.from_user.id, reply_markup=markup)
+        self.bot.register_for_reply_by_message_id(
+            message_id.message_id, callback=self.check_time_event)
+
+    def get_title_event(self, msg):
+        markup = types.ForceReply()
+        message_id = self.bot.send_message(msg.from_user.id, "Напишите названия события (Выш мат):", reply_markup=markup)
+        self.bot.register_for_reply_by_message_id(message_id.message_id, callback=self.confirm_add)
+
+    def check_time_event(self, msg):
+        res = re.match('^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$', msg.text)
+        if not res:
+            self.pick_up_time(msg)
+        else:
+            self.time = msg.text
+            self.get_title_event(msg)
+
+    def confirm_add(self, msg):
+        self.title = msg.text
+        markup = types.InlineKeyboardMarkup(row_width=2)
+        markup.add(types.InlineKeyboardButton("Создать", callback_data="admin-event-add-confirm"), types.InlineKeyboardButton("Отмена", callback_data="admin-event"))
+        self.bot.send_message(msg.from_user.id, "Cоздать {} на {} в {}, подтвердить?".format(self.title, self.time, self.day), reply_markup=markup)
+
+    def add_event(self, msg):
+        self.bot.delete_message(msg.from_user.id, msg.message.message_id)
+        res = register_event(msg, self.title, self.time, self.day)
+        if not res:
+            self.bot.send_message(msg.from_user.id, "Что-то пошло не так!", reply_markup=get_main_menu(msg, True))
+        else:
+            self.bot.send_message(msg.from_user.id, "Событие созданно!", reply_markup=get_main_menu(msg, True))
+
+
+    def callback_handler(self, call):
+        if call.data == 'admin-event':
+            self.get_interface(call)
+        elif call.data == 'admin-event-add':
+            self.choose_schedule(call)
+        elif call.data.startswith('admin-event-schedule'):
+            self.pick_up_time(call)
+        elif call.data == 'admin-event-edit':
+            self.choose_schedule(call)
+        elif call.data == 'admin-event-delete':
+            self.choose_schedule(call)
+        elif call.data == 'admin-event-add-confirm':
+            self.add_event(call)
 
 class AdminPanel:
     def __init__(self, bot):
         self.bot = bot
         self.faculty_panel = FacultyPanel(self.bot)
         self.group_panel = GroupPanel(self.bot)
+        self.event_panel = EventPanel(self.bot)
 
     def callback_handler(self, call):
         if call.data.startswith('admin-faculty'):
             self.faculty_panel.callback_handler(call)
         elif call.data.startswith('admin-group'):
             self.group_panel.callback_handler(call)
-        # elif call.data.startswith('admin-event'):
-        #     self.event_panel.callback_handler(call)
+        elif call.data.startswith('admin-event'):
+            self.event_panel.callback_handler(call)
 
     def get_admin(self, msg):
         admin = None
@@ -315,4 +399,4 @@ class AdminPanel:
                                   reply_markup=admin_menu_markup(admin))
         else:
             self.bot.send_message(
-                msg.from_user.id, "Чтобы вносить изменения вам нужно принадлежать какой-то группе")
+                msg.from_user.id, "Чтобы вносить изменения вам нужно принадлежать какой-то группе") 
