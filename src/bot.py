@@ -26,6 +26,10 @@ def start(message):
     register_user(message)
     menu(message)
 
+@bot.message_handler(commands=['show_main_menu'])
+def show_main_menu(message):
+    menu(message)
+
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def response_menu(message):

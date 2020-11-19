@@ -83,7 +83,7 @@ class Event(Base):
     __tablename__ = 'events'
 
     id = Column('id', Integer, primary_key=True)
-    title = Column('title', String, unique=True)
+    title = Column('title', String)
     group = Column('group', ForeignKey('groups.id'))
     day = Column('day', String)
     time_start = Column('time_start', Time)
@@ -119,6 +119,10 @@ def register_user(message):
     session.add(user)
     session.commit()
 
+def get_user(message):
+    tele_id = message.from_user.id
+    if session.query(exists().where(User.tele_id == tele_id)).scalar():
+        return session.query(User).filter(User.tele_id == tele_id).first()
 
 def get_fac(id):
     fac = session.query(Faculty).filter(Faculty.id == id).first()
@@ -200,6 +204,29 @@ def register_event(message, title, time_start, day):
     session.add(event)
     session.commit()
     return True
+
+def delete_event(message, event):
+    event = session.query(Event).filter(Event.id == event.id).first()
+    if not event:
+        return False
+    session.delete(event)
+    session.commit()
+    return True
+
+def edit_event(message, changes):
+    event = session.query(Event).filter(Event.id == changes['id']).first()
+    if not event:
+        return False
+
+    if changes.get('time'):
+        time_start = list(map(int, changes.get('time').split(':')))
+        if time_start != time(time_start[0], time_start[1]):
+            event.time_start = time(time_start[0], time_start[1])
+    if changes.get('title') and changes.get('title') != event.title:
+        event.title = changes.get('title')
+    session.commit()
+    return True
+    
 
 if __name__ == "__main__":
     Base.metadata.create_all(engine)
