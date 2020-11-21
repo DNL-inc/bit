@@ -5,7 +5,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
 from telebot import types
 
-from menu import course_markup, get_main_menu, schedule_markup
+from menu import course_markup, get_main_menu#, schedule_markup
 from models.base import (Admin, Event, Faculty, Group, User, delete_event,
                          delete_fac, delete_group, edit_fac, edit_group,
                          engine, get_fac, get_group, get_user, register_event,

@@ -27,7 +27,7 @@ def course_markup(callback_for_back='backChooseCourse', admin=''):
         markup.add(backButton)
     return markup
 
-def schedule_markup(caption="", back=""):
+def schedule_markup2(caption="", back=""):
     markup = types.InlineKeyboardMarkup(row_width=1)
     monday = types.InlineKeyboardButton(
         text='Понеділок', callback_data=caption+"-"+"schedule_monday")

@@ -2,3 +2,5 @@
 .vscode
 __pycache__
 *.sqlite
+src/.DS_Store
+.DS_Store
