@@ -5,7 +5,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
 from telebot import types
 
-from menu import course_markup, get_main_menu#, schedule_markup
+from menu import course_markup, get_main_menu, schedule_markup
 from models.base import (Admin, Event, Faculty, Group, User, delete_event,
                          delete_fac, delete_group, edit_fac, edit_group,
                          engine, get_fac, get_group, get_user, register_event,
@@ -320,7 +320,7 @@ class EventPanel:
 
     def choose_schedule(self, msg):
         self.bot.edit_message_text("Выберите день:", chat_id=msg.from_user.id, message_id=msg.message.message_id,
-                                   reply_markup=schedule_markup(caption=msg.data, back="admin-event"))
+                                   reply_markup=schedule_markup(caption=msg.data+'-schedule', back="admin-event"))
 
     def pick_up_time(self, msg):
         try:

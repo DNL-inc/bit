@@ -27,20 +27,20 @@ def course_markup(callback_for_back='backChooseCourse', admin=''):
         markup.add(backButton)
     return markup
 
-def schedule_markup2(caption="", back=""):
+def schedule_markup(caption="", back=""):
     markup = types.InlineKeyboardMarkup(row_width=1)
     monday = types.InlineKeyboardButton(
-        text='Понеділок', callback_data=caption+"-"+"schedule_monday")
+        text='Понеділок', callback_data=caption+"-"+"_monday")
     tuesday = types.InlineKeyboardButton(
-        text='Вівторок', callback_data=caption+"-"+"schedule_tuesday")
+        text='Вівторок', callback_data=caption+"-"+"_tuesday")
     wednesday = types.InlineKeyboardButton(
-        text='Середа', callback_data=caption+"-"+"schedule_wednesday")
+        text='Середа', callback_data=caption+"-"+"_wednesday")
     thursday = types.InlineKeyboardButton(
-        text='Четвер', callback_data=caption+"-"+"schedule_thursday")
+        text='Четвер', callback_data=caption+"-"+"_thursday")
     friday = types.InlineKeyboardButton(
-        text='П\'ятниця', callback_data=caption+"-"+"schedule_friday")
-    saturday = types.InlineKeyboardButton(text='Субота', callback_data=caption+"-"+"schedule_saturday")
-    sunday = types.InlineKeyboardButton(text='Неділя', callback_data=caption+"-"+"schedule_sunday")
+        text='П\'ятниця', callback_data=caption+"-"+"_friday")
+    saturday = types.InlineKeyboardButton(text='Субота', callback_data=caption+"-"+"_saturday")
+    sunday = types.InlineKeyboardButton(text='Неділя', callback_data=caption+"-"+"_sunday")
     markup.add(monday, tuesday, wednesday, thursday, friday, saturday, sunday)
     if back != "":
         markup.add(types.InlineKeyboardButton(text='Назад', callback_data=back))

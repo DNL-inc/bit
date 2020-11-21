@@ -3,9 +3,9 @@ import telebot
 from models.base import register_user, is_admin_bool, register_fac, session, Faculty
 from admin import AdminPanel
 from group import GroupPanel, faculties_markup
-from schedule import SchedulePanel, schedule_markup_classes
+from schedule import SchedulePanel, schedule_markup
 
-from menu import get_main_menu, course_markup#, schedule_markup
+from menu import get_main_menu, course_markup, schedule_markup
 
 bot = telebot.TeleBot(token='992816254:AAHc_pVKMqESQ84bjp_I80-AYertBBt7F80', parse_mode='markdown')
 admin_panel = AdminPanel(bot)
@@ -36,7 +36,7 @@ def show_main_menu(message):
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def response_menu(message):
     if message.text == "Рaспиcание":
-        schedule_panel.get_classes(message)
+        schedule_panel.get_days(message)
     elif message.text == "Админиcтрировaниe":
         admin_panel.get_menu(message)
     elif message.text == "Група":
@@ -73,11 +73,8 @@ def handler_calls(call):
     elif call.data.startswith('group-'): group_panel.call_save_group(call)
 
     # schedule-panel
-    elif call.data.startswith("schedule-"):
-        schedule_markup_classes(message, day, group)
-    elif call.data.startswith('-schedule-day'):
-        bot.edit_message_text(chat_id=call.from_user.id,
-                              message_id=call.message.message_id, reply_markup=schedule_panel.get_classes(message))
+    elif call.data.startswith('schedule'):
+        schedule_panel.callback_schedule_handler(call)
                 
 
 if __name__ == "__main__":
