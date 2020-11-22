@@ -28,7 +28,8 @@ class SchedulePanel:
         group = session.query(User).filter(User.tele_id == tele_id).first().group
         photo = open(BASE_DIR+'/src/img/'+day+'.jpg', mode='rb')
         self.bot.send_photo(message.from_user.id, photo=photo)
-        events = session.query(Event).filter(Event.day == day, Event.group == group).all()
+        events = session.query(Event).filter(Event.day == day, Event.group == group)
+        events = events.order_by(-Event.time_start.desc()).all()
         for event in events[:-1]:
             self.bot.send_message(message.from_user.id, text=event.time_start.strftime('%H:%M')+" "+event.title, disable_web_page_preview=True)
         if events:
