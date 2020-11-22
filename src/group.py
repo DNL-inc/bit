@@ -27,7 +27,7 @@ def group_markup(faculty_id, course, message):
             markup.add(types.InlineKeyboardButton(
                 text=group.title, callback_data="group-id-"+str(group.id)))
     markup.add(types.InlineKeyboardButton(
-        text='Назад', callback_data="group-faculty-"))
+        text='Назад', callback_data="group-faculty-"+faculty_id))
     return markup
 
 
@@ -36,15 +36,21 @@ class GroupPanel:
         self.bot = bot
 
     def choose_fac(self, message):
-        self.bot.delete_message(
-            message_id=message.message_id, chat_id=message.from_user.id)
-        self.bot.send_message(
-            message.from_user.id, "Выберите факультет:", reply_markup=faculties_markup())
+        try: message.message_id
+        except AttributeError: 
+            self.bot.edit_message_text(
+                chat_id=message.from_user.id, message_id=message.message.message_id, text="Выберите факультет:", reply_markup=faculties_markup())
+        else:
+            self.bot.delete_message(
+                message_id=message.message_id, chat_id=message.from_user.id)
+            self.bot.send_message(
+                message.from_user.id, "Выберите факультет:", reply_markup=faculties_markup())
+       
 
     def choose_course(self, message):
         self.faculty = message.data.split('-')[-1]
         self.bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id,
-                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="group-back"+self.faculty, caption="group"))
+                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="group-backChooseFaculty", caption="group"))
 
     def choose_group(self, message):
         self.course = message.data.split('-')[-1]
@@ -64,4 +70,6 @@ class GroupPanel:
         elif call.data.startswith('group-course-'):
             self.choose_group(call)
         elif call.data.startswith('group-id-'): self.call_save_group(call)
+        elif call.data == 'group-backChooseFaculty':
+            self.choose_fac(call)
     
