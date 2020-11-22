@@ -16,16 +16,15 @@ schedule_panel = SchedulePanel(bot)
 def menu(message):
     chat_id = message.from_user.id
     if is_admin_bool(message):
-        bot.send_message(chat_id, "Привет! Чтобы начать пользоваться ботом нажми на «Группа», выбери свой факультет, курс и группу, затем переходи в «Расписание», выбирай нужный день и нажимай на название пары, чтобы подключиться к ней.",
-                         reply_markup=get_main_menu(message, True))
+        bot.send_message(chat_id, text='Выберите что-то:', reply_markup=get_main_menu(message, True))
     else:
-        bot.send_message(chat_id, "Привет! Чтобы начать пользоваться ботом нажми на «Группа», выбери свой факультет, курс и группу, затем переходи в «Расписание», выбирай нужный день и нажимай на название пары, чтобы подключиться к ней.",
-                         reply_markup=get_main_menu(message, False))
+        bot.send_message(chat_id, text='Выберите что-то:',reply_markup=get_main_menu(message, False))
 
 
 @bot.message_handler(commands=['start', 'help'])
 def start(message):
     register_user(message)
+    bot.send_message(message.from_user.id, "Привет! Чтобы начать пользоваться ботом нажми на «Группа», выбери свой факультет, курс и группу, затем переходи в «Расписание», выбирай нужный день и нажимай на название пары, чтобы подключиться к ней.")
     menu(message)
 
 @bot.message_handler(commands=['menu'])
