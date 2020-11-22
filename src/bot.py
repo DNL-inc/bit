@@ -56,25 +56,11 @@ def handler_calls(call):
     if call.data.startswith('admin'):
         admin_panel.callback_handler(call)
     # group-panel
-    # -------> section choosing facutly <----------
-    elif call.data.startswith("faculty-"):
-        group_panel.choose_course(call)
-    elif call.data.startswith('backChooseCourse'):
-        bot.edit_message_text("Выберите факультет:", chat_id=call.from_user.id,
-                              message_id=call.message.message_id, reply_markup=faculties_markup())
-
-    # -------> section choosing course <----------
-    elif call.data.startswith('-course-'):
-        group_panel.choose_group(call)
-    elif call.data == 'backChooseGroup':
-        bot.edit_message_text("Выберите курс:", chat_id=call.from_user.id,
-                              message_id=call.message.message_id, reply_markup=course_markup())
-
-    elif call.data.startswith('group-'): group_panel.call_save_group(call)
-
+    elif call.data.startswith("group"):
+        group_panel.callback_handler(call)
     # schedule-panel
     elif call.data.startswith('schedule'):
-        schedule_panel.callback_schedule_handler(call)
+        schedule_panel.callback_handler(call)
                 
 
 if __name__ == "__main__":

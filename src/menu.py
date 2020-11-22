@@ -13,14 +13,14 @@ def get_main_menu(message, is_admin):
     return markup
 
 
-def course_markup(callback_for_back='backChooseCourse', admin=''):
+def course_markup(callback_for_back='backChooseCourse', caption=''):
     markup = types.InlineKeyboardMarkup(row_width=1)
-    firstCourse = types.InlineKeyboardButton(text='1-й курс', callback_data=admin+"-"+"course-1") 
-    secondCourse = types.InlineKeyboardButton(text='2-й курс', callback_data=admin+"-"+"course-2") 
-    thirrdCourse = types.InlineKeyboardButton(text='3-й курс', callback_data=admin+"-"+"course-3") 
-    fourthCouse = types.InlineKeyboardButton(text='4-й курс', callback_data=admin+"-"+"course-4") 
-    fifthCourse = types.InlineKeyboardButton(text='5-й курс', callback_data=admin+"-"+"course-5") 
-    sixthCourse = types.InlineKeyboardButton(text='6-й курс', callback_data=admin+"-"+"course-6")
+    firstCourse = types.InlineKeyboardButton(text='1-й курс', callback_data=caption+"-"+"course-1") 
+    secondCourse = types.InlineKeyboardButton(text='2-й курс', callback_data=caption+"-"+"course-2") 
+    thirrdCourse = types.InlineKeyboardButton(text='3-й курс', callback_data=caption+"-"+"course-3") 
+    fourthCouse = types.InlineKeyboardButton(text='4-й курс', callback_data=caption+"-"+"course-4") 
+    fifthCourse = types.InlineKeyboardButton(text='5-й курс', callback_data=caption+"-"+"course-5") 
+    sixthCourse = types.InlineKeyboardButton(text='6-й курс', callback_data=caption+"-"+"course-6")
     markup.add(firstCourse, secondCourse, thirrdCourse, fourthCouse, fifthCourse, sixthCourse)
     if  callback_for_back != '':
         backButton = types.InlineKeyboardButton(text='Назад', callback_data=callback_for_back)

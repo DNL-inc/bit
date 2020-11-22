@@ -9,7 +9,7 @@ def faculties_markup():
     faculites = session.query(Faculty).all()
     for faculty in faculites:
         markup.add(types.InlineKeyboardButton(text=faculty.title,
-                                              callback_data="faculty-"+str(faculty.id)))
+                                              callback_data="group-faculty-"+str(faculty.id)))
     return markup
 
 
@@ -22,12 +22,12 @@ def group_markup(faculty_id, course, message):
     for group in groups:
         if user.group == group.id:
             markup.add(types.InlineKeyboardButton(
-                text=group.title+' ✔', callback_data="group-"+str(group.id)))
+                text=group.title+'✅', callback_data="group-id-"+str(group.id)))
         else:
             markup.add(types.InlineKeyboardButton(
-                text=group.title, callback_data="group-"+str(group.id)))
+                text=group.title, callback_data="group-id-"+str(group.id)))
     markup.add(types.InlineKeyboardButton(
-        text='Назад', callback_data="backChooseGroup"))
+        text='Назад', callback_data="group-faculty-"))
     return markup
 
 
@@ -42,10 +42,9 @@ class GroupPanel:
             message.from_user.id, "Выберите факультет:", reply_markup=faculties_markup())
 
     def choose_course(self, message):
-        faculty_id = message.data.split('-')[-1]
-        self.faculty = faculty_id
+        self.faculty = message.data.split('-')[-1]
         self.bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id,
-                                   text='Виберіть курс:', reply_markup=course_markup())
+                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="group-back"+self.faculty, caption="group"))
 
     def choose_group(self, message):
         self.course = message.data.split('-')[-1]
@@ -56,3 +55,13 @@ class GroupPanel:
         save_group_user(message, message.data.split('-')[-1])
         self.bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id,
                                    text="Виберіть группу:", reply_markup=group_markup(self.faculty, self.course, message))
+
+    def callback_handler(self, call):
+        # -------> section choosing facutly <----------
+        if call.data.startswith("group-faculty-"):
+            self.choose_course(call)
+        # -------> section choosing course <----------
+        elif call.data.startswith('group-course-'):
+            self.choose_group(call)
+        elif call.data.startswith('group-id-'): self.call_save_group(call)
+    
