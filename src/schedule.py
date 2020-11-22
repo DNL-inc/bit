@@ -35,7 +35,7 @@ class SchedulePanel:
         if events:
             self.bot.send_message(message.from_user.id, text=events[-1].time_start.strftime('%H:%M')+" "+events[-1].title, disable_web_page_preview=True)
         else:
-            self.bot.send_message(message.from_user.id, text="Сегодня тусим")
+            self.bot.send_message(message.from_user.id, text="Сегодня атдыхаем")
 
     def callback_handler(self, call):
         if call.data.startswith('schedule-'):

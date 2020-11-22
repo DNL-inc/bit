@@ -50,17 +50,17 @@ class GroupPanel:
     def choose_course(self, message):
         self.faculty = message.data.split('-')[-1]
         self.bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id,
-                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="group-backChooseFaculty", caption="group"))
+                                   text='Виберите курс:', reply_markup=course_markup(callback_for_back="group-backChooseFaculty", caption="group"))
 
     def choose_group(self, message):
         self.course = message.data.split('-')[-1]
         self.bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id,
-                                   text='Виберіть группу:', reply_markup=group_markup(self.faculty, self.course, message))
+                                   text='Виберите группу:', reply_markup=group_markup(self.faculty, self.course, message))
 
     def call_save_group(self, message):
         save_group_user(message, message.data.split('-')[-1])
         self.bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id,
-                                   text="Виберіть группу:", reply_markup=group_markup(self.faculty, self.course, message))
+                                   text="Виберите группу:", reply_markup=group_markup(self.faculty, self.course, message))
 
     def callback_handler(self, call):
         # -------> section choosing facutly <----------

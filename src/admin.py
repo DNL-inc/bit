@@ -85,7 +85,7 @@ class FacultyPanel:
                 msg.from_user.id, "Факультет создан", reply_markup=get_main_menu(msg, True))
         else:
             self.bot.send_message(
-                msg.from_user.id, "Факультет уже есть такой", reply_markup=get_main_menu(msg, True))
+                msg.from_user.id, "Такой факультет уже существует", reply_markup=get_main_menu(msg, True))
 
     def execute_delete_faculty(self, msg):
         res = delete_fac(msg)
@@ -93,7 +93,7 @@ class FacultyPanel:
         self.bot.edit_message_text("Выбирете факультет, который нужно удалить", msg.from_user.id,
                                    msg.message.message_id, reply_markup=faculties_markup('admin-faculty-back', 'faculty-delete-id'))
         self.bot.send_message(
-            msg.from_user.id, "Факультет удалет", reply_markup=get_main_menu(msg, True))
+            msg.from_user.id, "Факультет удален", reply_markup=get_main_menu(msg, True))
 
     def edit_faculty(self, msg):
         self.bot.edit_message_text("Выбирете факультет, который нужно изменить", msg.from_user.id,
@@ -114,7 +114,7 @@ class FacultyPanel:
                 msg.from_user.id, "Факультет изменен", reply_markup=get_main_menu(msg, True))
         else:
             self.bot.send_message(
-                msg.from_user.id, "Факультет уже есть такой", reply_markup=get_main_menu(msg, True))
+                msg.from_user.id, "Такой факультет уже существует", reply_markup=get_main_menu(msg, True))
 
     def delete_faculty(self, msg):
         self.bot.edit_message_text("Выбирете факультет, который нужно удалить", msg.from_user.id,
@@ -175,13 +175,13 @@ class GroupPanel:
         self.faculty = session.query(Faculty).filter(
             Faculty.id == faculty_id).first()
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
-                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-add", admin="admin-group-add-course"))
+                                   text='Виберите курс:', reply_markup=course_markup(callback_for_back="admin-group-add", admin="admin-group-add-course"))
 
     def execute_add_group(self, msg):
         res = register_group(msg, self.faculty, self.course)
         if not res:
             self.bot.send_message(
-                msg.from_user.id, "Группа уже есть такоя", reply_markup=get_main_menu(msg, True))
+                msg.from_user.id, "Такая группа уже существует", reply_markup=get_main_menu(msg, True))
         else:
             self.bot.send_message(
                 msg.from_user.id, "Группа создана", reply_markup=get_main_menu(msg, True))
@@ -195,7 +195,7 @@ class GroupPanel:
         self.faculty = session.query(Faculty).filter(
             Faculty.id == faculty_id).first()
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
-                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", admin="admin-group-delete-course"))
+                                   text='Виберите курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", admin="admin-group-delete-course"))
 
     def choose_group_delete_interface(self, msg):
         self.course = msg.data.split('-')[-1]
@@ -224,7 +224,7 @@ class GroupPanel:
         self.faculty = session.query(Faculty).filter(
             Faculty.id == faculty_id).first()
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
-                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", admin="admin-group-edit-course"))
+                                   text='Виберите курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", admin="admin-group-edit-course"))
 
     def choose_group_edit_interface(self, msg):
         self.course = msg.data.split('-')[-1]
@@ -243,7 +243,7 @@ class GroupPanel:
         res = edit_group(msg, self.group_id)
         if not res:
             self.bot.send_message(
-                msg.from_user.id, "Группа уже есть такая", reply_markup=get_main_menu(msg, True))
+                msg.from_user.id, "Такая группа уже существует", reply_markup=get_main_menu(msg, True))
         else:
             self.bot.send_message(
                 msg.from_user.id, "Группа изменена", reply_markup=get_main_menu(msg, True))
@@ -290,11 +290,11 @@ class EventPanel:
     def actions_menu(self):
         markup = types.InlineKeyboardMarkup(row_width=1)
         create_btn = types.InlineKeyboardButton(
-            text="Создать события", callback_data="admin-event-add")
+            text="Создать событие", callback_data="admin-event-add")
         edit_btn = types.InlineKeyboardButton(
-            text='Изменить события', callback_data='admin-event-edit')
+            text='Изменить событие', callback_data='admin-event-edit')
         delete_btn = types.InlineKeyboardButton(
-            text="Удалить события", callback_data='admin-event-delete')
+            text="Удалить событие", callback_data='admin-event-delete')
         markup.add(create_btn, edit_btn, delete_btn)
         return markup
 
@@ -313,7 +313,7 @@ class EventPanel:
                 msg.from_user.id, "Вы можете редактировать события только в позволеной вам группе")
         else:
             self.bot.send_message(
-                msg.from_user.id, "Кажеться, вы не СУПРИМ или вы просто не можете создавать ивенты")
+                msg.from_user.id, "Кажеться, вы не СУПРИМ или вы просто не можете создавать события")
             return False
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
                                    text="Выберите действия для события:", reply_markup=self.actions_menu())
