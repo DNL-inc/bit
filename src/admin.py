@@ -175,7 +175,7 @@ class GroupPanel:
         self.faculty = session.query(Faculty).filter(
             Faculty.id == faculty_id).first()
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
-                                   text='Виберите курс:', reply_markup=course_markup(callback_for_back="admin-group-add", admin="admin-group-add-course"))
+                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-add", caption="admin-group-add-course"))
 
     def execute_add_group(self, msg):
         res = register_group(msg, self.faculty, self.course)
@@ -195,7 +195,7 @@ class GroupPanel:
         self.faculty = session.query(Faculty).filter(
             Faculty.id == faculty_id).first()
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
-                                   text='Виберите курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", admin="admin-group-delete-course"))
+                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", caption="admin-group-delete-course"))
 
     def choose_group_delete_interface(self, msg):
         self.course = msg.data.split('-')[-1]
@@ -224,7 +224,7 @@ class GroupPanel:
         self.faculty = session.query(Faculty).filter(
             Faculty.id == faculty_id).first()
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
-                                   text='Виберите курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", admin="admin-group-edit-course"))
+                                   text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", caption="admin-group-edit-course"))
 
     def choose_group_edit_interface(self, msg):
         self.course = msg.data.split('-')[-1]

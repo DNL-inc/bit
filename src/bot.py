@@ -6,8 +6,10 @@ from group import GroupPanel, faculties_markup
 from schedule import SchedulePanel, schedule_markup
 
 from menu import get_main_menu, course_markup, schedule_markup
+from config import config
 
-bot = telebot.TeleBot(token='992816254:AAHc_pVKMqESQ84bjp_I80-AYertBBt7F80', parse_mode='markdown')
+
+bot = telebot.TeleBot(token=config.token, parse_mode='markdown')
 admin_panel = AdminPanel(bot)
 group_panel = GroupPanel(bot)
 schedule_panel = SchedulePanel(bot)
@@ -63,4 +65,4 @@ def handler_calls(call):
                 
 
 if __name__ == "__main__":
-    bot.polling()
+    bot.polling(none_stop=True)

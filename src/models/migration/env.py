@@ -8,6 +8,7 @@ from os.path import abspath, dirname
 sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
 
 from models.base import Base
+from config import config as project_config
 
 from alembic import context
 
@@ -43,7 +44,7 @@ def run_migrations_offline():
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url = project_config.database_url
     context.configure(
         url=url,
         target_metadata=target_metadata,

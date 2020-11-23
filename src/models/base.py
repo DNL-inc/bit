@@ -5,9 +5,10 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import exists
 from menu import get_main_menu
 from datetime import time
+from config import config
 
-engine = create_engine("sqlite:///db.sqlite", echo=True,
-                       connect_args={'check_same_thread': False})
+
+engine = create_engine(config.database_url, echo=True)
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
