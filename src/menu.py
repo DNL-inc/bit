@@ -2,7 +2,7 @@
 from telebot import types
 
 def get_main_menu(message, is_admin):
-    markup = types.ReplyKeyboardMarkup(row_width=2)
+    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     schedule_item = types.KeyboardButton('Рaспиcание')
     group_item = types.KeyboardButton('Грyппa')
     if is_admin:
