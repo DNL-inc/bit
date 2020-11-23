@@ -327,6 +327,8 @@ class EventPanel:
             self.day
         except AttributeError:
             self.day = msg.data.split('_')[-1]
+        else:
+            if self.day != msg.data.split('_')[-1]: self.day = msg.data.split('_')[-1]
         markup = types.ForceReply()
         self.add = True
         message_id = self.bot.send_message(
@@ -551,9 +553,11 @@ class AdminPanel:
             message_id=msg.message_id, chat_id=msg.from_user.id)
 
         admin = self.get_admin(msg)
-        user = session.query(User).filter(User.tele_id == admin.tele_id).first()
+        user = None
+        if admin:
+            user = session.query(User).filter(User.tele_id == admin.tele_id).first()
 
-        if not admin:
+        if not admin or not user:
             return
         if admin.is_supreme or user.group:
             self.bot.send_message(msg.from_user.id, "Меню:",
