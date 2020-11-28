@@ -11,6 +11,11 @@ from models.base import (Admin, Event, Faculty, Group, User, delete_event,
                          engine, get_fac, get_group, get_user, register_event,
                          register_fac, register_group, edit_event)
 
+from record import Record
+
+record = Record()
+
+
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -25,6 +30,11 @@ def faculties_markup(callback_for_back="backChooseFaculty", caption=""):
         text='Назад', callback_data=callback_for_back))
     return markup
 
+def is_callback(call):
+    try: call.data
+    except AttributeError:
+        return False
+    return True
 
 def admin_menu_markup(admin):
     markup = types.InlineKeyboardMarkup(row_width=2)
@@ -309,8 +319,7 @@ class EventPanel:
                     msg.from_user.id, "У вас не выбранна группа. Сделать это можно в главном меню в секции 'Группа'")
                 return False
         elif admin.group:
-            self.bot.send_message(
-                msg.from_user.id, "Вы можете редактировать события только в позволеной вам группе")
+            pass
         else:
             self.bot.send_message(
                 msg.from_user.id, "Кажеться, вы не СУПРИМ или вы просто не можете создавать события")
@@ -319,16 +328,14 @@ class EventPanel:
                                    text="Выберите действия для события:", reply_markup=self.actions_menu())
 
     def choose_schedule(self, msg):
+        record.create(msg.from_user.id, Event().to_dict())
         self.bot.edit_message_text("Выберите день:", chat_id=msg.from_user.id, message_id=msg.message.message_id,
                                    reply_markup=schedule_markup(caption=msg.data+'-schedule', back="admin-event"))
 
     def pick_up_time(self, msg):
-        try:
-            self.day
-        except AttributeError:
-            self.day = msg.data.split('_')[-1]
-        else:
-            if self.day != msg.data.split('_')[-1]: self.day = msg.data.split('_')[-1]
+        if is_callback(msg):
+            if record.get_value(msg.from_user.id, 'day') != msg.data.split('_')[-1]:
+                record.set_value(msg.from_user.id, 'day', msg.data.split('_')[-1]) 
         markup = types.ForceReply()
         self.add = True
         message_id = self.bot.send_message(
@@ -349,32 +356,35 @@ class EventPanel:
             if not res:
                 self.pick_up_time(msg)
             else:
-                self.time = msg.text
+                record.set_value(msg.from_user.id, 'time_start', msg.text)
                 self.get_title_event(msg)
         else:
             if not res:
                 self.edit_time(msg)
             else:
-                self.time = msg.text
+                record.set_value(msg.from_user.id, 'time_start', msg.text)
                 self.confirm_edit(msg, changes="time")
 
     def confirm_add(self, msg):
-        self.title = msg.text
+        record.set_value(msg.from_user.id, 'title', msg.text)
         markup = types.InlineKeyboardMarkup(row_width=2)
         markup.add(types.InlineKeyboardButton("Создать", callback_data="admin-event-add-confirm"),
                    types.InlineKeyboardButton("Отмена", callback_data="admin-event-cancel"))
-        self.bot.send_message(msg.from_user.id, "Cоздать {} на {} в {}, подтвердить?".format(
-            self.title, self.time, self.day), reply_markup=markup)
+        data = record.get(msg.from_user.id)
+        self.bot.send_message(msg.from_user.id, "Cоздать {} на {} в {}, подтвердить?".format(data['title'], data['day'], data['time_start']), reply_markup=markup)
 
     def add_event(self, msg):
         self.bot.delete_message(msg.from_user.id, msg.message.message_id)
-        res = register_event(msg, self.title, self.time, self.day)
+        data = record.get(msg.from_user.id)
+        res = register_event(msg, data['title'], data['time_start'], data['day'])
         if not res:
             self.bot.send_message(
                 msg.from_user.id, "Что-то пошло не так!", reply_markup=get_main_menu(msg, True))
         else:
             self.bot.send_message(
                 msg.from_user.id, "Событие созданно!", reply_markup=get_main_menu(msg, True))
+
+        record.delete(msg.from_user.id)
 
     def choose_event(self, msg):
         try:
@@ -421,6 +431,7 @@ class EventPanel:
         else:
             self.bot.send_message(
                 msg.from_user.id, "Что-то пошло не так!", reply_markup=get_main_menu(msg, True))
+
 
     def choose_time_or_title_to_edit(self, msg):
         self.event_id = msg.data.split('-')[-1]
@@ -520,6 +531,8 @@ class EventPanel:
             self.confirm_delete(call)
         elif call.data.startswith('admin-event-edit-id'):
             self.choose_time_or_title_to_edit(call)
+
+
 
 
 class AdminPanel:

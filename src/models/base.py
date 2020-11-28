@@ -25,7 +25,7 @@ class User(Base):
     is_admin = Column('is_admin', Boolean, nullable=True)
     group = Column('group', ForeignKey('groups.id'))
 
-    def __init__(self, tele_id, username=None, firstname=None, lastname=None, group=None, is_admin=None):
+    def __init__(self, tele_id=None, username=None, firstname=None, lastname=None, group=None, is_admin=None):
         self.tele_id = tele_id
         self.username = username
         self.firstname = firstname
@@ -34,7 +34,16 @@ class User(Base):
         self.is_admin = is_admin
 
     def __repr__(self):
-        return "<User('%s')>" % (self.username)
+        return "<User('%s')>" % (self.tele_id)
+
+    def to_dict(self):
+        return dict({
+            'tele_id': self.tele_id,
+            'username': self.username,
+            'firstname': self.lastname,
+            'is_admin': self.is_admin,
+            'group': self.group,
+        })
 
 
 class Admin(Base):
@@ -42,18 +51,26 @@ class Admin(Base):
     __tablename__ = "admins"
     id = Column('id', Integer, primary_key=True)
     tele_id = Column('tele_id', Integer, unique=True)
-    username = Column('username', String, nullable=True)
-    firstname = Column('firstname', String, nullable=True)
-    lastname = Column('lastname', String, nullable=True)
     group = Column('group', ForeignKey('groups.id'))
     is_supreme = Column('is_supreme', Boolean)
 
-    def __init__(self, tele_id, username=None, firstname=None, lastname=None, group=None):
+    def __init__(self, tele_id=None, username=None, firstname=None, lastname=None, group=None):
         self.tele_id = tele_id
         self.username = username
         self.firstname = firstname
         self.lastname = lastname
         self.group = group
+
+    def __repr(self):
+        return "<Admin('%s')" % (self.tele_id)
+
+    def to_dict(self):
+        return dict({
+            'tele_id': self.tele_id,
+            'is_supreme': self.is_supreme,
+            'group': self.group,
+        })
+
 
 
 class Group(Base):
@@ -65,10 +82,20 @@ class Group(Base):
     students = relationship("User")
     faculty = Column('faculty', ForeignKey('faculties.id'))
 
-    def __init__(self, title, faculty, course):
+    def __init__(self, title=None, faculty=None, course=None):
         self.title = title
         self.faculty = faculty
         self.course = course
+
+    def __repr(self):
+        return "<Group('%s')" % (self.id)
+
+    def to_dict(self):
+        return dict({
+            'title': self.title,
+            'course': self.course,
+            'faculty': self.faculty,
+        })
 
 
 class Faculty(Base):
@@ -77,8 +104,16 @@ class Faculty(Base):
     title = Column('title', String, unique=True)
     groups = relationship('Group')
 
-    def __init__(self, title):
+    def __init__(self, title=None):
         self.title = title
+    
+    def __repr(self):
+        return "<Faculty('%s')" % (self.id)
+
+    def to_dict(self):
+        return dict({
+            'title': self.title,
+        })
 
 class Event(Base):
     __tablename__ = 'events'
@@ -89,11 +124,22 @@ class Event(Base):
     day = Column('day', String)
     time_start = Column('time_start', Time)
 
-    def __init__(self, title, group, day, time_start):
+    def __init__(self, title=None, group=None, day=None, time_start=None):
         self.title = title
         self.group = group
         self.day = day
         self.time_start = time_start
+
+    def __repr(self):
+        return "<Event('%s')" % (self.id)
+
+    def to_dict(self):
+        return dict({
+            'title': self.title,
+            'group': self.day,
+            'time_start': self.time_start,
+            'day': self.day,
+        })
 
 def is_admin_bool(message):
     if session.query(exists().where(Admin.tele_id == message.from_user.id)).scalar():
