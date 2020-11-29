@@ -8,7 +8,7 @@ from datetime import time
 from config import config
 
 
-engine = create_engine(config.database_url, echo=True)
+engine = create_engine("sqlite:///db.sqlite", echo=True, connect_args={'check_same_thread': False})
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -135,6 +135,7 @@ class Event(Base):
 
     def to_dict(self):
         return dict({
+            'id': self.id,
             'title': self.title,
             'group': self.day,
             'time_start': self.time_start,
@@ -204,10 +205,8 @@ def edit_fac(message, id):
     return True
 
 
-def register_group(message, faculty, course):
-    title = message.text
-
-    group = Group(title, faculty.id, course)
+def register_group(title, faculty, course):
+    group = Group(title, faculty, course)
     if session.query(exists().where(Group.title == title)).scalar():
         return False
     session.add(group)
@@ -221,8 +220,8 @@ def delete_group(message):
     session.delete(group)
     session.commit()
 
-def edit_group(message, id):
-    title = message.text
+def edit_group(title, id):
+    #title = message.text
 
     group = session.query(Group).filter(Group.id == id).first()
     if session.query(exists().where(Group.title == title)).scalar():
@@ -265,8 +264,8 @@ def edit_event(message, changes):
     if not event:
         return False
 
-    if changes.get('time'):
-        time_start = list(map(int, changes.get('time').split(':')))
+    if changes.get('time_start'):
+        time_start = list(map(int, changes.get('time_start').split(':')))
         if time_start != time(time_start[0], time_start[1]):
             event.time_start = time(time_start[0], time_start[1])
     if changes.get('title') and changes.get('title') != event.title:

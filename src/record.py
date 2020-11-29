@@ -10,11 +10,10 @@ class Record:
         if db:
             self.records = pickle.loads(db.read())
             db.close()
-            print(self.records)
         else:
             self.records = dict()
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return "<class Record([{}])>".format(self.records)
 
     def create(self, id, structure):
@@ -66,6 +65,8 @@ class Record:
             del self.records[id]
             self.__sync()
             return True
+
+            
     def __sync(self):
         with open(BASE_DIR+'/redis.pkl', 'wb') as db:
             pickle.dump(self.records, db)
