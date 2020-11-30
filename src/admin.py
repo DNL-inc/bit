@@ -209,11 +209,14 @@ class GroupPanel:
                                    text="Выберите действия для группы:", reply_markup=self.actions_menu())
 
     def choose_faculty_add_interface(self, msg):
+        record.create(msg.from_user.id, Group().to_dict())
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
                                    text="Выберите факультет:", reply_markup=faculties_markup(callback_for_back='admin-group-back', caption='group-add-id'))
 
     def add_group(self, msg):
-        self.course = msg.data.split('-')[-1]
+        if is_callback(msg):
+            if record.get_value(msg.from_user.id, 'course') != msg.data.split('-')[-1]:
+                record.set_value(msg.from_user.id, 'course', msg.data.split('-')[-1]) 
         markup = types.ForceReply()
         message_id = self.bot.send_message(
             msg.from_user.id, "Напишите название группы (ІПЗ-12):", reply_markup=markup)
@@ -221,14 +224,18 @@ class GroupPanel:
             message_id.message_id, callback=self.execute_add_group)
 
     def choose_course_add_interface(self, msg):
-        faculty_id = msg.data.split('-')[-1]
+        if is_callback(msg):
+            if record.get_value(msg.from_user.id, 'faculty') != msg.data.split('-')[-1]:
+                record.set_value(msg.from_user.id, 'faculty', msg.data.split('-')[-1]) 
         self.faculty = session.query(Faculty).filter(
-            Faculty.id == faculty_id).first()
+            Faculty.id == record.get_value(msg.from_user.id, 'faculty')).first()
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
                                    text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-add", caption="admin-group-add-course"))
 
     def execute_add_group(self, msg):
-        res = register_group(msg, self.faculty, self.course)
+        record.set_value(msg.from_user.id, 'title', msg.text)
+        data = record.get(msg.from_user.id)
+        res = register_group(data['title'], data['faculty'], data['course'])
         if not res:
             self.bot.send_message(
                 msg.from_user.id, "Такая группа уже существует", reply_markup=get_main_menu(msg, True))
@@ -237,18 +244,23 @@ class GroupPanel:
                 msg.from_user.id, "Группа создана", reply_markup=get_main_menu(msg, True))
 
     def choose_faculty_delete_interface(self, msg):
+        record.create(msg.from_user.id, Group().to_dict())
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
                                    text="Выберите факультет:", reply_markup=faculties_markup(callback_for_back='admin-group-back', caption='group-delete-id'))
 
     def choose_course_delete_interface(self, msg):
-        faculty_id = msg.data.split('-')[-1]
+        if is_callback(msg):
+            if record.get_value(msg.from_user.id, 'faculty') != msg.data.split('-')[-1]:
+                record.set_value(msg.from_user.id, 'faculty', msg.data.split('-')[-1]) 
         self.faculty = session.query(Faculty).filter(
             Faculty.id == faculty_id).first()
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
                                    text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", caption="admin-group-delete-course"))
 
     def choose_group_delete_interface(self, msg):
-        self.course = msg.data.split('-')[-1]
+        if is_callback(msg):
+            if record.get_value(msg.from_user.id, 'course') != msg.data.split('-')[-1]:
+                record.set_value(msg.from_user.id, 'course', msg.data.split('-')[-1]) 
         self.bot.edit_message_text("Выбирете группу, которую нужно удалить", msg.from_user.id,
                                    msg.message.message_id, reply_markup=groups_markup(self.faculty.id, self.course, msg, 'admin-group-delete-id', "admin-group-delete-choose"))
 
@@ -266,31 +278,40 @@ class GroupPanel:
                                    msg.message.message_id, reply_markup=faculties_markup('admin-group-back', 'group-edit-id'))
 
     def choose_faculty_edit_interface(self, msg):
+        record.create(msg.from_user.id, Group().to_dict())
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
                                    text="Выберите факультет:", reply_markup=faculties_markup(callback_for_back='admin-group-back', caption='group-edit-id'))
 
     def choose_course_edit_interface(self, msg):
-        faculty_id = msg.data.split('-')[-1]
+        if is_callback(msg):
+            if record.get_value(msg.from_user.id, 'faculty') != msg.data.split('-')[-1]:
+                record.set_value(msg.from_user.id, 'faculty', msg.data.split('-')[-1]) 
         self.faculty = session.query(Faculty).filter(
-            Faculty.id == faculty_id).first()
+            Faculty.id == record.set_value(msg.from_user.id, 'faculty', msg.data.split('-')[-1])).first()
         self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
                                    text='Виберіть курс:', reply_markup=course_markup(callback_for_back="admin-group-delete", caption="admin-group-edit-course"))
 
     def choose_group_edit_interface(self, msg):
-        self.course = msg.data.split('-')[-1]
+        if is_callback(msg):
+            if record.get_value(msg.from_user.id, 'course') != msg.data.split('-')[-1]:
+                record.set_value(msg.from_user.id, 'course', msg.data.split('-')[-1])
         self.bot.edit_message_text("Выбирете группу, которую нужно удалить", msg.from_user.id,
-                                   msg.message.message_id, reply_markup=groups_markup(self.faculty.id, self.course, msg, 'admin-group-edit-id', "admin-group-edit-choose"))
+                                   msg.message.message_id, reply_markup=groups_markup(self.faculty.id, record.set_value(msg.from_user.id, 'course', msg.data.split('-')[-1]), msg, 'admin-group-edit-id', "admin-group-edit-choose"))
 
     def get_new_title_group(self, msg):
-        self.group_id = msg.data.split('-')[-1]
+        if is_callback(msg):
+            if record.get_value(msg.from_user.id, 'id') != msg.data.split('-')[-1]:
+                record.set_value(msg.from_user.id, 'id', msg.data.split('-')[-1]) 
         markup = types.ForceReply()
         message_id = self.bot.send_message(
-            msg.from_user.id, "Напишите новое название группы '{}':".format(get_group(self.group_id)), reply_markup=markup)
+            msg.from_user.id, "Напишите новое название группы '{}':".format(get_group(record.set_value(msg.from_user.id, 'id', msg.data.split('-')[-1]))), reply_markup=markup)
         self.bot.register_for_reply_by_message_id(
             message_id.message_id, callback=self.execute_edit_group)
 
     def execute_edit_group(self, msg):
-        res = edit_group(msg, self.group_id)
+        record.set_value(msg.from_user.id, 'title', msg.text)
+        data = record.get(msg.from_user.id)
+        res = edit_group(data['title'], data['id'])
         if not res:
             self.bot.send_message(
                 msg.from_user.id, "Такая группа уже существует", reply_markup=get_main_menu(msg, True))
@@ -427,18 +448,16 @@ class EventPanel:
         record.delete(msg.from_user.id)
 
     def choose_event(self, msg):
-        try:
-            self.day
-        except AttributeError:
-            self.day = msg.data.split('_')[-1]
-
-        if self.day == "admin-event-delete-schedule" or self.day  == 'admin-event-edit-schedule': pass
-        elif self.day != msg.data.split('_')[-1]: self.day = msg.data.split('_')[-1]
+        record.create(msg.from_user.id, Event().to_dict())
+        if is_callback(msg):
+                if record.get_value(msg.from_user.id, 'day') != msg.data.split('_')[-1]:
+                    record.set_value(msg.from_user.id, 'day', msg.data.split('_')[-1]) 
+        day = record.get_value(msg.from_user.id, 'day')
                 
         markup = types.InlineKeyboardMarkup(row_width=1)
         user = get_user(msg)
         self.events = session.query(Event).filter(
-            Event.group == user.group).filter(Event.day == self.day).all()
+            Event.group == user.group).filter(Event.day == day).all()
         for event in self.events:
             title = event.title.split('[')[-1].split(']')[0]
             self.time_start = event.time_start.strftime('%H:%M')
@@ -474,9 +493,10 @@ class EventPanel:
 
 
     def choose_time_or_title_to_edit(self, msg):
-        self.event_id = msg.data.split('-')[-1]
-        day = session.query(Event).filter(
-            Event.id == int(self.event_id)).first().day
+        id = msg.data.split('-')[-1]
+        event = session.query(Event).filter(Event.id == id).first()
+        record.update(msg.from_user.id, event.to_dict())
+        day = event.day
         markup = types.InlineKeyboardMarkup(row_width=2)
         markup.add(
             types.InlineKeyboardButton(
@@ -497,7 +517,7 @@ class EventPanel:
 
     def edit_event(self, msg):
         self.bot.delete_message(msg.from_user.id, msg.message.message_id)
-        res = edit_event(msg, self.changes)
+        res = edit_event(msg, record.get(msg.from_user.id))
 
         if res:
             self.bot.send_message(
@@ -515,26 +535,13 @@ class EventPanel:
 
     def confirm_edit(self, msg, changes='title'):
         if changes == 'title':
-            self.title = msg.text
+            record.set_value(msg.from_user.id, 'title', msg.text)
         markup = types.InlineKeyboardMarkup(row_width=2)
         markup.add(types.InlineKeyboardButton("Изменить", callback_data="admin-event-edit-confirm"),
                    types.InlineKeyboardButton("Отмена", callback_data="admin-event-cancel"))
-        event = session.query(Event).filter(Event.id == self.event_id).first()
-        self.changes = dict()
-        self.changes['id'] = event.id
-        if changes == 'time':
-            self.bot.send_message(msg.from_user.id, "Изменить {} на {} в {}, подтвердить?".format(
-                event.title, self.time, event.day), reply_markup=markup)
-            self.changes[changes] = self.time
-        elif changes == 'title':
-            self.bot.send_message(msg.from_user.id, "Изменить {} на {} в {}, подтвердить?".format(
-                self.title, event.time_start, event.day), reply_markup=markup)
-            self.changes[changes] = self.title
-        else:
-            self.bot.send_message(msg.from_user.id, "Изменить {} на {} в {}, подтвердить?".format(
-                self.title, self.time, event.day), reply_markup=markup)
-            self.changes['time'] = self.time
-            self.changes['title'] = self.title
+        data = record.get(msg.from_user.id)
+        self.bot.send_message(msg.from_user.id, "Изменить {} на {} в {}, подтвердить?".format(
+                data['title'], data['time_start'], data['day']), reply_markup=markup)
 
     def cancel_action(self, msg):
         self.bot.send_message(msg.from_user.id, "Отмена",
