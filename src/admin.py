@@ -9,16 +9,28 @@ from menu import course_markup, get_main_menu, schedule_markup
 from models.base import (Admin, Event, Faculty, Group, User, delete_event,
                          delete_fac, delete_group, edit_fac, edit_group,
                          engine, get_fac, get_group, get_user, register_event,
-                         register_fac, register_group, edit_event)
-
+                         register_fac, register_group, edit_event, add_admin, delete_admin)
 from record import Record
-
+from group import GroupPanel
 record = Record()
 
+from math import ceil
 
 Session = sessionmaker(bind=engine)
 session = Session()
 
+def group_markup(faculty_id, course, message):
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    user = session.query(User).filter(
+        User.tele_id == message.from_user.id).first()
+    groups = session.query(Group).filter(
+        Group.faculty == faculty_id, Group.course == course).all()
+    for group in groups:
+        markup.add(types.InlineKeyboardButton(
+                text=group.title, callback_data="admin-manage-admin-group-id-"+str(group.id)))
+    markup.add(types.InlineKeyboardButton(
+        text='Назад', callback_data="admin-manage-admin-course-"+faculty_id))
+    return markup
 
 def faculties_markup(callback_for_back="backChooseFaculty", caption=""):
     markup = types.InlineKeyboardMarkup(row_width=1)
@@ -38,15 +50,16 @@ def is_callback(call):
 
 def admin_menu_markup(admin):
     markup = types.InlineKeyboardMarkup(row_width=2)
-    add_event_btn = types.InlineKeyboardButton(
+    event_btn = types.InlineKeyboardButton(
         text='Событие', callback_data='admin-event')
     if admin.is_supreme:
-        add_group_btn = types.InlineKeyboardButton(
+        group_btn = types.InlineKeyboardButton(
             text='Группа', callback_data='admin-group')
-        add_fac_btn = types.InlineKeyboardButton(
+        fac_btn = types.InlineKeyboardButton(
             text='Факультет', callback_data='admin-faculty')
-        markup.add(add_group_btn, add_fac_btn)
-    markup.add(add_event_btn)
+        admin_btn = types.InlineKeyboardButton('Админы', callback_data='admin-manage-admin')
+        markup.add(group_btn, fac_btn, admin_btn, row_width=2)
+    markup.add(event_btn, row_width=2)
     return markup
 
 
@@ -60,6 +73,33 @@ def groups_markup(faculty_id, course, message, callback_for_back, callback):
     markup.add(types.InlineKeyboardButton(
         text='Назад', callback_data=callback_for_back))
     return markup
+
+
+def user_markup(caption, page, limit):
+    print(page)
+    page = int(page)
+    users_len = len(session.query(User).all())
+
+    users = session.query(User).limit(limit).offset(page*limit).all()
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    for user in users:  
+        text = ""
+        if user.firstname: text += user.firstname
+        if user.lastname: text += " " + user.lastname
+        if user.is_admin:
+            markup.add(types.InlineKeyboardButton(text=text+" ✅", callback_data=caption+"-admin-id-"+str(user.id)))
+        else:
+            markup.add(types.InlineKeyboardButton(text=text, callback_data=caption+"-user-id-"+str(user.id)))
+    if int(page) > 0 and int(page) + 1 < ceil(users_len / limit):
+        markup.add(types.InlineKeyboardButton(text='Назад', callback_data=caption+'-page-'+str(page-1)), types.InlineKeyboardButton(text='Вперед', callback_data=caption+'-page-'+str(page+1)), row_width=2)
+    elif int(page) == 0:
+        markup.add(types.InlineKeyboardButton(text='Вперед', callback_data=caption+'-page-'+str(page+1)))
+    elif int(page) + 1 >= ceil(users_len / limit):
+        markup.add(types.InlineKeyboardButton(text='Назад', callback_data=caption+'-page-'+str(page-1)))
+    return markup
+
+
+    
 
 
 class FacultyPanel:
@@ -532,8 +572,89 @@ class EventPanel:
         elif call.data.startswith('admin-event-edit-id'):
             self.choose_time_or_title_to_edit(call)
 
+class ManageAdmin:
+    def __init__(self, bot):
+        self.bot = bot
+        self.group_panel = GroupPanel(self.bot)
+        self.limit_for_buttons = 10
+        
+    def callback_handler(self, call):
+        if call.data == 'admin-manage-admin':
+            self.get_interface(call)
+        elif call.data.startswith('admin-manage-admin-page-'):
+            self.get_users(call)
+        elif call.data.startswith('admin-manage-admin-user-id'):
+            self.change_admin(call)
+        elif call.data.startswith('admin-manage-admin-admin-id'):
+            self.delete_admin(call)
+        elif call.data.startswith('admin-manage-admin-faculty'):
+            self.choose_course(call)
+        elif call.data.startswith('admin-manage-admin-course'):
+            self.choose_group(call)
+        elif call.data.startswith('admin-manage-admin-group'):
+            self.create_admin(call)
+            
 
+    def get_interface(self, msg):
+        record.create(msg.from_user.id, dict({'page': 0, 'user_id': None, 'faculty': None, 'course': None}))
+        user = session.query(User).filter(
+            User.tele_id == msg.from_user.id).first()
+        admin = session.query(Admin).filter(
+            Admin.tele_id == msg.from_user.id).first()
+        if admin.is_supreme:
+            self.bot.send_message(text="Чтобы назначить/убрать админа нужно лишь нажать на название человека", chat_id=msg.from_user.id, reply_markup=user_markup('admin-manage-admin', 0, self.limit_for_buttons))
+        else:
+            self.bot.send_message(
+                msg.from_user.id, "Кажеться, вы не СУПРИМ", reply_markup=get_main_menu(call, True))
+            return False
 
+    def get_users(self, msg):
+        record.set_value(msg.from_user.id, 'page', msg.data.split('-')[-1])
+        self.bot.edit_message_text("Чтобы назначить/убрать админа нужно лишь нажать на название человека", msg.from_user.id, msg.message.message_id, reply_markup=user_markup('admin-manage-admin', msg.data.split('-')[-1], self.limit_for_buttons))
+
+    def change_admin(self, msg):
+        record.set_value(msg.from_user.id, 'user_id', msg.data.split('-')[-1])
+        try: msg.message_id
+        except AttributeError: 
+            self.bot.edit_message_text( 
+                chat_id=msg.from_user.id, message_id=msg.message.message_id, text="Выберите факультет за которым он будет редактировать:", reply_markup=faculties_markup('admin-manage-admin-page', 'manage-admin-faculty-id'))
+        else:
+            self.bot.delete_message(
+                message_id=msg.message_id, chat_id=msg.from_user.id)
+            self.bot.send_message(
+                msg.from_user.id, "Выберите факультет за которым он будет редактировать:", reply_markup=faculties_markup('admin-manage-admin-page', 'manage-admin-faculty-id')) 
+
+    def choose_course(self, msg):
+        user_id = record.get_value(msg.from_user.id, 'user_id')
+        record.set_value(msg.from_user.id, 'faculty', msg.data.split('-')[-1])
+        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
+                                   text='Виберите курс:', reply_markup=course_markup(callback_for_back="admin-manage-admin-user-id-"+str(user_id), caption="admin-manage-admin"))
+
+    def choose_group(self, msg):
+        record.set_value(msg.from_user.id, 'course', msg.data.split('-')[-1])
+        faculty = record.get_value(msg.from_user.id, 'faculty')
+        course = record.get_value(msg.from_user.id, 'course')
+        self.bot.edit_message_text(chat_id=msg.from_user.id, message_id=msg.message.message_id,
+                                   text='Виберите группу:', reply_markup=group_markup(faculty, course, msg))
+
+    def create_admin(self, msg):
+        record.set_value(msg.from_user.id, 'group', msg.data.split('-')[-1])
+        data = record.get(msg.from_user.id)
+
+        res = add_admin(data)
+        if res:
+            self.bot.send_message(chat_id=msg.from_user.id, text='Админ добавлен!', reply_markup=get_main_menu(msg, True))
+        else:
+            self.bot.send_message(chat_id=msg.from_user.id, text='Что-то пошло не так', reply_markup=get_main_menu(msg, True))
+
+        record.delete(msg.from_user.id)
+
+    def delete_admin(self, msg):
+        res = delete_admin(msg.data.split('-')[-1])
+        if res:
+            self.bot.edit_message_text(chat_id=msg.from_user.id, text='Админ удален!', message_id=msg.message.message_id, reply_markup=user_markup('admin-manage-admin', 0, self.limit_for_buttons))
+        else:
+            self.bot.edit_message_text(chat_id=msg.from_user.id, text='Что-то пошло не так', message_id=msg.message.message_id, reply_markup=user_markup('admin-manage-admin', 0, self.limit_for_buttons))
 
 class AdminPanel:
     def __init__(self, bot):
@@ -541,6 +662,7 @@ class AdminPanel:
         self.faculty_panel = FacultyPanel(self.bot)
         self.group_panel = GroupPanel(self.bot)
         self.event_panel = EventPanel(self.bot)
+        self.manage_admin = ManageAdmin(self.bot)
 
     def callback_handler(self, call):
         if call.data.startswith('admin-faculty'):
@@ -549,6 +671,8 @@ class AdminPanel:
             self.group_panel.callback_handler(call)
         elif call.data.startswith('admin-event'):
             self.event_panel.callback_handler(call)
+        elif call.data.startswith('admin-manage-admin'):
+            self.manage_admin.callback_handler(call)
 
     def get_admin(self, msg):
         admin = None

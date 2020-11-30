@@ -273,7 +273,29 @@ def edit_event(message, changes):
         event.title = changes.get('title')
     session.commit()
     return True
-    
+
+def add_admin(data):
+    user = session.query(User).filter(User.id == data['user_id']).first()
+    admin = Admin(tele_id=user.tele_id, group=data['group'])
+    if session.query(exists().where(Admin.tele_id == admin.tele_id)).scalar():
+        return False
+    else:
+        session.add(admin)
+        user.is_admin = True
+        session.commit()
+        return True
+
+
+def delete_admin(admin_id):
+    user = session.query(User).filter(User.id == admin_id).first()
+    if session.query(exists().where(Admin.tele_id == user.tele_id)).scalar():
+        admin = session.query(Admin).filter(Admin.tele_id == user.tele_id).first()
+        print(admin)
+        user.is_admin = False
+        session.delete(admin)
+        session.commit()
+        return True
+    return False
 
 if __name__ == "__main__":
     Base.metadata.create_all(engine)
