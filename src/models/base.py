@@ -8,7 +8,7 @@ from datetime import time
 from config import config
 
 
-engine = create_engine("sqlite:///db.sqlite", echo=True, connect_args={'check_same_thread': False})
+engine = create_engine(config.database_url)
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -54,12 +54,13 @@ class Admin(Base):
     group = Column('group', ForeignKey('groups.id'))
     is_supreme = Column('is_supreme', Boolean)
 
-    def __init__(self, tele_id=None, username=None, firstname=None, lastname=None, group=None):
+    def __init__(self, tele_id=None, username=None, firstname=None, lastname=None, group=None, is_supreme=None):
         self.tele_id = tele_id
         self.username = username
         self.firstname = firstname
         self.lastname = lastname
         self.group = group
+        self.is_supreme = is_supreme
 
     def __repr(self):
         return "<Admin('%s')" % (self.tele_id)
@@ -221,8 +222,6 @@ def delete_group(message):
     session.commit()
 
 def edit_group(title, id):
-    #title = message.text
-
     group = session.query(Group).filter(Group.id == id).first()
     if session.query(exists().where(Group.title == title)).scalar():
         return False
@@ -275,7 +274,7 @@ def edit_event(message, changes):
 
 def add_admin(data):
     user = session.query(User).filter(User.id == data['user_id']).first()
-    admin = Admin(tele_id=user.tele_id, group=data['group'])
+    admin = Admin(tele_id=user.tele_id, group=data['group'], is_supreme=False)
     if session.query(exists().where(Admin.tele_id == admin.tele_id)).scalar():
         return False
     else:

@@ -10,7 +10,7 @@ class Config:
         self.webhook_url_base = 'https://{}:{}'.format(self.webhook_host, self.port)
         self.webhook_url_path = '/{}/'.format(self.token)
         self.database_url = getenv('DATABASE_URL')
-
+        self.webapp_port = getenv('WEBAPP_PORT')
 
 config = Config()
 config.setUp()

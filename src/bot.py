@@ -11,9 +11,12 @@ import logging
 import ssl
 
 from aiohttp import web
+from os import getcwd
 
-WEBHOOK_SSL_CERT = './webhook_cert.pem'
-WEBHOOK_SSL_PRIV = './webhook_pkey.pen'
+BASE_DIR = getcwd()
+
+WEBHOOK_SSL_CERT = BASE_DIR+'/webhook_cert.pem'
+WEBHOOK_SSL_PRIV = BASE_DIR+'/webhook_pkey.pem'
 
 telebot.logger.setLevel(logging.INFO)
 
@@ -33,7 +36,9 @@ async def handle(request):
     else:
         return web.Response(status=403)
 
-app.router.add_post('/{token}/', handle)
+context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+context.load_cert_chain(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV)
+app.add_routes([web.post('/{token}/', handle),])
 
 def menu(message):
     chat_id = message.from_user.id
@@ -46,7 +51,18 @@ def menu(message):
 @bot.message_handler(commands=['start', 'help'])
 def start(message):
     register_user(message)
-    bot.send_message(message.from_user.id, "Привет! Чтобы начать пользоваться ботом нажми на «Группа», выбери свой факультет, курс и группу, затем переходи в «Расписание», выбирай нужный день и нажимай на название пары, чтобы подключиться к ней.")
+    bot.send_message(message.from_user.id, """
+*Как пользоваться*
+
+Чтобы подписаться на расписание группы нажми _«Группа»_, выбери свой факультет, курс и группу, затем переходи в _«Расписание»_ и выбери нужный день, чтобы увидеть расписание. 
+
+*Обратная связь*
+
+Есть идеи по улучшению бота или нашёл какой-то баг? - Напиши нам: 
+@kidden
+
+/start - увидеть это сообщение снова.
+/menu — вернуться в главное меню.""", parse_mode='Markdown')
     menu(message)
 
 @bot.message_handler(commands=['menu'])
@@ -85,7 +101,4 @@ def handler_calls(call):
                 
 bot.remove_webhook()
 bot.set_webhook(url=config.webhook_url_base + config.webhook_url_path, certificate=open(WEBHOOK_SSL_CERT, 'r'))
-
-context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-context.load_cert_chain(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV)
 web.run_app(app, host=config.webhook_listen, port=config.port, ssl_context=context)

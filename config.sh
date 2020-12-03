@@ -1,0 +1,7 @@
+export TOKEN=992816254:AAHfQ4ClP17CrkGp05rZOYPUXf5fOlQQWXk
+export DATABASE_URL=postgres://eietybuqguealn:840cef379538a38d12116de1bc1b251ca487d2bf2bbb7a28192773d6bca33fa9@ec2-100-25-231-126.compute-1.amazonaws.com:5432/d9jqb2qa86fobl
+export WEBHOOK_HOST=3.22.194.164
+export WEBHOOK_PORT=8443
+export WEBHOOK_LISTEN=0.0.0.0
+export WEBAPP_PORT=8443
+

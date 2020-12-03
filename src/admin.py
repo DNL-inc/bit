@@ -396,7 +396,7 @@ class EventPanel:
     def pick_up_time(self, msg):
         if is_callback(msg):
             if record.get_value(msg.from_user.id, 'day') != msg.data.split('_')[-1]:
-                record.set_value(msg.from_user.id, 'day', msg.data.split('_')[-1]) 
+                record.set_value(msg.from_user.id, 'day', msg.data.split('_')[-1])
         markup = types.ForceReply()
         self.add = True
         message_id = self.bot.send_message(

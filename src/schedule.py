@@ -26,7 +26,7 @@ class SchedulePanel:
         day = message.data.split('_')[-1]
         tele_id = message.from_user.id
         group = session.query(User).filter(User.tele_id == tele_id).first().group
-        photo = open(BASE_DIR+'/src/img/'+day+'.jpg', mode='rb')
+        photo = open(BASE_DIR+'/img/'+day+'.jpg', mode='rb')
         self.bot.send_photo(message.from_user.id, photo=photo)
         events = session.query(Event).filter(Event.day == day, Event.group == group)
         events = events.order_by(-Event.time_start.desc()).all()
