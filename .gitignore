@@ -8,3 +8,4 @@ src/.DS_Store
 *.pkl
 logs
 *.env
+vars.sh
