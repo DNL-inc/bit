@@ -1,5 +1,8 @@
 from aiogram import types
+from utils.misc import rate_limit
 
+
+@rate_limit(10, 'start')
 async def start(msg: types.Message):
     await msg.answer("""
 *Как пользоваться*

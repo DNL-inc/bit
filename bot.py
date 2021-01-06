@@ -11,11 +11,12 @@ logging.setup()
 
 
 async def on_startup(dp: Dispatcher):
-    import filters
+    import filters, middlewares
     from handlers import error, user
     filters.setup(dp)
     user.setup(dp)
     error.setup(dp)
+    middlewares.setup(dp)
     await create_db()
 
 
