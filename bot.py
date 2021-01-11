@@ -11,18 +11,17 @@ logging.setup()
 
 
 async def on_startup(dp: Dispatcher):
-    import filters, middlewares
-    from handlers import error, user
+    import filters
+    from handlers import errors, user
     filters.setup(dp)
     user.setup(dp)
-    error.setup(dp)
-    middlewares.setup(dp)
+    errors.setup(dp)
     await create_db()
 
 
 async def on_shutdown(dp: Dispatcher):
     await storage.close()
-    # await close_db()
+    await close_db()
 
 if __name__ == "__main__":
     bot = Bot(config.API_TOKEN, validate_token=True)

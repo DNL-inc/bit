@@ -3,7 +3,6 @@ import enum
 from sqlalchemy import sql
 from sqlalchemy.orm import relationship
 from utils.db_api import db
-from models.user import User
 
 
 class Role(enum.Enum):
@@ -28,9 +27,3 @@ class Admin(db.Model):
     async def select_all_admins(self):
         admins = await self.query.gino.all()
         return admins
-
-    async def select_admin_by_tele_id(self, tele_id: int):
-        user = await User().select_user_by_tele_id(tele_id)
-        if user:
-            admin = await Admin.query.where(self.user_id == user.id).gino.first()
-            return admin if admin else False
