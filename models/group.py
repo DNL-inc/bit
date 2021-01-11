@@ -17,5 +17,5 @@ class Group(db.Model):
     query: sql.Select
 
     async def select_all_groups(self):
-        groups = await self.query.gino.all()
+        groups = await Group().query.gino.all()
         return groups

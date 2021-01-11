@@ -13,5 +13,5 @@ class Subgroup(db.Model):
     group = relationship("Group")
 
     async def select_all_subgroups(self):
-        subgroups = await self.query.gino.all()
+        subgroups = await Subgroup().query.gino.all()
         return subgroups

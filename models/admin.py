@@ -25,5 +25,5 @@ class Admin(db.Model):
         'faculties.id', ondelete='SET NULL'), nullable=True)
 
     async def select_all_admins(self):
-        admins = await self.query.gino.all()
+        admins = await Admin().query.gino.all()
         return admins

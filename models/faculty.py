@@ -13,5 +13,5 @@ class Faculty(db.Model):
     query: sql.Select
 
     async def select_all_faculties(self):
-        faculties = await self.query.gino.all()
+        faculties = await Faculty().query.gino.all()
         return faculties

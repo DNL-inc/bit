@@ -4,7 +4,7 @@ from loader import dp
 import middlewares
 import filters
 import handlers
-from utils.db_api import  create_db
+from utils.db_api import create_db
 from data import config
 
 

@@ -15,5 +15,9 @@ class User(db.Model):
     query: sql.Select
 
     async def select_all_users(self):
-        users = await self.query.gino.all()
+        users = await User().query.gino.all()
         return users
+
+    async def select_user_by_tele_id(self, tele_id: int):
+        user = await User().query.where(self.tele_id == tele_id).gino.first()
+        return user if user else False
