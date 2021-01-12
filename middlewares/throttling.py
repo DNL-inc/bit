@@ -29,6 +29,22 @@ class ThrottlingMiddleware(BaseMiddleware):
             await self.message_throttled(message, t)
             raise CancelHandler()
 
+    async def on_process_callback_query(self, callback: types.CallbackQuery, data: dict):
+        handler = current_handler.get()
+        dispatcher = Dispatcher.get_current()
+        if handler:
+            limit = getattr(handler, 'throttling_rate_limit', self.rate_limit)
+            key = getattr(handler, 'throttling_key',
+                          f"{self.prefix}_{handler.__name__}")
+        else:
+            limit = self.rate_limit
+            key = f"{self.prefix}_message"
+        try:
+            await dispatcher.throttle(key, rate=limit)
+        except Throttled as t:
+            await self.callback_throttled(callback, t)
+            raise CancelHandler()
+
     async def message_throttled(self, message: types.Message, throttled: Throttled):
         handler = current_handler.get()
         dispatcher = Dispatcher.get_current()
@@ -39,8 +55,24 @@ class ThrottlingMiddleware(BaseMiddleware):
             key = f"{self.prefix}_message"
         delta = throttled.rate - throttled.delta
         if throttled.exceeded_count <= 2:
-            await message.reply('Пожалуйста, не флудите, бюджет не резиновый!')
+            await message.reply('Пожалуйста, не флудите, бюджет нерезиновый!')
         await asyncio.sleep(delta)
         thr = await dispatcher.check_key(key)
         if thr.exceeded_count == throttled.exceeded_count:
             await message.reply('Unlocked.')
+
+    async def callback_throttled(self, callback: types.CallbackQuery, throttled: Throttled):
+        handler = current_handler.get()
+        dispatcher = Dispatcher.get_current()
+        if handler:
+            key = getattr(handler, 'throttling_key',
+                          f"{self.prefix}_{handler.__name__}")
+        else:
+            key = f"{self.prefix}_message"
+        delta = throttled.rate - throttled.delta
+        if throttled.exceeded_count <= 2:
+            await callback.message.answer('Пожалуйста, не флудите, бюджет нeрезиновый!')
+        await asyncio.sleep(delta)
+        thr = await dispatcher.check_key(key)
+        if thr.exceeded_count == throttled.exceeded_count:
+            await callback.message.answer('Unlocked.')

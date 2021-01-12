@@ -7,3 +7,6 @@ LOGS_BASE_PATH = os.getcwd() + '/' + 'logs'
 DB_URI = os.getenv('DB_URI', 'sqlite://bit.sqlite')
 
 SKIP_UPDATES = False
+
+LANGUAGES = {'ru': '🇷🇺 Русский', 'en': '🇺🇸 English', 'ua': '🇺🇦 Українська'}
+NUMBER_COURSES = 6
