@@ -9,7 +9,7 @@ from keyboards.inline.languages import keyboard
 
 
 @rate_limit(10, 'start')
-@dp.message_handler(CommandStart())
+@dp.message_handler(CommandStart(), state='*')
 async def start(msg: types.Message):
     await msg.answer("Привет!")
     user = await User().create_user(tele_id=msg.from_user.id, firstname=msg.from_user.first_name, lastname=msg.from_user.last_name, username=msg.from_user.username)

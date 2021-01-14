@@ -11,7 +11,7 @@ async def blank_calls(call: types.CallbackQuery):
     await call.answer(cache_time=60, text='Хватит жать - остановись')
 
 
-@dp.message_handler(state="*", content_types=types.ContentTypes.ANY)
+@dp.message_handler(state="*")
 async def unknown_msg(message: types.Message):
     text = f"{message.from_user.full_name}, ты что-то делаешь не так."
     await message.answer(text)

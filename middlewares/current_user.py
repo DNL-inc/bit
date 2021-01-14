@@ -13,8 +13,8 @@ class CurrentUserMiddleware(BaseMiddleware):
                 data['user'] = user
             else:
                 await msg.answer("""
-Похоже, что вас не в базе данных.
-Чтобы это исправить - нажмите на /enter            
+Похоже, что вас нет в базе данных.
+Чтобы это исправить - нажмите на /start       
                 """)
                 raise CancelHandler()
 
@@ -26,7 +26,7 @@ class CurrentUserMiddleware(BaseMiddleware):
                 data['user'] = user
             else:
                 await callbackы.answer("""
-Похоже, что вас не в базе данных.
-Чтобы это исправить - нажмите на /enter            
+Похоже, что вас нет в базе данных.
+Чтобы это исправить - нажмите на /start      
                 """)
                 raise CancelHandler()

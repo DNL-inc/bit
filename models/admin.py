@@ -27,3 +27,7 @@ class Admin(db.Model):
     async def select_all_admins(self):
         admins = await Admin.query.gino.all()
         return admins
+
+    async def select_admin_by_user_id(self, user_id: int):
+        admin = await Admin.query.where(Admin.user_id == user_id).gino.first()
+        return admin if admin else False
