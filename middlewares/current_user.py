@@ -1,7 +1,7 @@
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.dispatcher.handler import CancelHandler, current_handler
 from aiogram import types
-from models.user import User
+from models import User
 
 
 class CurrentUserMiddleware(BaseMiddleware):

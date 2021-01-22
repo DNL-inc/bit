@@ -1,7 +1,7 @@
 from aiogram import types
 
-from models.admin import Admin
-from models.user import User
+from models import Admin
+from models import User
 from data import config
 
 async def get_keyboard(user: User):

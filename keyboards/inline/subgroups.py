@@ -1,5 +1,5 @@
 from aiogram import types
-from models.subgroup import Subgroup
+from models import Subgroup, User
 
 from keyboards.inline import blank_callback, back_callback
 
@@ -7,7 +7,6 @@ from keyboards.inline import blank_callback, back_callback
 async def get_keyboard(group_id, user_subgroups):
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     subgroups = await Subgroup().select_subgroups_in_group(group_id)
-    user_subgroups = await Subgroup().select_subgroups_from_associations(user_subgroups)
     if subgroups:
         if user_subgroups: user_subgroups = [subgroup.id for subgroup in user_subgroups]
         for subgroup in subgroups:

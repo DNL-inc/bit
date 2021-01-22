@@ -7,4 +7,5 @@ from data import config
 bot = Bot(config.API_TOKEN, validate_token=True)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
+db = None
 logging.setup()

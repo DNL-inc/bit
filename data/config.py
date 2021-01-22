@@ -14,3 +14,12 @@ MENU = ['Рacпиcaниe', 'Нacтрoйки', 'Aдминиcтрирoвaниe']
 
 NUMBER_COURSES = 6
 
+TORTOISE_ORM = {
+    "connections": {"default": DB_URI},
+    "apps": {
+        "models": {
+            "models": ["models", "aerich.models"],
+            "default_connection": "default",
+        },
+    },
+}

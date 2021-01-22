@@ -2,8 +2,8 @@ from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandStart
 
 from loader import dp
+from models import User
 from utils.misc import rate_limit
-from models.user import User
 from states.auth import AuthStates
 from keyboards.inline.languages import keyboard
 
@@ -19,4 +19,4 @@ async def start(msg: types.Message):
         await msg.delete()
     else:
         await msg.delete()
-        await msg.answer("Я тебя знаю!") 
+        await msg.answer("Я тебя знаю!")

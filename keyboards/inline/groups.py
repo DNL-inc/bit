@@ -1,5 +1,5 @@
 from aiogram import types
-from models.group import Group
+from models import Group
 
 from keyboards.inline import blank_callback, back_callback
 

@@ -1,5 +1,5 @@
 from aiogram import types
-from models.faculty import Faculty
+from models import Faculty
 from keyboards.inline import blank_callback, back_callback
 
 async def get_keyboard():

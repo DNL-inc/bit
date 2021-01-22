@@ -1,17 +1,19 @@
 from aiogram import executor, Dispatcher
-
-from loader import dp
+from tortoise import Tortoise
+from loader import dp, db
 import middlewares
 import filters
 import handlers
-from utils.db_api import create_db
 from data import config
+from utils.db_api import init_db
 
 
 async def on_startup(dp: Dispatcher):
-    await create_db()
+    await init_db()
 
+async def on_shutdown(dp: Dispatcher):
+    await Tortoise.close_connections()
 
 if __name__ == "__main__":
     executor.start_polling(
-        dp, skip_updates=config.SKIP_UPDATES, on_startup=on_startup)
+        dp, skip_updates=config.SKIP_UPDATES, on_startup=on_startup, on_shutdown=on_shutdown)

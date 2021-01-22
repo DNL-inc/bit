@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 
 from loader import dp, bot
 from utils.misc import rate_limit, get_current_user
-from models.user import User
+from models import User
 from keyboards.default import menu
 
 from states.menu import MenuStates
@@ -19,3 +19,4 @@ async def show_menu(msg: types.Message, user: User, state: FSMContext):
     keyboard = await menu.get_keyboard(user)
     await bot.delete_message(user.tele_id, current_msg)
     await msg.answer(current_msg_text, reply_markup=keyboard)
+

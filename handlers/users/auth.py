@@ -4,8 +4,7 @@ from data import config
 from keyboards.inline import (back_callback, courses, faculties, groups,
                               languages, subgroups)
 from loader import dp
-from models.subgroup import AssociationSubgroup
-from models.user import User
+from models import User
 from states.auth import AuthStates
 from states.menu import MenuStates
 from utils.misc import get_current_user, rate_limit
@@ -45,7 +44,7 @@ async def back_choose_faculty(callback: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(state=AuthStates.choose_faculty)
 async def choose_faculty(callback: types.CallbackQuery, state: FSMContext):
     if callback.data.startswith('faculty'):
-        await state.update_data(faculty_id=callback.data.split('-')[-1])
+        await state.update_data(faculty=callback.data.split('-')[-1])
         await callback.answer("Факультет выбран")
         await callback.message.edit_text("Выберите ваш курс:", reply_markup=courses.keyboard)
         await AuthStates.next()
@@ -68,7 +67,7 @@ async def choose_course(callback: types.CallbackQuery, state: FSMContext):
         await callback.answer("Курс выбран")
         args = await state.get_data()
         data = dict()
-        data['faculty_id'] = args['faculty_id']
+        data['faculty'] = args['faculty']
         data['course'] = args['course']
         keyboard = await groups.get_keyboard(data)
         await callback.message.edit_text("Выберите вашу группу:", reply_markup=keyboard)
@@ -80,7 +79,7 @@ async def choose_course(callback: types.CallbackQuery, state: FSMContext):
 async def back_choose_group(callback: types.CallbackQuery, state: FSMContext):
     args = await state.get_data()
     data = dict()
-    data['faculty_id'] = args['faculty_id']
+    data['faculty'] = args['faculty']
     data['course'] = args['course']
     keyboard = await groups.get_keyboard(data)
     await callback.answer("Вы вернулись обратно")
@@ -93,10 +92,10 @@ async def back_choose_group(callback: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(state=AuthStates.choose_group)
 async def choose_group(callback: types.CallbackQuery, state: FSMContext, user: User):
     if callback.data.startswith('group'):
-        await state.update_data(group_id=callback.data.split('-')[-1])
+        await state.update_data(group_id=int(callback.data.split('-')[-1]))
         await callback.answer("Группа выбрана")
         data = await state.get_data()
-        group_id = int(data['group_id'])
+        group_id = data['group_id']
         user_subgroups = await User().select_user_subgroups(user)
         keyboard = await subgroups.get_keyboard(group_id, user_subgroups)
         await callback.message.edit_text("Выберите вашу подгруппу:", reply_markup=keyboard)
@@ -115,15 +114,14 @@ async def auth_complete(callback: types.CallbackQuery, state: FSMContext, user: 
     await state.update_data(current_msg=callback.message.message_id, current_msg_text=callback.message.text)
 
 
-@rate_limit(2, 'subgroups')
 @get_current_user()
 @dp.callback_query_handler(state=AuthStates.choose_subgroups)
 async def choose_subgroups(callback: types.CallbackQuery, state: FSMContext, user: User):
     if callback.data.startswith('subgroup'):
         subgroup = int(callback.data.split('-')[-1])
         data = await state.get_data()
-        group_id = int(data['group_id'])
-        await AssociationSubgroup().create_or_delete_association(subgroup, user.id)
+        group_id = data['group_id']
+        await User().add_or_clear_subgroup(subgroup, user)
         await callback.answer()
         user_subgroups = await User().select_user_subgroups(user)
         keyboard = await subgroups.get_keyboard(group_id, user_subgroups)
