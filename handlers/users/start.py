@@ -4,10 +4,10 @@ from aiogram.dispatcher import FSMContext
 
 from loader import dp
 from models import User
-from utils.misc import rate_limit
+from utils.misc import rate_limit, get_current_user
 from states.auth import AuthStates
 from states.menu import MenuStates
-from keyboards.inline import languages
+from keyboards.inline import languages, back_callback
 from keyboards.default import menu   
 
 
@@ -29,4 +29,8 @@ async def start(msg: types.Message, state: FSMContext):
         await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
 
 
-        
+@rate_limit(10, 'blank')
+@dp.callback_query_handler(text_contains='blank', state="*")
+async def blank_calls(call: types.CallbackQuery):
+    await call.answer(cache_time=60, text='Хватит жать - остановись')
+

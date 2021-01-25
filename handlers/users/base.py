@@ -9,11 +9,6 @@ from keyboards.default import menu
 from models import User
 
 
-@rate_limit(10, 'blank')
-@dp.callback_query_handler(text_contains='blank', state="*")
-async def blank_calls(call: types.CallbackQuery):
-    await call.answer(cache_time=60, text='Хватит жать - остановись')
-
 
 #should be down
 @dp.message_handler(state="*")

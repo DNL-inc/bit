@@ -19,7 +19,6 @@ async def back_choose_faculty(callback: types.CallbackQuery, state: FSMContext, 
     
 
 async def get(callback: types.CallbackQuery, user: User, state: FSMContext):
-    await callback.answer("Вы вернулись обратно")
     keyboard = await faculties.get_keyboard()
     await callback.message.edit_text("Выберите ваш факультет:", reply_markup=keyboard)
     await group_and_subgroups.SettingsGandSStates.faculty.set()
