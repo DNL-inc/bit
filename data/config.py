@@ -23,3 +23,5 @@ TORTOISE_ORM = {
         },
     },
 }
+
+SETTIGS = {'notifications': 'Уведомления', 'group-and-subgroups': 'Группа и Подгруппы', 'lang': 'Язык', 'chat-settings': 'Настройки Чата'}

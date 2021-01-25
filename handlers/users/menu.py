@@ -3,8 +3,9 @@ from aiogram.dispatcher import FSMContext
 
 from loader import dp, bot
 from utils.misc import rate_limit, get_current_user
-from models import User, Admin
+from models import User, Admin, Chat
 from keyboards.default import menu
+from keyboards.inline import settings
 from data import config
 from states.menu import MenuStates
 
@@ -52,10 +53,11 @@ async def get_schedule_page(msg: types.Message, user: User, state: FSMContext):
 
 async def get_settings_page(msg: types.Message, user: User, state: FSMContext):
     await msg.delete()
-    keyboard = await menu.get_keyboard(user)
+    chats = await Chat().select_chats_by_creator(user.id)
+    keyboard = await settings.get_keyboard(True if chats else False)
     data = await state.get_data()
     await bot.delete_message(user.tele_id, data.get('current_msg'))
-    msg = await msg.answer('settings')
+    msg = await msg.answer('Настроки:', reply_markup=keyboard)
     await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
 
 

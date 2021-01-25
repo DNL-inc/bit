@@ -18,5 +18,5 @@ async def get_keyboard(group_id, user_subgroups):
         keyboard.add(types.InlineKeyboardButton("Нет тут ничего", callback_data=blank_callback.new(category='subgroup')))
 
     keyboard.add(types.InlineKeyboardButton('Назад', callback_data=back_callback.new(category='group')))
-    keyboard.add(types.InlineKeyboardButton('Продолжить', callback_data='auth_complete'))
+    keyboard.add(types.InlineKeyboardButton('Продолжить', callback_data='complete'))
     return keyboard
