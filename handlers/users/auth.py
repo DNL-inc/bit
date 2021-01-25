@@ -8,6 +8,8 @@ from models import User
 from states.auth import AuthStates
 from states.menu import MenuStates
 from utils.misc import get_current_user, rate_limit
+from keyboards.default import menu   
+
 
 
 @get_current_user()
@@ -87,7 +89,6 @@ async def back_choose_group(callback: types.CallbackQuery, state: FSMContext):
     await AuthStates.choose_group.set()
 
 
-@rate_limit(2, 'group')
 @get_current_user()
 @dp.callback_query_handler(state=AuthStates.choose_group)
 async def choose_group(callback: types.CallbackQuery, state: FSMContext, user: User):
@@ -111,8 +112,11 @@ async def auth_complete(callback: types.CallbackQuery, state: FSMContext, user: 
     await state.finish()
     await callback.message.edit_text("Вы успешно прошли регистрацию!")
     await MenuStates.mediate.set()
-    await state.update_data(current_msg=callback.message.message_id, current_msg_text=callback.message.text)
-
+    keyboard = await menu.get_keyboard(user)
+    await callback.message.delete()
+    msg = await callback.message.answer("Вы успешно прошли регистрацию!", reply_markup=keyboard)
+    await state.update_data(current_msg=msg.message_id, current_msg_text=msg.text)
+    
 
 @get_current_user()
 @dp.callback_query_handler(state=AuthStates.choose_subgroups)

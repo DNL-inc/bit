@@ -9,7 +9,7 @@ DB_URI = os.getenv('DB_URI', 'sqlite://bit.sqlite')
 SKIP_UPDATES = False
 
 LANGUAGES = {'ru': '🇷🇺 Русский', 'en': '🇺🇸 English', 'ua': '🇺🇦 Українська'}
-MENU = ['Рacпиcaниe', 'Нacтрoйки', 'Aдминиcтрирoвaниe']
+MENU = {'schedule': 'Рacпиcaниe', 'settings': 'Нacтрoйки', 'admin': 'Aдминиcтрирoвaниe'}
 
 
 NUMBER_COURSES = 6
