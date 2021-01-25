@@ -4,9 +4,19 @@ from keyboards.inline import (back_callback, blank_callback, courses,
                               faculties, groups, settings, subgroups)
 from loader import dp
 from models import User, Chat
+from states.menu import MenuStates
 from states.settings import SettingsStates, group_and_subgroups
 from utils.misc import get_current_user
 
+@get_current_user()
+@dp.callback_query_handler(back_callback.filter(category='lang'), state=group_and_subgroups.SettingsGandSStates.faculty)
+async def back_choose_faculty(callback: types.CallbackQuery, state: FSMContext, user):
+    await callback.answer("Вы вернулись обратно")
+    await MenuStates.settings.set()
+    chats = await Chat().select_chats_by_creator(user.id)
+    keyboard = await settings.get_keyboard(True if chats else False)
+    await callback.message.edit_text("Настроки:", reply_markup=keyboard)
+    
 
 async def get(callback: types.CallbackQuery, user: User, state: FSMContext):
     await callback.answer("Вы вернулись обратно")
@@ -64,7 +74,7 @@ async def back_choose_group(callback: types.CallbackQuery, state: FSMContext):
     data = dict()
     data['faculty'] = args['faculty']
     data['course'] = args['course']
-    keyboard = await groups.get_keyboasrd(data)
+    keyboard = await groups.get_keyboard(data)
     await callback.answer("Вы вернулись обратно")
     await callback.message.edit_text("Выберите вашу группу:", reply_markup=keyboard)
     await group_and_subgroups.SettingsGandSStates.group.set()
@@ -91,6 +101,7 @@ async def complete(callback: types.CallbackQuery, state: FSMContext, user: User)
     data = await state.get_data()
     await User().update_user(user.tele_id, lang=data.get('lang'), group=data.get('group_id'))
     await state.finish()
+    await MenuStates.mediate.set()
     await callback.message.edit_text("Вы успешно изменили группу и подгруппы!")
     chats = await Chat().select_chats_by_creator(user.id)
     keyboard = await settings.get_keyboard(True if chats else False)

@@ -5,7 +5,7 @@ from loader import dp, bot
 from utils.misc import rate_limit, get_current_user
 from models import User, Admin, Chat
 from keyboards.default import menu
-from keyboards.inline import settings
+from keyboards.inline import settings, back_callback
 from data import config
 from states.menu import MenuStates
 
@@ -70,3 +70,11 @@ async def get_admin_page(msg: types.Message, user: User, state: FSMContext):
     await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
 
     
+@get_current_user()
+@dp.callback_query_handler(back_callback.filter(category='menu'), state=MenuStates.all_states)
+async def back_to_menu(call: types.CallbackQuery, user: User, state: FSMContext):
+    await call.message.delete()
+    await MenuStates.mediate.set()
+    keyboard = await menu.get_keyboard(user)
+    msg = await call.message.answer('Меню:', reply_markup=keyboard)
+    await state.update_data(current_msg=msg.message_id, current_msg_text=msg.text)
