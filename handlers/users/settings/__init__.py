@@ -35,14 +35,6 @@ async def get_section_settings(call: types.CallbackQuery, user: User, state: FSM
         await get_langs(call, user, state)
 
 
-@get_current_user()
-@dp.callback_query_handler(back_callback.filter(category='lang'), state=settings.SettingsStates.all_states)
-async def back_to_menu(callback: types.CallbackQuery, state: FSMContext, user: User):
-    await callback.answer("Вы вернулись обратно")
-    chats = await Chat().select_chats_by_creator(user.id)
-    keyboard = await get_keyboard(True if chats else False)
-    await callback.message.edit_text("Настройки:", reply_markup=keyboard)
-    await menu.MenuStates.settings.set()
 
 
 @get_current_user()

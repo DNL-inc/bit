@@ -25,3 +25,4 @@ TORTOISE_ORM = {
 }
 
 SETTIGS = {'notifications': 'Уведомления', 'group-and-subgroups': 'Группа и Подгруппы', 'lang': 'Язык', 'chat-settings': 'Настройки Чата'}
+ADMIN = {'msg-sender': 'Отправить сообщение', 'edit-faculties': 'Редактирование факультетов', 'edit-groups': 'Редактирование групп', 'edit-subgroups': 'Редактирование подгрупп', 'edit-events': 'Редактирование событий', 'edit-admins': 'Редактирование админов'}

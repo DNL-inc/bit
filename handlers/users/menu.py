@@ -5,7 +5,7 @@ from loader import dp, bot
 from utils.misc import rate_limit, get_current_user
 from models import User, Admin, Chat
 from keyboards.default import menu
-from keyboards.inline import settings, back_callback
+from keyboards.inline import settings, back_callback, admin
 from data import config
 from states.menu import MenuStates
 
@@ -63,10 +63,10 @@ async def get_settings_page(msg: types.Message, user: User, state: FSMContext):
 
 async def get_admin_page(msg: types.Message, user: User, state: FSMContext):
     await msg.delete()
-    keyboard = await menu.get_keyboard(user)
+    keyboard = await admin.get_keyboard(user)
     data = await state.get_data()
     await bot.delete_message(user.tele_id, data.get('current_msg'))
-    msg = await msg.answer('admin')
+    msg = await msg.answer('Администрирование:', reply_markup=keyboard)
     await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
 
     

@@ -19,7 +19,7 @@ class Chat(Model):
 
 
 class Role(enum.Enum):
-    odinary = 'odinary'
+    odinary = 'ordinary'
     improved = 'improved'
     supreme = 'supreme'
 
@@ -41,6 +41,10 @@ class Admin(Model):
     async def select_admin_by_user_id(self, user_id: int):
         admin = await Admin.filter(user = user_id).first()
         return admin if admin else False
+    
+    async def is_admin_exists(self, user_id: int):
+        return Admin.filter(user = user_id).exists()
+    
 
 
 class Faculty(Model):
