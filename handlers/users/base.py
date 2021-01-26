@@ -12,12 +12,18 @@ from models import User
 
 #should be down
 @dp.message_handler(state="*")
-async def unknown_msg(msg: types.Message):
-    text = f"{msg.from_user.full_name}, ты что-то делаешь не так."
+async def unknown_msg(msg: types.Message, state: FSMContext):
+    state = await state.get_state()
+    text = f"""
+{msg.from_user.full_name}, ты что-то делаешь не так.
+Эхо в состоянии <code>{state}</code>"""
     await msg.answer(text)
 
 
 @dp.callback_query_handler(state="*")
-async def unknown_call(msg: types.CallbackQuery):
-    text = f"{msg.from_user.full_name}, ты что-то делаешь не так."
+async def unknown_call(msg: types.CallbackQuery, state: FSMContext):
+    state = await state.get_state()
+    text = f"""
+{msg.from_user.full_name}, ты что-то делаешь не так.
+Эхо в состоянии <code>{state}</code>"""
     await msg.answer(text)

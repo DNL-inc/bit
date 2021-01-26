@@ -38,7 +38,6 @@ async def set_menu_section(msg: types.Message, user: User, state: FSMContext):
         await MenuStates.schedule.set()
         await get_schedule_page(msg, user, state)
     elif msg.text == config.MENU['settings']:
-        await MenuStates.settings.set()
         await get_settings_page(msg, user, state)
 
 
@@ -52,6 +51,7 @@ async def get_schedule_page(msg: types.Message, user: User, state: FSMContext):
 
 
 async def get_settings_page(msg: types.Message, user: User, state: FSMContext):
+    await MenuStates.settings.set()
     await msg.delete()
     chats = await Chat().select_chats_by_creator(user.id)
     keyboard = await settings.get_keyboard(True if chats else False)
@@ -74,6 +74,7 @@ async def get_admin_page(msg: types.Message, user: User, state: FSMContext):
 @dp.callback_query_handler(back_callback.filter(category='menu'), state=MenuStates.all_states)
 async def back_to_menu(call: types.CallbackQuery, user: User, state: FSMContext):
     await call.message.delete()
+    await call.answer()
     await MenuStates.mediate.set()
     keyboard = await menu.get_keyboard(user)
     msg = await call.message.answer('Меню:', reply_markup=keyboard)
