@@ -13,13 +13,13 @@ class Chat(Model):
     class Meta:
         table = 'chats'
 
-    async def select_chats_by_creator(self, creator_id: int):
+    async def select_chatss_by_creator(self, creator_id: int):
         chats = await Chat.filter(creator=creator_id).all()
         return chats if chats else False
 
 
 class Role(enum.Enum):
-    odinary = 'ordinary'
+    ordinary = 'ordinary'
     improved = 'improved'
     supreme = 'supreme'
 
@@ -39,12 +39,20 @@ class Admin(Model):
         return admins
 
     async def select_admin_by_user_id(self, user_id: int):
-        admin = await Admin.filter(user = user_id).first()
+        admin = await Admin.filter(user=user_id).first()
         return admin if admin else False
-    
+
     async def is_admin_exists(self, user_id: int):
-        return Admin.filter(user = user_id).exists()
-    
+        return Admin.filter(user=user_id).exists()
+
+    async def has_access(self, operation: str, admin):
+        if admin.role.name == 'ordinary' and operation in ['msg-sender', 'edit-subjects', 'edit-events', 'edit-subgroups']:
+            return True
+        elif admin.role.name == 'improved' and operation in ['msg-sender', 'edit-admins', 'edit-groups']:
+            return True
+        elif admin.role.name == 'supreme':
+            return True
+        return False
 
 
 class Faculty(Model):
@@ -79,7 +87,6 @@ class Group(Model):
         return groups if groups else False
 
 
-
 class Subgroup(Model):
 
     id = fields.IntField(pk=True)
@@ -95,7 +102,7 @@ class Subgroup(Model):
         return subgroup if subgroup else False
 
     async def select_subgroups_in_group(self, group_id: int):
-        subgroups = await Subgroup.filter(group_id = group_id).all()
+        subgroups = await Subgroup.filter(group_id=group_id).all()
         return subgroups
 
     async def select_user_subgroups(self, user):
@@ -182,4 +189,3 @@ class User(Model):
             subgroup = await Subgroup().select_subgroup_by_id(subgroup_id)
             if subgroup:
                 await user.subgroups.add(subgroup)
-
