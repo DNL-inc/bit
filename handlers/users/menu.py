@@ -2,6 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext 
 
 from loader import dp, bot
+from middlewares import _
 from utils.misc import rate_limit, get_current_user
 from models import User, Admin, Chat
 from keyboards.default import menu
@@ -23,7 +24,7 @@ async def show_menu(msg: types.Message, user: User, state: FSMContext):
         await bot.delete_message(user.tele_id, current_msg)
         msg = await msg.answer(current_msg_text, reply_markup=keyboard)
     else:
-        msg = await msg.answer("Меню:", reply_markup=keyboard)
+        msg = await msg.answer(_("Меню:"), reply_markup=keyboard)
     await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
 
 
@@ -57,7 +58,7 @@ async def get_settings_page(msg: types.Message, user: User, state: FSMContext):
     keyboard = await settings.get_keyboard(True if chats else False)
     data = await state.get_data()
     await bot.delete_message(user.tele_id, data.get('current_msg'))
-    msg = await msg.answer('Настроки:', reply_markup=keyboard)
+    msg = await msg.answer(_('Настроки:'), reply_markup=keyboard)
     await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
 
 
@@ -66,7 +67,7 @@ async def get_admin_page(msg: types.Message, user: User, state: FSMContext):
     keyboard = await admin.get_keyboard(user)
     data = await state.get_data()
     await bot.delete_message(user.tele_id, data.get('current_msg'))
-    msg = await msg.answer('Администрирование:', reply_markup=keyboard)
+    msg = await msg.answer(_('Администрирование:'), reply_markup=keyboard)
     await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
 
     
@@ -77,5 +78,5 @@ async def back_to_menu(call: types.CallbackQuery, user: User, state: FSMContext)
     await call.answer()
     await MenuStates.mediate.set()
     keyboard = await menu.get_keyboard(user)
-    msg = await call.message.answer('Меню:', reply_markup=keyboard)
+    msg = await call.message.answer(_('Меню:'), reply_markup=keyboard)
     await state.update_data(current_msg=msg.message_id, current_msg_text=msg.text)

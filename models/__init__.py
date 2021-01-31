@@ -13,7 +13,7 @@ class Chat(Model):
     class Meta:
         table = 'chats'
 
-    async def select_chatss_by_creator(self, creator_id: int):
+    async def select_chats_by_creator(self, creator_id: int):
         chats = await Chat.filter(creator=creator_id).all()
         return chats if chats else False
 
@@ -124,10 +124,11 @@ class User(Model):
     username = fields.CharField(255, unique=True, null=True)
     firstname = fields.CharField(255, null=True)
     lastname = fields.CharField(255, null=True)
-    lang = fields.CharField(255, null=True)
+    lang = fields.CharField(2, null=True)
     group = fields.ForeignKeyField(
         'models.Group', on_delete='SET NULL', null=True, related_name='users')
     subgroups = fields.ManyToManyField('models.Subgroup')
+    welcome_message_id = fields.IntField()
 
     class Meta:
         table = 'users'
@@ -140,7 +141,7 @@ class User(Model):
         user = await User.filter(tele_id=tele_id).first()
         return user if user else False
 
-    async def create_user(self, tele_id: int, username=None, firstname=None, lastname=None):
+    async def create_user(self, tele_id: int, welcome_message_id, username=None, firstname=None, lastname=None):
         user = await User().select_user_by_tele_id(tele_id)
         if not user:
             user = await User.create(
@@ -148,6 +149,7 @@ class User(Model):
                 username=username,
                 firstname=firstname,
                 lastname=lastname,
+                welcome_message_id=welcome_message_id
             )
             return user if user else False
         else:
@@ -189,3 +191,7 @@ class User(Model):
             subgroup = await Subgroup().select_subgroup_by_id(subgroup_id)
             if subgroup:
                 await user.subgroups.add(subgroup)
+
+    async def set_language(self, tele_id, lang):
+        user = await User().select_user_by_tele_id(tele_id)
+        await user.update(lang=lang).apply()

@@ -1,6 +1,6 @@
 from aiogram import types
 from models import Group
-
+from middlewares import _
 from keyboards.inline import blank_callback, back_callback
 
 
@@ -11,6 +11,6 @@ async def get_keyboard(filters):
         for group in groups:
             keyboard.add(types.InlineKeyboardButton(group.title, callback_data='group-'+str(group.id)))
     else:
-        keyboard.add(types.InlineKeyboardButton("Нет тут ничего", callback_data=blank_callback.new(category='group')))
-    keyboard.add(types.InlineKeyboardButton('Назад', callback_data=back_callback.new(category='course')))
+        keyboard.add(types.InlineKeyboardButton(_("Нет тут ничего"), callback_data=blank_callback.new(category='group')))
+    keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='course')))
     return keyboard

@@ -8,7 +8,9 @@ from data import config
 from utils.db_api import init_db
 
 
+
 async def on_startup(dp: Dispatcher):
+
     await init_db()
 
 async def on_shutdown(dp: Dispatcher):
