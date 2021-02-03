@@ -3,7 +3,6 @@ from data import config
 from models import Admin, User
 from keyboards.inline import blank_callback, back_callback
 
-import asyncio
 
 
 async def get_keyboard(user: User):

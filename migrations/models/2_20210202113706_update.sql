@@ -1,5 +1,5 @@
 -- upgrade --
-COMMENT ON COLUMN "admin"."role" IS 'odinary: ordinary
+COMMENT ON COLUMN "admin"."role" IS 'ordinary: ordinary
 improved: improved
 supreme: supreme';
 -- downgrade --
