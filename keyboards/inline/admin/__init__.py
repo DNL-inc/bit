@@ -2,6 +2,7 @@ from aiogram import types
 from data import config
 from models import Admin, User
 from keyboards.inline import blank_callback, back_callback
+from middlewares import _
 
 
 
@@ -14,6 +15,6 @@ async def get_keyboard(user: User):
             if access:
                 keyboard.add(types.InlineKeyboardButton(value, callback_data=key))
     else:
-        keyboard.add(types.InlineKeyboardButton("Нет тут ничего", callback_data=blank_callback.new(category='settings')))
-    keyboard.add(types.InlineKeyboardButton('Назад', callback_data=back_callback.new(category='menu')))
+        keyboard.add(types.InlineKeyboardButton(_("Нет тут ничего"), callback_data=blank_callback.new(category='settings')))
+    keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='menu')))
     return keyboard

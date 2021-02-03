@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import typing
 import pytz
 
@@ -9,7 +10,7 @@ DB_URI = os.getenv('DB_URI', 'sqlite://bit.sqlite')
 
 SKIP_UPDATES = False
 
-LANGUAGES = {'ru': '🇷🇺 Русский', 'en': '🇺🇸 English', 'ua': '🇺🇦 Українська'}
+LANGUAGES = {'ru': '🇷🇺 Русский', 'en': '🇺🇸 English', '_uk': '🇺🇦 Українська'}
 MENU = {'schedule': 'Рacпиcaниe', 'settings': 'Нacтрoйки', 'admin': 'Aдминиcтрирoвaниe'}
 
 
@@ -29,3 +30,8 @@ TORTOISE_ORM = {
 
 SETTIGS = {'notifications': 'Уведомления', 'group-and-subgroups': 'Группа и Подгруппы', 'lang': 'Язык', 'chat-settings': 'Настройки Чата'}
 ADMIN = {'msg-sender': 'Отправить сообщение', 'edit-faculties': 'Редактирование факультетов', 'edit-groups': 'Редактирование групп', 'edit-subgroups': 'Редактирование подгрупп', 'edit-events': 'Редактирование событий', 'edit-admins': 'Редактирование админов'}
+
+I18N_DOMAIN = 'bit'
+BASE_DIR = Path(__file__).parent
+LOCALES_DIR = BASE_DIR / 'locales' 
+LOCALES_DIR = BASE_DIR / 'locales' 

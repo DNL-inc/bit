@@ -1,0 +1,175 @@
+# Translations template for PROJECT.
+# Copyright (C) 2021 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2021-01-28 23:22+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: handlers/users/auth.py:18 handlers/users/auth.py:38
+#: handlers/users/auth.py:58 handlers/users/auth.py:87
+#: handlers/users/base.py:17 handlers/users/settings/group_and_subgroups.py:14
+#: handlers/users/settings/group_and_subgroups.py:30
+#: handlers/users/settings/group_and_subgroups.py:49
+#: handlers/users/settings/group_and_subgroups.py:77
+msgid "Вы вернулись обратно"
+msgstr ""
+
+#: handlers/users/auth.py:19 handlers/users/settings/__init__.py:17
+msgid "Выбери язык:"
+msgstr ""
+
+#: handlers/users/auth.py:30 handlers/users/settings/__init__.py:45
+msgid "Язык установлен"
+msgstr ""
+
+#: handlers/users/auth.py:31 handlers/users/auth.py:40
+#: handlers/users/settings/group_and_subgroups.py:23
+#: handlers/users/settings/group_and_subgroups.py:32
+msgid "Выберите ваш факультет:"
+msgstr ""
+
+#: handlers/users/auth.py:50 handlers/users/settings/group_and_subgroups.py:41
+msgid "Факультет выбран"
+msgstr ""
+
+#: handlers/users/auth.py:51 handlers/users/auth.py:59
+#: handlers/users/settings/group_and_subgroups.py:42
+#: handlers/users/settings/group_and_subgroups.py:50
+msgid "Выберите ваш курс:"
+msgstr ""
+
+#: handlers/users/auth.py:69 handlers/users/settings/group_and_subgroups.py:59
+msgid "Курс выбран"
+msgstr ""
+
+#: handlers/users/auth.py:75 handlers/users/auth.py:88
+#: handlers/users/settings/group_and_subgroups.py:65
+#: handlers/users/settings/group_and_subgroups.py:78
+msgid "Выберите вашу группу:"
+msgstr ""
+
+#: handlers/users/auth.py:97 handlers/users/settings/group_and_subgroups.py:87
+msgid "Группа выбрана"
+msgstr ""
+
+#: handlers/users/auth.py:102 handlers/users/settings/group_and_subgroups.py:92
+msgid "Выберите вашу подгруппу:"
+msgstr ""
+
+#: handlers/users/auth.py:113 handlers/users/auth.py:117
+msgid "Вы успешно прошли регистрацию!"
+msgstr ""
+
+#: handlers/users/auth.py:132
+#: handlers/users/settings/group_and_subgroups.py:123
+msgid "Выберите ваши подгруппы:"
+msgstr ""
+
+#: handlers/users/base.py:20
+msgid "Настройки:"
+msgstr ""
+
+#: handlers/users/menu.py:26 handlers/users/menu.py:80
+msgid "Меню:"
+msgstr ""
+
+#: handlers/users/menu.py:60 handlers/users/settings/group_and_subgroups.py:18
+msgid "Настроки:"
+msgstr ""
+
+#: handlers/users/menu.py:69
+msgid "Администрирование:"
+msgstr ""
+
+#: handlers/users/start.py:17
+msgid "Привет!"
+msgstr ""
+
+#: handlers/users/start.py:20
+msgid "Выбери язык: "
+msgstr ""
+
+#: handlers/users/start.py:27
+msgid "Я тебя знаю!"
+msgstr ""
+
+#: handlers/users/start.py:35
+msgid "Хватит жать - остановись"
+msgstr ""
+
+#: handlers/users/settings/__init__.py:29
+#: handlers/users/settings/__init__.py:32
+msgid "Это фича пока недоступна, как только она появится мы вам сообщим"
+msgstr ""
+
+#: handlers/users/settings/__init__.py:46
+#: handlers/users/settings/group_and_subgroups.py:104
+#: handlers/users/settings/group_and_subgroups.py:108
+msgid "Вы успешно изменили группу и подгруппы!"
+msgstr ""
+
+#: handlers/users/settings/__init__.py:50
+msgid "Вы успешно изменили язык!"
+msgstr ""
+
+#: keyboards/inline/admin/__init__.py:20 keyboards/inline/courses.py:8
+#: keyboards/inline/faculties.py:12 keyboards/inline/groups.py:15
+#: keyboards/inline/languages.py:13 keyboards/inline/settings.py:18
+#: keyboards/inline/soon_be_available.py:6 keyboards/inline/subgroups.py:20
+msgid "Назад"
+msgstr ""
+
+#: keyboards/inline/admin/__init__.py:19 keyboards/inline/faculties.py:11
+#: keyboards/inline/groups.py:14 keyboards/inline/settings.py:17
+#: keyboards/inline/subgroups.py:18
+msgid "Нет тут ничего"
+msgstr ""
+
+#: keyboards/inline/soon_be_available.py:5
+msgid "Скоро будет доступно"
+msgstr ""
+
+#: keyboards/inline/subgroups.py:21
+msgid "Продолжить"
+msgstr ""
+
+#: middlewares/current_user.py:16
+msgid ""
+"\n"
+"Похоже, что вас нет в базе данных.\n"
+"Чтобы это исправить - нажмите на /start       \n"
+"                "
+msgstr ""
+
+#: middlewares/current_user.py:30
+msgid ""
+"\n"
+"Похоже, что вас нет в базе данных.\n"
+"Чтобы это исправить - нажмите на /start      \n"
+"                "
+msgstr ""
+
+#: middlewares/throttling.py:58
+msgid "Пожалуйста, не флудите, бюджет нерезиновый!"
+msgstr ""
+
+#: middlewares/throttling.py:62 middlewares/throttling.py:78
+msgid "Unlocked."
+msgstr ""
+
+#: middlewares/throttling.py:74
+msgid "Пожалуйста, не флудите, бюджет нeрезиновый!"
+msgstr ""
+
