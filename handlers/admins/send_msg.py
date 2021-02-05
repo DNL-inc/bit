@@ -5,7 +5,6 @@ from loader import dp, bot
 from data import config
 
 from states.menu import MenuStates
-import re
 from datetime import datetime
 
 from utils.misc import get_current_admin, get_current_user
@@ -36,7 +35,7 @@ async def back_to_send_msg(callback: types.CallbackQuery, state: FSMContext, adm
 @dp.callback_query_handler(back_callback.filter(category='delete_msg'), state=AdminStates.all_states)
 async def back_choose_faculty(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
     keyboard = await all_postpone_msg.get_keyboard(admin)
-    await call.message.edit_text('Все текущие сообщения: ', reply_markup=keyboard)
+    await callback.message.edit_text('Все текущие сообщения: ', reply_markup=keyboard)
 
 
 @get_current_admin()
