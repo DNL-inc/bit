@@ -5,7 +5,6 @@ from loader import dp, bot
 from data import config
 
 from states.menu import MenuStates
-import re
 from datetime import datetime
 
 from utils.misc import get_current_admin, get_current_user
@@ -36,7 +35,7 @@ async def back_to_send_msg(callback: types.CallbackQuery, state: FSMContext, adm
 @dp.callback_query_handler(back_callback.filter(category='delete_msg'), state=AdminStates.all_states)
 async def back_choose_faculty(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
     keyboard = await all_postpone_msg.get_keyboard(admin)
-    await call.message.edit_text('Все текущие сообщения: ', reply_markup=keyboard)
+    await callback.message.edit_text('Все текущие сообщения: ', reply_markup=keyboard)
 
 
 @get_current_admin()
@@ -86,7 +85,10 @@ async def get_time(msg: types.Message, admin: Admin, state: FSMContext, user: Us
         hour, minute = map(int, time.split(':'))
         sending_time = datetime(year, month, day, hour, minute)
         if config.LOCAL_TZ.localize(sending_time) <= config.LOCAL_TZ.localize(datetime.now()):
-            await bot.edit_message_text('Дата и время указывают на прошлое - сообщение не будет никогда отправленно', user.tele_id, message_id)
+            try:
+                await bot.edit_message_text('Дата и время указывают на прошлое - сообщение не будет никогда отправленно', user.tele_id, message_id)
+            except MessageNotModified:
+                pass
             await msg.delete()
             return
     except ValueError:

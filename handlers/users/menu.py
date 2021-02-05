@@ -12,7 +12,7 @@ from states.menu import MenuStates
 
 
 @get_current_user()
-@dp.message_handler(commands=['menu'], state=MenuStates.all_states)
+@dp.message_handler(commands=['menu'], state='*')
 async def show_menu(msg: types.Message, user: User, state: FSMContext):
     await msg.delete()
     await MenuStates.mediate.set()

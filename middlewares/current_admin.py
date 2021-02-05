@@ -24,7 +24,7 @@ class CurrentAdminMiddleware(BaseMiddleware):
             if admin:
                 data['admin'] = admin
             else:
-                await callbackы.answer("""
+                await callback.answer("""
 Похоже, что вы не админ, напишите сюда @kidden.   
                 """)
                 raise CancelHandler()

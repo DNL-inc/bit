@@ -16,4 +16,5 @@ _ = i18n.gettext
 if __name__ == 'middlewares':
     dp.middleware.setup(ThrottlingMiddleware())
     dp.middleware.setup(CurrentUserMiddleware())
+    dp.middleware.setup(CurrentAdminMiddleware())
     dp.middleware.setup(i18n)

@@ -1,17 +1,20 @@
 from aiogram import executor, Dispatcher
 from tortoise import Tortoise
-from loader import dp, db
+from loader import dp, db, scheduler, bot
 import middlewares
 import filters
 import handlers
 from data import config
 from utils.db_api import init_db
+from utils.postpone_message import send_postpone_messages
 
 
 
 async def on_startup(dp: Dispatcher):
-
     await init_db()
+    scheduler.add_job(send_postpone_messages, "interval", seconds=50, args=(bot,))
+    scheduler.start()
+
 
 async def on_shutdown(dp: Dispatcher):
     await Tortoise.close_connections()

@@ -1,21 +1,19 @@
 from loader import dp
 
 from aiogram import types
-from aiogram.dispatcher import FSMContext
 from states import menu
 
 from states.admin import AdminStates
-from utils.misc import get_current_admin, get_current_user
-from .send_msg import get_menu_sender_msg
+from utils.misc import get_current_admin
 from models import Admin
-from keyboards.inline import soon_be_available, admin, back_callback
+from keyboards.inline import soon_be_available
 from keyboards.inline.admin import send_msg
 
 
 
 @get_current_admin()
 @dp.callback_query_handler(state=menu.MenuStates.admin)
-async def get_section_settings(call: types.CallbackQuery, admin: Admin, state: FSMContext):
+async def get_section_settings(call: types.CallbackQuery, admin: Admin):
     if call.data == 'msg-sender':
         await AdminStates.send_msg.set()
         keyboard = await send_msg.get_keyboard(admin)

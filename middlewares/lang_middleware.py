@@ -12,4 +12,4 @@ async def get_lang(tele_id):
 class ACLMiddleware(I18nMiddleware):
     async def get_user_locale(self, action: str, args: Tuple[Any]) -> str:
         user = types.User.get_current()
-        return await get_lang(user.id) or user.locale.language
+        return await get_lang(user.id) or user.language_code
