@@ -3,12 +3,14 @@ from models import Faculty
 from keyboards.inline import blank_callback, back_callback
 from middlewares import _
 
-async def get_keyboard():
+async def get_keyboard(editable=False):
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     faculties = await Faculty().select_all_faculties()
     for faculty in faculties:
         keyboard.add(types.InlineKeyboardButton(faculty.title, callback_data='faculty-'+str(faculty.id)))
     if not faculties:
         keyboard.add(types.InlineKeyboardButton(_('Нет тут ничего'), callback_data=blank_callback.new(category='faculty')))
+    if editable:
+        keyboard.add(types.InlineKeyboardButton('Добавить', callback_data='add-faculty'))
     keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='lang')))
     return keyboard

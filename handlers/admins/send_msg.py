@@ -31,6 +31,7 @@ async def back_to_send_msg(callback: types.CallbackQuery, state: FSMContext, adm
     keyboard = await send_msg.get_keyboard(admin)
     await callback.message.edit_text("Выберите из предложеного в меню:", reply_markup=keyboard)
 
+
 @get_current_admin()
 @dp.callback_query_handler(back_callback.filter(category='delete_msg'), state=AdminStates.all_states)
 async def back_choose_faculty(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
@@ -66,10 +67,12 @@ async def get_menu_sender_msg(call: types.CallbackQuery, admin: Admin, state: FS
 async def get_text(msg: types.Message, admin: Admin, state: FSMContext, user: User):
     data = await state.get_data()
     message_id = data.get('current_msg_id')
-    await bot.edit_message_text("Теперь нужно написать дату и время в которые вы хотите отправить пост в формате <DD.MM.YYYY HH:MM>", user.tele_id, message_id)
+    await bot.edit_message_text("Теперь нужно написать дату и время в которые вы хотите отправить пост в формате "
+                                "<DD.MM.YYYY HH:MM>", user.tele_id, message_id)
     await SendMsgStates.time.set()
     await state.update_data(postpone_text=msg.text)
     await msg.delete()
+
 
 @get_current_admin()
 @get_current_user()
@@ -86,7 +89,9 @@ async def get_time(msg: types.Message, admin: Admin, state: FSMContext, user: Us
         sending_time = datetime(year, month, day, hour, minute)
         if config.LOCAL_TZ.localize(sending_time) <= config.LOCAL_TZ.localize(datetime.now()):
             try:
-                await bot.edit_message_text('Дата и время указывают на прошлое - сообщение не будет никогда отправленно', user.tele_id, message_id)
+                await bot.edit_message_text(
+                    'Дата и время указывают на прошлое - сообщение не будет никогда отправленно', user.tele_id,
+                    message_id)
             except MessageNotModified:
                 pass
             await msg.delete()
@@ -99,6 +104,8 @@ async def get_time(msg: types.Message, admin: Admin, state: FSMContext, user: Us
         await msg.delete()
         return
     await PostponeMessage().create_message(config.LOCAL_TZ.localize(sending_time), text, admin)
-    await bot.edit_message_text(f'Отлично, ваше сообщение будет отправленно в {sending_time.strftime("%A, %d.%m.%Y %H:%m")} с текстом "{text[:20]}..."', user.tele_id, message_id, reply_markup=back_after_creating.keyboard)
+    await bot.edit_message_text(
+        f'Отлично, ваше сообщение будет отправленно в {sending_time.strftime("%A, %d.%m.%Y %H:%m")} с текстом "{text[:20]}..."',
+        user.tele_id, message_id, reply_markup=back_after_creating.keyboard)
     await AdminStates.send_msg.set()
     await msg.delete()

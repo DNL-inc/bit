@@ -10,7 +10,6 @@ class CurrentAdminMiddleware(BaseMiddleware):
         if handler and getattr(handler, 'get_current_admin', False):
             admin = await Admin().select_admin_by_tele_id(msg.from_user.id)
             if admin:
-                print(admin)
                 data['admin'] = admin
             else:
                 await msg.answer("""
@@ -23,7 +22,6 @@ class CurrentAdminMiddleware(BaseMiddleware):
         if handler and getattr(handler, 'get_current_admin', False):
             admin = await Admin().select_admin_by_tele_id(callback.from_user.id)
             if admin:
-                print(admin)
                 data['admin'] = admin
             else:
                 await callback.answer("""
