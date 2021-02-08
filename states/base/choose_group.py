@@ -3,7 +3,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 
 
 class ChooseGroupStates(StatesGroup):
-    choose_faculty = State()
-    choose_course = State()
-    choose_group = State()
-    choose_subgroups = State()
+    faculty = State()
+    course = State()
+    group = State()
+    subgroups = State()

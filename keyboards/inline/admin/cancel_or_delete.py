@@ -1,6 +1,5 @@
 from aiogram import types
 from keyboards.inline import back_callback, delete_callback
-from models import Faculty
 
 
 async def get_keyboard(category):

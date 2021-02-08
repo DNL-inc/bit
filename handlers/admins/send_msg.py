@@ -105,7 +105,7 @@ async def get_time(msg: types.Message, admin: Admin, state: FSMContext, user: Us
         return
     await PostponeMessage().create_message(config.LOCAL_TZ.localize(sending_time), text, admin)
     await bot.edit_message_text(
-        f'Отлично, ваше сообщение будет отправленно в {sending_time.strftime("%A, %d.%m.%Y %H:%m")} с текстом "{text[:20]}..."',
+        f'Отлично, ваше сообщение будет отправленно в {sending_time.strftime("%A, %d.%m.%Y %H:%M")} с текстом "{text[:20]}..."',
         user.tele_id, message_id, reply_markup=back_after_creating.keyboard)
     await AdminStates.send_msg.set()
     await msg.delete()

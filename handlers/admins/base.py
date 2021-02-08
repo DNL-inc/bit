@@ -24,7 +24,13 @@ async def get_section_settings(call: types.CallbackQuery, admin: Admin):
         await call.message.edit_text('Выберите факультет или добавть новый', reply_markup=keyboard)
     elif call.data == 'edit-groups':
         await AdminStates.groups.set()
-        await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим', reply_markup=soon_be_available.keyboard)
+        keyboard = None
+        if admin.role.name == 'supreme':
+            keyboard = await faculties.get_keyboard()
+        else:
+            await admin.fetch_related('faculty')
+            keyboard = await faculties.get_keyboard(one_faculty=admin.faculty)
+        await call.message.edit_text('Выберите факультет', reply_markup=keyboard)
     elif call.data == 'edit-subgroups':
         await AdminStates.subgroups.set()
         await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим', reply_markup=soon_be_available.keyboard)

@@ -15,7 +15,6 @@ async def send_postpone_messages(bot: Bot):
         datetime.datetime(timestamp_now.year, timestamp_now.month, timestamp_now.day, timestamp_now.hour,
                           timestamp_now.minute))
     messages = await PostponeMessage.filter(sending_time=timestamp).all()
-    print(messages)
     for message in messages:
         admin = await Admin.get(id=message.creator_id)
         users: List[User]
