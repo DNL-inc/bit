@@ -6,9 +6,8 @@ from states import menu
 from states.admin import AdminStates
 from utils.misc import get_current_admin
 from models import Admin
-from keyboards.inline import soon_be_available, faculties
-from keyboards.inline.admin import send_msg
-
+from keyboards.inline import soon_be_available, faculties, back_callback
+from keyboards.inline.admin import send_msg, edit_subgroups, cancel
 
 
 @get_current_admin()
@@ -32,8 +31,15 @@ async def get_section_settings(call: types.CallbackQuery, admin: Admin):
             keyboard = await faculties.get_keyboard(one_faculty=admin.faculty)
         await call.message.edit_text('Выберите факультет', reply_markup=keyboard)
     elif call.data == 'edit-subgroups':
+        await admin.fetch_related('group')
         await AdminStates.subgroups.set()
-        await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим', reply_markup=soon_be_available.keyboard)
+        if admin.group:
+            keyboard = await edit_subgroups.get_keyboard(admin.group.id)
+            await call.message.edit_text('Выберите подгруппу или добавьте новую', reply_markup=keyboard)
+        else:
+            keyboard = types.InlineKeyboardMarkup(row_width=1)
+            keyboard.add(types.InlineKeyboardButton('Назад', callback_data=back_callback.new(category='lang')))
+            await call.message.edit_text('Вав! Похоже у вы не староста, как сюда попали?', reply_markup=keyboard)
     elif call.data == 'edit-events':
         await AdminStates.events.set()
         await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим', reply_markup=soon_be_available.keyboard)

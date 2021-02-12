@@ -1,6 +1,5 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-from tortoise.exceptions import IntegrityError
 
 from keyboards.inline import courses, groups, back_callback, faculties, delete_callback, create_callback
 from keyboards.inline.admin import cancel_or_delete, cancel, cancel_or_create
@@ -29,7 +28,7 @@ async def back_choose_faculty(callback: types.CallbackQuery, state: FSMContext, 
     else:
         await admin.fetch_related('faculty')
         keyboard = await faculties.get_keyboard(one_faculty=admin.faculty)
-    await callback.message.edit_text(_("Выберите ваш факультет:"), reply_markup=keyboard)
+    await callback.message.edit_text(_("Выберите факультет:"), reply_markup=keyboard)
     await AdminStates.groups.set()
 
 
@@ -99,7 +98,7 @@ async def save_group(callback: types.CallbackQuery, state: FSMContext, user: Use
     data['faculty'] = args['faculty']
     data['course'] = args['course']
     keyboard = await groups.get_keyboard(data, True)
-    await callback.answer("Вы успешно изменили название факультета")
+    await callback.answer("Вы успешно изменили название группы")
     await bot.edit_message_text("Выберите группу", reply_markup=keyboard, chat_id=user.tele_id, message_id=args.get("current_msg"))
     await EditGroupStates.course.set()
 

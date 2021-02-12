@@ -28,6 +28,8 @@ async def delete_faculty(callback: types.CallbackQuery, admin: Admin, state: FSM
 @get_current_admin()
 @dp.callback_query_handler(back_callback.filter(category='cancel'), state=[AdminStates.faculties, EditFacultyStates.create, EditFacultyStates.edit])
 async def back_from_faculty(callback: types.CallbackQuery, admin: Admin, state: FSMContext):
+    data = await state.get_state()
+    print(data)
     await callback.answer()
     keyboard = await faculties.get_keyboard(True)
     await callback.message.edit_text('Выберите факультет или добавть новый', reply_markup=keyboard)

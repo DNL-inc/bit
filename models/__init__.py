@@ -78,7 +78,7 @@ class Admin(Model):
             return True
         elif admin.role.name == 'improved' and operation in ['msg-sender', 'edit-admins', 'edit-groups']:
             return True
-        elif admin.role.name == 'supreme':
+        elif admin.role.name == 'supreme' and operation in ['msg-sender', 'edit-admins', 'edit-faculties', 'edit-groups']:
             return True
         return False
 
