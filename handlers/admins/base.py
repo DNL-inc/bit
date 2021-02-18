@@ -1,13 +1,12 @@
-from loader import dp
-
 from aiogram import types
-from states import menu
 
+from keyboards.inline import soon_be_available, faculties, back_callback
+from keyboards.inline.admin import send_msg, edit_subgroups
+from loader import dp
+from models import Admin
+from states import menu
 from states.admin import AdminStates
 from utils.misc import get_current_admin
-from models import Admin
-from keyboards.inline import soon_be_available, faculties, back_callback
-from keyboards.inline.admin import send_msg, edit_subgroups, cancel
 
 
 @get_current_admin()
@@ -42,8 +41,10 @@ async def get_section_settings(call: types.CallbackQuery, admin: Admin):
             await call.message.edit_text('Вав! Похоже у вы не староста, как сюда попали?', reply_markup=keyboard)
     elif call.data == 'edit-events':
         await AdminStates.events.set()
-        await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим', reply_markup=soon_be_available.keyboard)
+        await admin.fetch_related('group')
+        keyboard = await edit_subgroups.get_keyboard(admin.group.id, editable=False, for_events=True)
+        await call.message.edit_text('Выберите подгруппу:', reply_markup=keyboard)
     elif call.data == 'edit-admins':
         await AdminStates.admins.set()
-        await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим', reply_markup=soon_be_available.keyboard)
-
+        await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим',
+                                     reply_markup=soon_be_available.keyboard)

@@ -10,10 +10,6 @@ DB_URI = os.getenv('DB_URI', 'sqlite://bit.sqlite')
 
 SKIP_UPDATES = False
 
-LANGUAGES = {'ru': '🇷🇺 Русский', 'en': '🇺🇸 English', '_uk': '🇺🇦 Українська'}
-MENU = {'schedule': 'Рacпиcaниe', 'settings': 'Нacтрoйки', 'admin': 'Aдминиcтрирoвaниe'}
-
-
 LOCAL_TZ = pytz.timezone('Europe/Kiev')
 
 NUMBER_COURSES = 6
@@ -28,10 +24,19 @@ TORTOISE_ORM = {
     },
 }
 
-SETTIGS = {'notifications': 'Уведомления', 'group-and-subgroups': 'Группа и Подгруппы', 'lang': 'Язык', 'chat-settings': 'Настройки Чата'}
-ADMIN = {'msg-sender': 'Отправить сообщение', 'edit-faculties': 'Редактирование факультетов', 'edit-groups': 'Редактирование групп', 'edit-subgroups': 'Редактирование подгрупп', 'edit-events': 'Редактирование событий', 'edit-admins': 'Редактирование админов'}
+LANGUAGES = {'ru': '🇷🇺 Русский', 'en': '🇺🇸 English', '_uk': '🇺🇦 Українська'}
+MENU = {'schedule': 'Рacпиcaниe', 'settings': 'Нacтрoйки', 'admin': 'Aдминиcтрирoвaниe'}
+SETTIGS = {'notifications': 'Уведомления', 'group-and-subgroups': 'Группа и Подгруппы', 'lang': 'Язык',
+           'chat-settings': 'Настройки Чата'}
+ADMIN = {'msg-sender': 'Отправить сообщение', 'edit-faculties': 'Редактирование факультетов',
+         'edit-groups': 'Редактирование групп', 'edit-subgroups': 'Редактирование подгрупп',
+         'edit-events': 'Редактирование событий', 'edit-admins': 'Редактирование админов'}
+OPERATIONTS_EVENT = {'edit-title': "Изменить Название", 'edit-date': "Изменить Дату", 'edit-type': "Изменить Тип",
+                     'edit-link': 'Изменить Ссылку', 'delete': 'Удалить'}
+TYPE_EVENT = {'test': "Контрольная", 'lecture': 'Лекция', 'exam': 'Экзамен', 'consultation': 'Консультация',
+              'practise': 'Практика'}
 
 I18N_DOMAIN = 'bit'
 BASE_DIR = Path(__file__).parent
-LOCALES_DIR = BASE_DIR / 'locales' 
-LOCALES_DIR = BASE_DIR / 'locales' 
+LOCALES_DIR = BASE_DIR / 'locales'
+LOCALES_DIR = BASE_DIR / 'locales'
