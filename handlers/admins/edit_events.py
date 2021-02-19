@@ -6,6 +6,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.utils.exceptions import MessageNotModified
 
 from data import config
+from data.config import LOCAL_TZ
 from keyboards.inline import events, day, back_callback, delete_callback, create_callback, continue_callback
 from keyboards.inline.admin import edit_subgroups, event_operations, cancel, event_type, cancel_or_delete, \
     cancel_or_create, continue_or_cancel
@@ -209,8 +210,12 @@ async def change_link(msg: types.Message, state: FSMContext, user: User):
                                     message_id=data.get('current_msg'), disable_web_page_preview=True)
         await EditEventStates.operation.set()
     else:
-        await bot.edit_message_text("Cсылку неправильная", reply_markup=cancel.keyboard, chat_id=user.tele_id,
-                                    message_id=data.get('current_msg'))
+        try:
+
+            await bot.edit_message_text("Cсылку неправильная", reply_markup=cancel.keyboard, chat_id=user.tele_id,
+                                        message_id=data.get('current_msg'))
+        except MessageNotModified:
+            pass
 
 
 @get_current_user()
@@ -222,7 +227,10 @@ async def change_date(msg: types.Message, state: FSMContext, user: User):
     day, month, year = map(int, msg.text.split('.'))
     try:
         date_over = datetime(year, month, day)
-        if config.LOCAL_TZ.localize(date_over) > config.LOCAL_TZ.localize(datetime.now()):
+        timestamp_now = LOCAL_TZ.localize(datetime.now())
+        timestamp = LOCAL_TZ.localize(
+            datetime(timestamp_now.year, timestamp_now.month, timestamp_now.day))
+        if config.LOCAL_TZ.localize(date_over) >= timestamp:
             if event:
                 event.event_over = date_over
                 await event.save()
@@ -237,13 +245,19 @@ async def change_date(msg: types.Message, state: FSMContext, user: User):
                                             message_id=data.get('current_msg'), disable_web_page_preview=True)
             await EditEventStates.operation.set()
         else:
-            await bot.edit_message_text(
-                'Дата указывает на прошлое', user.tele_id,
-                message_id=data.get('current_msg'))
+            try:
+                await bot.edit_message_text(
+                    'Дата указывает на прошлое', user.tele_id,
+                    message_id=data.get('current_msg'))
+            except MessageNotModified:
+                pass
     except ValueError:
-        await bot.edit_message_text(
-            'Дата указана неправильно', user.tele_id,
-            message_id=data.get('current_msg'))
+        try:
+            await bot.edit_message_text(
+                'Дата указана неправильно', user.tele_id,
+                message_id=data.get('current_msg'))
+        except MessageNotModified:
+            pass
 
 
 @get_current_user()
@@ -306,7 +320,10 @@ async def get_event_over(msg: types.Message, state: FSMContext, user: User):
     day, month, year = map(int, msg.text.split('.'))
     try:
         date_over = datetime(year, month, day)
-        if config.LOCAL_TZ.localize(date_over) > config.LOCAL_TZ.localize(datetime.now()):
+        timestamp_now = LOCAL_TZ.localize(datetime.now())
+        timestamp = LOCAL_TZ.localize(
+            datetime(timestamp_now.year, timestamp_now.month, timestamp_now.day))
+        if config.LOCAL_TZ.localize(date_over) >= timestamp:
             await state.update_data(event_over=date_over)
             await CreateEventStates.link.set()
             await bot.edit_message_text("Напишите ссылку на событие", reply_markup=cancel.keyboard,

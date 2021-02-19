@@ -18,7 +18,9 @@ async def get_section_settings(call: types.CallbackQuery, admin: Admin):
         await call.message.edit_text('Выберите из предложеного в меню: ', reply_markup=keyboard)
     elif call.data == 'edit-faculties':
         await AdminStates.faculties.set()
-        keyboard = await faculties.get_keyboard(True)
+        await admin.fetch_related("faculty")
+        keyboard = await faculties.get_keyboard(True if admin.role.name == 'supreme' else False,
+                                                admin.faculty if admin.role.name == 'improved' else False)
         await call.message.edit_text('Выберите факультет или добавть новый', reply_markup=keyboard)
     elif call.data == 'edit-groups':
         await AdminStates.groups.set()

@@ -20,26 +20,30 @@ async def delete_faculty(callback: types.CallbackQuery, admin: Admin, state: FSM
     await faculty.delete()
     await state.update_data(faculty=None)
     await callback.answer('Факультет был удален')
-    keyboard = await faculties.get_keyboard(True)
+    await admin.fetch_related("faculty")
+    keyboard = await faculties.get_keyboard(True if admin.role.name == 'supreme' else False,
+                                            admin.faculty if admin.role.name == 'improved' else False)
     await callback.message.edit_text('Выберите факультет или добавть новый', reply_markup=keyboard)
     await AdminStates.faculties.set()
 
 
 @get_current_admin()
-@dp.callback_query_handler(back_callback.filter(category='cancel'), state=[AdminStates.faculties, EditFacultyStates.create, EditFacultyStates.edit])
+@dp.callback_query_handler(back_callback.filter(category='cancel'),
+                           state=[AdminStates.faculties, EditFacultyStates.create, EditFacultyStates.edit])
 async def back_from_faculty(callback: types.CallbackQuery, admin: Admin, state: FSMContext):
     data = await state.get_state()
-    print(data)
     await callback.answer()
-    keyboard = await faculties.get_keyboard(True)
+    await admin.fetch_related("faculty")
+    keyboard = await faculties.get_keyboard(True if admin.role.name == 'supreme' else False,
+                                            admin.faculty if admin.role.name == 'improved' else False)
     await callback.message.edit_text('Выберите факультет или добавть новый', reply_markup=keyboard)
     await AdminStates.faculties.set()
 
 
+@get_current_admin()
 @get_current_user()
 @dp.callback_query_handler(create_callback.filter(category='faculty'), state=EditFacultyStates.edit)
-async def save_faculty(callback: types.CallbackQuery, state: FSMContext, user: User):
-
+async def save_faculty(callback: types.CallbackQuery, state: FSMContext, user: User, admin: Admin):
     data = await state.get_data()
     faculty_id = data.get('faculty')
     faculty = await Faculty.filter(id=faculty_id).first()
@@ -48,26 +52,31 @@ async def save_faculty(callback: types.CallbackQuery, state: FSMContext, user: U
         await faculty.save()
     except IntegrityError:
         await callback.answer('Такой факультет уже существует')
-    keyboard = await faculties.get_keyboard(True)
+    await admin.fetch_related("faculty")
+    keyboard = await faculties.get_keyboard(True if admin.role.name == 'supreme' else False,
+                                            admin.faculty if admin.role.name == 'improved' else False)
     await callback.answer("Вы успешно изменили название факультета")
     await bot.edit_message_text("Выберите факультет или добавть новый", reply_markup=keyboard, chat_id=user.tele_id,
                                 message_id=data.get("current_msg"))
     await AdminStates.faculties.set()
 
 
-
+@get_current_admin()
 @get_current_user()
 @dp.message_handler(state=EditFacultyStates.create)
-async def create_faculty(msg: types.Message, state: FSMContext, user: User):
+async def create_faculty(msg: types.Message, state: FSMContext, user: User, admin: Admin):
     data = await state.get_data()
     await msg.delete()
     try:
         await Faculty.create(title=msg.text.upper())
     except IntegrityError:
-        await bot.edit_message_text('Такой факультет уже существует', reply_markup=cancel.keyboard, chat_id=user.tele_id,
+        await bot.edit_message_text('Такой факультет уже существует', reply_markup=cancel.keyboard,
+                                    chat_id=user.tele_id,
                                     message_id=data.get("current_msg"))
         return
-    keyboard = await faculties.get_keyboard(True)
+    await admin.fetch_related("faculty")
+    keyboard = await faculties.get_keyboard(True if admin.role.name == 'supreme' else False,
+                                            admin.faculty if admin.role.name == 'improved' else False)
     await bot.edit_message_text("Выберите факультет или добавть новый", reply_markup=keyboard, chat_id=user.tele_id,
                                 message_id=data.get("current_msg"))
     await AdminStates.faculties.set()
