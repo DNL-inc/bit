@@ -21,6 +21,7 @@ from utils.misc import get_current_admin, get_current_user
 @dp.callback_query_handler(back_callback.filter(category='lang'),
                            state=EditEventStates.all_states)
 async def back_to_choose_subgroup(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
+    await callback.answer("")
     await AdminStates.events.set()
     await admin.fetch_related('group')
     keyboard = await edit_subgroups.get_keyboard(admin.group.id, editable=False, for_events=True)
@@ -31,6 +32,7 @@ async def back_to_choose_subgroup(callback: types.CallbackQuery, state: FSMConte
 @dp.callback_query_handler(back_callback.filter(category='subgroup'),
                            state=EditEventStates.all_states)
 async def back_to_choose_day(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
+    await callback.answer("")
     await callback.message.edit_text("Выберите день: ", reply_markup=day.keyboard)
     await EditEventStates.day.set()
 
@@ -39,6 +41,7 @@ async def back_to_choose_day(callback: types.CallbackQuery, state: FSMContext, a
 @dp.callback_query_handler(back_callback.filter(category='event'),
                            state=EditEventStates.all_states)
 async def back_to_choose_event(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
+    await callback.answer("")
     data = await state.get_data()
     await admin.fetch_related("group")
     keyboard = await events.get_keyboard(day=data.get('day'), subgroup_id=data.get('subgroup_id'), editable=True,
@@ -50,6 +53,7 @@ async def back_to_choose_event(callback: types.CallbackQuery, state: FSMContext,
 @get_current_admin()
 @dp.callback_query_handler(state=AdminStates.events)
 async def entry_manage_events(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
+    await callback.answer("")
     if callback.data == "all-events":
         await callback.message.edit_text("Выберите день: ", reply_markup=day.keyboard)
     elif callback.data.startswith('subgroup-'):
@@ -64,6 +68,7 @@ async def entry_manage_events(callback: types.CallbackQuery, state: FSMContext, 
 @get_current_admin()
 @dp.callback_query_handler(state=EditEventStates.day)
 async def choose_day(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
+    await callback.answer("День выбран")
     await state.update_data(day=callback.data)
     data = await state.get_data()
     await admin.fetch_related("group")
@@ -75,6 +80,7 @@ async def choose_day(callback: types.CallbackQuery, state: FSMContext, admin: Ad
 
 @dp.callback_query_handler(state=EditEventStates.event)
 async def choose_event(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer("Событие выбрано")
     if callback.data.startswith('event-'):
         event_id = callback.data.split('-')[-1]
         event_id = int(event_id)
@@ -98,6 +104,7 @@ async def choose_event(callback: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(back_callback.filter(category='cancel'),
                            state=EditEventStates.all_states)
 async def back_choose_day(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer("Вы вернулись назад")
     data = await state.get_data()
     event = await Event.get(id=data.get('event_id'))
     date = event.event_over.strftime("%A, %d.%m.%Y") if event.event_over else "-"
@@ -114,6 +121,7 @@ async def back_choose_day(callback: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(back_callback.filter(category='cancel'),
                            state=CreateEventStates.all_states)
 async def back_choose_event(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
+    await callback.answer("Вы вернулись назад")
     data = await state.get_data()
     await admin.fetch_related("group")
     keyboard = await events.get_keyboard(day=data.get('day'), subgroup_id=data.get('subgroup_id'), editable=True,
@@ -125,6 +133,7 @@ async def back_choose_event(callback: types.CallbackQuery, state: FSMContext, ad
 @get_current_admin()
 @dp.callback_query_handler(delete_callback.filter(category='event'), state=EditEventStates.operation)
 async def delete_event(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
+    await callback.answer("Событие удалено")
     data = await state.get_data()
     event = await Event.get(id=data.get('event_id'))
     if event:
@@ -137,6 +146,7 @@ async def delete_event(callback: types.CallbackQuery, state: FSMContext, admin: 
 
 @dp.callback_query_handler(state=EditEventStates.operation)
 async def choose_operation(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer("Выбрано событие")
     if callback.data == 'edit-title':
         await callback.message.edit_text("Напишите новое название события", reply_markup=cancel.keyboard)
         await EditEventStates.title.set()
@@ -212,7 +222,7 @@ async def change_date(msg: types.Message, state: FSMContext, user: User):
     day, month, year = map(int, msg.text.split('.'))
     try:
         date_over = datetime(year, month, day)
-        if config.LOCAL_TZ.localize(date_over) >= config.LOCAL_TZ.localize(datetime.now()):
+        if config.LOCAL_TZ.localize(date_over) > config.LOCAL_TZ.localize(datetime.now()):
             if event:
                 event.event_over = date_over
                 await event.save()
@@ -239,6 +249,7 @@ async def change_date(msg: types.Message, state: FSMContext, user: User):
 @get_current_user()
 @dp.callback_query_handler(state=EditEventStates.type)
 async def change_type(callback: types.CallbackQuery, state: FSMContext, user: User):
+    await callback.answer("Выбрано событие")
     data = await state.get_data()
     event = await Event.get(id=data.get('event_id'))
     if event:
@@ -257,6 +268,7 @@ async def change_type(callback: types.CallbackQuery, state: FSMContext, user: Us
 
 @dp.callback_query_handler(state=CreateEventStates.type)
 async def get_type(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer("Тип выбран")
     await state.update_data(type_event=callback.data)
     await callback.message.edit_text("Напишите название события", reply_markup=cancel.keyboard)
     await CreateEventStates.title.set()
@@ -278,6 +290,7 @@ async def get_title(msg: types.Message, state: FSMContext, user: User):
 @get_current_user()
 @dp.callback_query_handler(continue_callback.filter(), state=CreateEventStates.over)
 async def go_to_link(callback: types.CallbackQuery, state: FSMContext, user: User):
+    await callback.answer("")
     data = await state.get_data()
     await bot.edit_message_text("Напишите ссылку на событие", reply_markup=cancel.keyboard,
                                 chat_id=user.tele_id,
@@ -293,7 +306,7 @@ async def get_event_over(msg: types.Message, state: FSMContext, user: User):
     day, month, year = map(int, msg.text.split('.'))
     try:
         date_over = datetime(year, month, day)
-        if config.LOCAL_TZ.localize(date_over) >= config.LOCAL_TZ.localize(datetime.now()):
+        if config.LOCAL_TZ.localize(date_over) > config.LOCAL_TZ.localize(datetime.now()):
             await state.update_data(event_over=date_over)
             await CreateEventStates.link.set()
             await bot.edit_message_text("Напишите ссылку на событие", reply_markup=cancel.keyboard,
@@ -319,6 +332,7 @@ async def get_event_over(msg: types.Message, state: FSMContext, user: User):
 @get_current_admin()
 @dp.callback_query_handler(create_callback.filter(category='event'), state=CreateEventStates.event)
 async def create_event(callback: types.CallbackQuery, state: FSMContext, user: User, admin: Admin):
+    await callback.answer("Событие создано")
     data = await state.get_data()
     await admin.fetch_related("group")
     event = await Event.create(title=data.get('title'), day=data.get('day'), type=data.get('type_event'),
@@ -356,3 +370,8 @@ async def get_link(msg: types.Message, state: FSMContext, user: User):
                 message_id=data.get('current_msg'), reply_markup=cancel.keyboard)
         except MessageNotModified:
             pass
+
+
+@dp.message_handler(state=AdminStates.events)
+async def clear(msg: types.Message):
+    await msg.delete()

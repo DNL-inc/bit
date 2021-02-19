@@ -24,7 +24,7 @@ TORTOISE_ORM = {
     },
 }
 
-LANGUAGES = {'ru': '🇷🇺 Русский', 'en': '🇺🇸 English', '_uk': '🇺🇦 Українська'}
+LANGUAGES = {'ru': '🇷🇺 Русский', 'en': '🇺🇸 English', 'uk': '🇺🇦 Українська'}
 MENU = {'schedule': 'Рacпиcaниe', 'settings': 'Нacтрoйки', 'admin': 'Aдминиcтрирoвaниe'}
 SETTIGS = {'notifications': 'Уведомления', 'group-and-subgroups': 'Группа и Подгруппы', 'lang': 'Язык',
            'chat-settings': 'Настройки Чата'}
