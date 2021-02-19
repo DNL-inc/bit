@@ -18,6 +18,16 @@ from states.admin.edit_event import EditEventStates
 from utils.misc import get_current_admin, get_current_user
 
 
+def get_event_template(event):
+    date = event.event_over.strftime("%d.%m.%Y") if event.event_over else "-"
+    return """
+Название: [{}]({})
+Тип: {}
+Дата: {}
+Время: {}
+    """.format(event.title, event.link, config.TYPE_EVENT.get(event.type), date, event.time.strftime("%H:%M"))
+
+
 @get_current_admin()
 @dp.callback_query_handler(back_callback.filter(category='lang'),
                            state=EditEventStates.all_states)
@@ -87,12 +97,8 @@ async def choose_event(callback: types.CallbackQuery, state: FSMContext):
         event_id = int(event_id)
         await state.update_data(event_id=event_id)
         event = await Event.get(id=event_id)
-        date = event.event_over.strftime("%A, %d.%m.%Y") if event.event_over else "-"
-        await callback.message.edit_text('''
-Название: [{}]({})
-Тип: {}
-Дата: {}
-        '''.format(event.title, event.link, config.TYPE_EVENT[event.type], date),
+
+        await callback.message.edit_text(get_event_template(event),
                                          parse_mode="Markdown", reply_markup=event_operations.keyboard,
                                          disable_web_page_preview=True)
         await EditEventStates.operation.set()
@@ -108,12 +114,8 @@ async def back_choose_day(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer("Вы вернулись назад")
     data = await state.get_data()
     event = await Event.get(id=data.get('event_id'))
-    date = event.event_over.strftime("%A, %d.%m.%Y") if event.event_over else "-"
-    await callback.message.edit_text('''
-Название: [{}]({})
-Тип: {}
-Дата: {}
-    '''.format(event.title, event.link, config.TYPE_EVENT[event.type], date),
+
+    await callback.message.edit_text(get_event_template(event),
                                      parse_mode="Markdown", reply_markup=event_operations.keyboard,
                                      disable_web_page_preview=True)
 
@@ -160,12 +162,38 @@ async def choose_operation(callback: types.CallbackQuery, state: FSMContext):
     elif callback.data == 'edit-link':
         await callback.message.edit_text("Напишите новую ссылку", reply_markup=cancel.keyboard)
         await EditEventStates.link.set()
+    elif callback.data == 'edit-time':
+        await callback.message.edit_text("Напишите время начало пары", reply_markup=cancel.keyboard)
+        await EditEventStates.time.set()
     elif callback.data == 'delete':
         data = await state.get_data()
         event = await Event.get(id=data.get('event_id'))
         keyboard = await cancel_or_delete.get_keyboard('event')
         await callback.message.edit_text('Уверены, что хотите удалить "{}"?'.format(event.title),
                                          reply_markup=keyboard, disable_web_page_preview=True)
+
+
+@get_current_admin()
+@get_current_user()
+@dp.message_handler(state=EditEventStates.time)
+async def change_time(msg: types.Message, state: FSMContext, user: User, admin: Admin):
+    data = await state.get_data()
+    event = await Event.get(id=data.get('event_id'))
+    await msg.delete()
+    try:
+        hour, minute = map(int, msg.text.split(':'))
+        if event:
+            event.time = datetime(year=1991, month=8, day=24, hour=hour, minute=minute)
+            await event.save()
+        await admin.fetch_related("group")
+        await bot.edit_message_text(get_event_template(event),
+                                    parse_mode="Markdown", reply_markup=event_operations.keyboard, chat_id=user.tele_id,
+                                    message_id=data.get('current_msg'), disable_web_page_preview=True)
+        await EditEventStates.operation.set()
+
+    except ValueError:
+        await bot.edit_message_text("Неправильный формат или не правильно указано время", user.tele_id,
+                                    data.get('current_msg'), reply_markup=cancel.keyboard)
 
 
 @get_current_user()
@@ -177,12 +205,8 @@ async def change_title(msg: types.Message, state: FSMContext, user: User):
     if event:
         event.title = msg.text
         await event.save()
-    date = event.event_over.strftime("%A, %d.%m.%Y") if event.event_over else "-"
-    await bot.edit_message_text('''
-Название: [{}]({})
-Тип: {}
-Дата: {}
-    '''.format(event.title, event.link, config.TYPE_EVENT[event.type], date),
+
+    await bot.edit_message_text(get_event_template(event),
                                 parse_mode="Markdown", reply_markup=event_operations.keyboard, chat_id=user.tele_id,
                                 message_id=data.get('current_msg'), disable_web_page_preview=True)
     await EditEventStates.operation.set()
@@ -200,12 +224,8 @@ async def change_link(msg: types.Message, state: FSMContext, user: User):
         if event:
             event.link = msg.text
             await event.save()
-        date = event.event_over.strftime("%A, %d.%m.%Y") if event.event_over else "-"
-        await bot.edit_message_text('''
-Название: [{}]({})
-Тип: {}
-Дата: {}
-            '''.format(event.title, event.link, config.TYPE_EVENT[event.type], date),
+
+        await bot.edit_message_text(get_event_template(event),
                                     parse_mode="Markdown", reply_markup=event_operations.keyboard, chat_id=user.tele_id,
                                     message_id=data.get('current_msg'), disable_web_page_preview=True)
         await EditEventStates.operation.set()
@@ -235,11 +255,7 @@ async def change_date(msg: types.Message, state: FSMContext, user: User):
                 event.event_over = date_over
                 await event.save()
                 date = date_over.strftime("%A, %d.%m.%Y") if date_over else "-"
-                await bot.edit_message_text('''
-Название: [{}]({})
-Тип: {}
-Дата: {}
-                    '''.format(event.title, event.link, config.TYPE_EVENT[event.type], date),
+                await bot.edit_message_text(get_event_template(event),
                                             parse_mode="Markdown", reply_markup=event_operations.keyboard,
                                             chat_id=user.tele_id,
                                             message_id=data.get('current_msg'), disable_web_page_preview=True)
@@ -269,12 +285,8 @@ async def change_type(callback: types.CallbackQuery, state: FSMContext, user: Us
     if event:
         event.type = callback.data
         await event.save()
-    date = event.event_over.strftime("%A, %d.%m.%Y") if event.event_over else "-"
-    await callback.message.edit_text('''
-Название: [{}]({})
-Тип: {}
-Дата: {}
-    '''.format(event.title, event.link, config.TYPE_EVENT[event.type], date),
+
+    await callback.message.edit_text(get_event_template(event),
                                      parse_mode="Markdown", reply_markup=event_operations.keyboard,
                                      disable_web_page_preview=True)
     await EditEventStates.operation.set()
@@ -352,13 +364,43 @@ async def create_event(callback: types.CallbackQuery, state: FSMContext, user: U
     await callback.answer("Событие создано")
     data = await state.get_data()
     await admin.fetch_related("group")
-    event = await Event.create(title=data.get('title'), day=data.get('day'), type=data.get('type_event'),
-                               link=data.get('link'), event_over=data.get('event_over'), group_id=admin.group.id,
-                               subgroup_id=data.get('subgroup_id'))
+    await Event.create(title=data.get('title'), day=data.get('day'), type=data.get('type_event'),
+                       link=data.get('link'), event_over=data.get('event_over'), group_id=admin.group.id,
+                       subgroup_id=data.get('subgroup_id'), time=data.get('time'))
     keyboard = await events.get_keyboard(day=data.get('day'), subgroup_id=data.get('subgroup_id'), editable=True,
                                          group_id=admin.group.id)
     await callback.message.edit_text("Выберите событие или создайте новое:", reply_markup=keyboard)
     await EditEventStates.event.set()
+
+
+@get_current_admin()
+@get_current_user()
+@dp.message_handler(state=CreateEventStates.time)
+async def change_time(msg: types.Message, state: FSMContext, user: User, admin: Admin):
+    data = await state.get_data()
+    await msg.delete()
+    try:
+        hour, minute = map(int, msg.text.split(':'))
+        time = datetime(year=1991, month=8, day=24, hour=hour, minute=minute)
+        await state.update_data(time=time)
+        await admin.fetch_related("group")
+        keyboard = await cancel_or_create.get_keyboard('event')
+        date = data.get('event_over').strftime("%A, %d.%m.%Y") if data.get('event_over') else "-"
+        await bot.edit_message_text(
+            '''
+Название: [{}]({})
+Тип: {}
+Дата: {}
+Время: {}
+            '''.format(data.get('title'), data.get('link'), config.TYPE_EVENT[data.get('type_event')], date,
+                       time.strftime("%H:%M")),
+            user.tele_id,
+            message_id=data.get('current_msg'), reply_markup=keyboard, parse_mode="Markdown")
+        await CreateEventStates.event.set()
+
+    except ValueError:
+        await bot.edit_message_text("Неправильный формат или не правильно указано время", user.tele_id,
+                                    data.get('current_msg'), reply_markup=cancel.keyboard)
 
 
 @get_current_user()
@@ -370,16 +412,11 @@ async def get_link(msg: types.Message, state: FSMContext, user: User):
             '(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})',
             msg.text):
         await state.update_data(link=msg.text)
-        keyboard = await cancel_or_create.get_keyboard('event')
-        date = data.get('event_over').strftime("%A, %d.%m.%Y") if data.get('event_over') else "-"
-        await bot.edit_message_text(
-            '''
-Название: [{}]({})
-Тип: {}
-Дата: {}
-            '''.format(data.get('title'), msg.text, config.TYPE_EVENT[data.get('type_event')], date), user.tele_id,
-            message_id=data.get('current_msg'), reply_markup=keyboard, parse_mode="Markdown")
-        await CreateEventStates.event.set()
+        await bot.edit_message_text("Напишите время начала события",
+                                    user.tele_id,
+                                    message_id=data.get('current_msg'), reply_markup=cancel.keyboard,
+                                    parse_mode="Markdown")
+        await CreateEventStates.time.set()
     else:
         try:
             await bot.edit_message_text(

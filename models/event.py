@@ -20,6 +20,7 @@ class Event(Model):
     link = fields.CharField(255)
     type = fields.CharField(255)
     event_over = fields.DateField(null=True)
+    time = fields.DatetimeField(null=True)
     group = fields.ForeignKeyField('models.Group', on_delete="CASCADE")
     subgroup = fields.ForeignKeyField('models.Subgroup', on_delete="CASCADE", null=True)
     day = fields.CharEnumField(Day, null=True)

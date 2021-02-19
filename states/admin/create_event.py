@@ -7,3 +7,4 @@ class CreateEventStates(StatesGroup):
     type = State()
     over = State()
     event = State()
+    time = State()

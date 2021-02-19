@@ -9,3 +9,4 @@ class EditEventStates(StatesGroup):
     over = State()
     day = State()
     operation = State()
+    time = State()

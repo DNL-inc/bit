@@ -32,7 +32,7 @@ ADMIN = {'msg-sender': 'Отправить сообщение', 'edit-faculties'
          'edit-groups': 'Редактирование групп', 'edit-subgroups': 'Редактирование подгрупп',
          'edit-events': 'Редактирование событий', 'edit-admins': 'Редактирование админов'}
 OPERATIONTS_EVENT = {'edit-title': "Изменить Название", 'edit-date': "Изменить Дату", 'edit-type': "Изменить Тип",
-                     'edit-link': 'Изменить Ссылку', 'delete': 'Удалить'}
+                     'edit-link': 'Изменить Ссылку', 'edit-time': 'Изменить Время', 'delete': 'Удалить'}
 TYPE_EVENT = {'test': "Контрольная", 'lecture': 'Лекция', 'exam': 'Экзамен', 'consultation': 'Консультация',
               'practise': 'Практика'}
 
