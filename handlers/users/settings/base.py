@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from loader import dp
 
-from keyboards.inline import languages, back_callback, soon_be_available
+from keyboards.inline import languages, back_callback, soon_be_available, notification
 from keyboards.inline.settings import get_keyboard
 from utils.misc import get_current_user
 from models import User, Chat
@@ -36,15 +36,14 @@ async def get_section_settings(call: types.CallbackQuery, user: User, state: FSM
         await group_and_subgroups.get(call, user, state)
     elif call.data == 'chat-settings':
         await settings.SettingsStates.chat_settings.set()
-        await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим', reply_markup=soon_be_available.keyboard)
+        await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим',
+                                     reply_markup=soon_be_available.keyboard)
     elif call.data == 'notifications':
         await settings.SettingsStates.notifications.set()
-        await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим', reply_markup=soon_be_available.keyboard)
+        keyboard = await notification.get_keyboard(user)
+        await call.message.edit_text('Уведомления:', reply_markup=keyboard)
     elif call.data == 'lang':
-        keyboard = await languages.get_keyboard()
         await get_langs(call, user, state)
-
-
 
 
 @get_current_user()

@@ -1,11 +1,9 @@
 import datetime
-from typing import List
 
 from aiogram import Bot
-from aiogram.utils.exceptions import BotBlocked
 
 from data.config import LOCAL_TZ
-from models import Admin, User, Group, Event
+from models import Event
 
 
 async def delete(bot: Bot):

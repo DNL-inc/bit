@@ -6,3 +6,4 @@ from models.group import Group
 from models.postpone_message import PostponeMessage
 from models.subgroup import Subgroup
 from models.user import User
+from models.notification import Notification

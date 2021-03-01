@@ -24,3 +24,6 @@ class Event(Model):
     group = fields.ForeignKeyField('models.Group', on_delete="CASCADE")
     subgroup = fields.ForeignKeyField('models.Subgroup', on_delete="CASCADE", null=True)
     day = fields.CharEnumField(Day, null=True)
+
+    def __repr__(self):
+        return str(self.id)

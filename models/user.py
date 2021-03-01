@@ -15,6 +15,8 @@ class User(Model):
         'models.Group', on_delete='SET NULL', null=True, related_name='users')
     subgroups = fields.ManyToManyField('models.Subgroup')
     welcome_message_id = fields.IntField()
+    notification = fields.BooleanField(default=False)
+    notification_time = fields.IntField(default=0)
 
     class Meta:
         table = 'users'

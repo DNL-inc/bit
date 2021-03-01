@@ -118,6 +118,7 @@ async def back_choose_day(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.edit_text(get_event_template(event),
                                      parse_mode="Markdown", reply_markup=event_operations.keyboard,
                                      disable_web_page_preview=True)
+    await EditEventStates.operation.set()
 
 
 @get_current_admin()
@@ -183,7 +184,7 @@ async def change_time(msg: types.Message, state: FSMContext, user: User, admin: 
     try:
         hour, minute = map(int, msg.text.split(':'))
         if event:
-            event.time = datetime(year=1991, month=8, day=24, hour=hour, minute=minute)
+            event.time = LOCAL_TZ.localize(datetime(year=1991, month=8, day=24, hour=hour, minute=minute))
             await event.save()
         await admin.fetch_related("group")
         await bot.edit_message_text(get_event_template(event),
@@ -381,7 +382,7 @@ async def change_time(msg: types.Message, state: FSMContext, user: User, admin: 
     await msg.delete()
     try:
         hour, minute = map(int, msg.text.split(':'))
-        time = datetime(year=1991, month=8, day=24, hour=hour, minute=minute)
+        time = LOCAL_TZ.localize(datetime(year=1991, month=8, day=24, hour=hour, minute=minute))
         await state.update_data(time=time)
         await admin.fetch_related("group")
         keyboard = await cancel_or_create.get_keyboard('event')

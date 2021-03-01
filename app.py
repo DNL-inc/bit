@@ -8,12 +8,14 @@ from data import config
 from utils.db_api import init_db
 from utils.postpone_message import send_postpone_messages
 from utils.delete_events import delete
+from utils.send_notification import send
 
 
 async def on_startup(dp: Dispatcher):
     await init_db()
-    scheduler.add_job(send_postpone_messages, "interval", seconds=50, args=(bot,))
+    scheduler.add_job(send_postpone_messages, "cron", second=59, args=(bot,))
     scheduler.add_job(delete, "cron", hour=23, minute=59, args=(bot,))
+    scheduler.add_job(send, "cron", second=59, args=(bot,))
     scheduler.start()
 
 
