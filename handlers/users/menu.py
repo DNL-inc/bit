@@ -1,6 +1,7 @@
 from aiogram import types
-from aiogram.dispatcher import FSMContext 
+from aiogram.dispatcher import FSMContext
 
+from keyboards.inline.admin import edit_subgroups
 from loader import dp, bot
 from middlewares import _
 from utils.misc import rate_limit, get_current_user
@@ -42,13 +43,16 @@ async def set_menu_section(msg: types.Message, user: User, state: FSMContext):
         await get_settings_page(msg, user, state)
 
 
+@get_current_user()
 async def get_schedule_page(msg: types.Message, user: User, state: FSMContext):
     await msg.delete()
-    keyboard = await menu.get_keyboard(user)
+    await user.fetch_related("group")
+    keyboard = await edit_subgroups.get_keyboard(user.group.id, False, True, user)
     data = await state.get_data()
     await bot.delete_message(user.tele_id, data.get('current_msg'))
-    msg = await msg.answer('schedule')
+    msg = await msg.answer('Расписание: ', reply_markup=keyboard)
     await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
+    await MenuStates.schedule.set()
 
 
 async def get_settings_page(msg: types.Message, user: User, state: FSMContext):
@@ -70,7 +74,7 @@ async def get_admin_page(msg: types.Message, user: User, state: FSMContext):
     msg = await msg.answer(_('Администрирование:'), reply_markup=keyboard)
     await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
 
-    
+
 @get_current_user()
 @dp.callback_query_handler(back_callback.filter(category='menu'), state=MenuStates.all_states)
 async def back_to_menu(call: types.CallbackQuery, user: User, state: FSMContext):

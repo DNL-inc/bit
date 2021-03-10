@@ -184,7 +184,7 @@ async def change_time(msg: types.Message, state: FSMContext, user: User, admin: 
     try:
         hour, minute = map(int, msg.text.split(':'))
         if event:
-            event.time = LOCAL_TZ.localize(datetime(year=1991, month=8, day=24, hour=hour, minute=minute))
+            event.time = datetime(year=1991, month=8, day=24, hour=hour, minute=minute)
             await event.save()
         await admin.fetch_related("group")
         await bot.edit_message_text(get_event_template(event),
@@ -377,12 +377,12 @@ async def create_event(callback: types.CallbackQuery, state: FSMContext, user: U
 @get_current_admin()
 @get_current_user()
 @dp.message_handler(state=CreateEventStates.time)
-async def change_time(msg: types.Message, state: FSMContext, user: User, admin: Admin):
+async def set_time(msg: types.Message, state: FSMContext, user: User, admin: Admin):
     data = await state.get_data()
     await msg.delete()
     try:
         hour, minute = map(int, msg.text.split(':'))
-        time = LOCAL_TZ.localize(datetime(year=1991, month=8, day=24, hour=hour, minute=minute))
+        time = datetime(year=1991, month=8, day=24, hour=hour, minute=minute)
         await state.update_data(time=time)
         await admin.fetch_related("group")
         keyboard = await cancel_or_create.get_keyboard('event')

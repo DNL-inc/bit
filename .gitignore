@@ -9,4 +9,4 @@ src/.DS_Store
 logs
 *.env
 vars.sh
-.idea
+.idea/
