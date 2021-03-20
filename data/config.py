@@ -8,6 +8,8 @@ REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 LOGS_BASE_PATH = os.getcwd() + '/' + 'logs'
 DB_URI = os.getenv('DB_URI', 'sqlite://bit.sqlite')
 
+DEBUG = True
+
 SKIP_UPDATES = False
 
 LOCAL_TZ = pytz.timezone('Europe/Kiev')
@@ -24,7 +26,7 @@ TORTOISE_ORM = {
     },
 }
 
-LANGUAGES = {'ru': '🇷🇺 Русский', 'en': '🇺🇸 English', 'uk': '🇺🇦 Українська'}
+LANGUAGES = {'ru': '🇷🇺 Русский', 'en': '🇺🇸 English', 'ua': '🇺🇦 Українська'}
 MENU = {'schedule': 'Рacпиcaниe', 'settings': 'Нacтрoйки', 'admin': 'Aдминиcтрирoвaниe'}
 SETTIGS = {'notifications': 'Уведомления', 'group-and-subgroups': 'Группа и Подгруппы', 'lang': 'Язык',
            'chat-settings': 'Настройки Чата'}

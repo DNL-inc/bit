@@ -8,7 +8,6 @@ from data.config import LOCAL_TZ
 from models import PostponeMessage, Admin, User, Group
 
 
-
 async def send_postpone_messages(bot: Bot):
     timestamp_now = LOCAL_TZ.localize(datetime.datetime.now())
     timestamp = LOCAL_TZ.localize(
@@ -26,7 +25,8 @@ async def send_postpone_messages(bot: Bot):
             users = await get_users(group=admin.group_id)
         for user in users:
             try:
-                await bot.send_message(user.tele_id, message.text)
+                msg = await bot.send_message(user.tele_id, message.text)
+                await bot.pin_chat_message(user.tele_id, msg.message_id)
             except BotBlocked:
                 pass
         await message.delete()

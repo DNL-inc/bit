@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS "event" (
     "title" VARCHAR(255) NOT NULL,
     "link" VARCHAR(255) NOT NULL,
     "type" VARCHAR(255) NOT NULL,
-    "datetime_end" DATE,
+    "event_over" DATE,
+    "time" TIMESTAMPTZ,
     "day" VARCHAR(9),
     "group_id" INT NOT NULL REFERENCES "groups" ("id") ON DELETE CASCADE,
     "subgroup_id" INT REFERENCES "subgroup" ("id") ON DELETE CASCADE
@@ -33,6 +34,8 @@ CREATE TABLE IF NOT EXISTS "users" (
     "lastname" VARCHAR(255),
     "lang" VARCHAR(2),
     "welcome_message_id" INT NOT NULL,
+    "notification" BOOL NOT NULL  DEFAULT False,
+    "notification_time" INT NOT NULL  DEFAULT 0,
     "group_id" INT REFERENCES "groups" ("id") ON DELETE SET NULL
 );
 CREATE TABLE IF NOT EXISTS "admin" (
@@ -44,10 +47,17 @@ CREATE TABLE IF NOT EXISTS "admin" (
 );
 COMMENT ON COLUMN "admin"."role" IS 'ordinary: ordinary\nimproved: improved\nsupreme: supreme';
 CREATE TABLE IF NOT EXISTS "chats" (
-    "id" SERIAL NOT NULL PRIMARY KEY,
+    "id" BIGSERIAL NOT NULL PRIMARY KEY,
+    "notification" BOOL NOT NULL  DEFAULT False,
+    "notification_time" INT NOT NULL  DEFAULT 0,
     "tele_id" INT NOT NULL UNIQUE,
-    "group_id" INT NOT NULL REFERENCES "groups" ("id") ON DELETE CASCADE,
+    "group_id" INT REFERENCES "groups" ("id") ON DELETE SET NULL,
     "creator_id" INT NOT NULL REFERENCES "users" ("id") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "notification" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "user_id" INT NOT NULL REFERENCES "users" ("id") ON DELETE CASCADE,
+    "event_id" INT NOT NULL REFERENCES "event" ("id") ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "messages" (
     "id" SERIAL NOT NULL PRIMARY KEY,

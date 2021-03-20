@@ -1,5 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+
+from keyboards import inline
 from keyboards.inline import (back_callback, blank_callback, courses,
                               faculties, groups, settings, subgroups)
 from loader import dp
@@ -7,17 +9,26 @@ from middlewares import _
 from models import User, Chat
 from states.menu import MenuStates
 from states.settings import SettingsStates, group_and_subgroups
+from states.settings.chat_settings import ChatSettingsStates
 from utils.misc import get_current_user
+
 
 @get_current_user()
 @dp.callback_query_handler(back_callback.filter(category='lang'), state=group_and_subgroups.SettingsGandSStates.faculty)
 async def back_to_settings_menu(callback: types.CallbackQuery, state: FSMContext, user):
+    data = await state.get_data()
     await callback.answer(_("Вы вернулись обратно"))
+    if data.get('chat_id'):
+        chat = await Chat.filter(id=int(data.get('chat_id'))).first()
+        keyboard = await inline.settings.get_keyboard(False)
+        await callback.message.edit_text("Настройки чата - {}".format(chat.title),
+                                         reply_markup=keyboard)
+        await ChatSettingsStates.chat.set()
+        return
     await MenuStates.settings.set()
-    chats = await Chat().select_chats_by_creator(user.id)
-    keyboard = await settings.get_keyboard(True if chats else False)
+    keyboard = await settings.get_keyboard(True)
     await callback.message.edit_text(_("Настроки:"), reply_markup=keyboard)
-    
+
 
 async def get(callback: types.CallbackQuery, user: User, state: FSMContext):
     keyboard = await faculties.get_keyboard()
@@ -26,7 +37,8 @@ async def get(callback: types.CallbackQuery, user: User, state: FSMContext):
 
 
 @get_current_user()
-@dp.callback_query_handler(back_callback.filter(category='faculty'), state=group_and_subgroups.SettingsGandSStates.course)
+@dp.callback_query_handler(back_callback.filter(category='faculty'),
+                           state=group_and_subgroups.SettingsGandSStates.course)
 async def back_choose_faculty(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer(_("Вы вернулись обратно"))
     keyboard = await faculties.get_keyboard()
@@ -68,7 +80,8 @@ async def choose_course(callback: types.CallbackQuery, state: FSMContext):
 
 
 @get_current_user()
-@dp.callback_query_handler(back_callback.filter(category='group'), state=group_and_subgroups.SettingsGandSStates.subgroups)
+@dp.callback_query_handler(back_callback.filter(category='group'),
+                           state=group_and_subgroups.SettingsGandSStates.subgroups)
 async def back_choose_group(callback: types.CallbackQuery, state: FSMContext):
     args = await state.get_data()
     data = dict()
@@ -84,9 +97,18 @@ async def back_choose_group(callback: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(state=group_and_subgroups.SettingsGandSStates.group)
 async def choose_group(callback: types.CallbackQuery, state: FSMContext, user: User):
     if callback.data.startswith('group'):
+        data = await state.get_data()
+        if data.get('chat_id'):
+            chat = await Chat.filter(id=int(data.get('chat_id'))).first()
+            chat.group_id = int(callback.data.split('-')[-1])
+            await chat.save()
+            keyboard = await inline.settings.get_keyboard(False)
+            await callback.message.edit_text("Настройки чата - {}".format(chat.title),
+                                             reply_markup=keyboard)
+            await ChatSettingsStates.chat.set()
+            return
         await state.update_data(group_id=int(callback.data.split('-')[-1]))
         await callback.answer(_("Группа выбрана"))
-        data = await state.get_data()
         group_id = data['group_id']
         user_subgroups = await User().select_user_subgroups(user)
         keyboard = await subgroups.get_keyboard(group_id, user_subgroups)
@@ -101,10 +123,10 @@ async def complete(callback: types.CallbackQuery, state: FSMContext, user: User)
     data = await state.get_data()
     await User().update_user(user.tele_id, lang=data.get('lang'), group=data.get('group_id'))
     await state.finish()
-    await MenuStates.mediate.set()
+    await MenuStates.settings.set()
     await callback.message.edit_text(_("Вы успешно изменили группу и подгруппы!"))
     chats = await Chat().select_chats_by_creator(user.id)
-    keyboard = await settings.get_keyboard(True if chats else False)
+    keyboard = await settings.get_keyboard(True)
     await callback.message.delete()
     msg = await callback.message.answer(_("Вы успешно изменили группу и подгруппы!"), reply_markup=keyboard)
     await state.update_data(current_msg=msg.message_id, current_msg_text=msg.text)

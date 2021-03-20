@@ -1,6 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from filters.is_private import IsPrivate
 from keyboards.inline.admin import edit_subgroups
 from loader import dp, bot
 from middlewares import _
@@ -13,7 +14,7 @@ from states.menu import MenuStates
 
 
 @get_current_user()
-@dp.message_handler(commands=['menu'], state='*')
+@dp.message_handler(IsPrivate(), commands=['menu'], state='*')
 async def show_menu(msg: types.Message, user: User, state: FSMContext):
     await msg.delete()
     await MenuStates.mediate.set()
@@ -47,10 +48,15 @@ async def set_menu_section(msg: types.Message, user: User, state: FSMContext):
 async def get_schedule_page(msg: types.Message, user: User, state: FSMContext):
     await msg.delete()
     await user.fetch_related("group")
-    keyboard = await edit_subgroups.get_keyboard(user.group.id, False, True, user)
-    data = await state.get_data()
-    await bot.delete_message(user.tele_id, data.get('current_msg'))
-    msg = await msg.answer('Расписание: ', reply_markup=keyboard)
+    if user.group:
+        keyboard = await edit_subgroups.get_keyboard(user.group.id, False, True, user)
+        data = await state.get_data()
+        await bot.delete_message(user.tele_id, data.get('current_msg'))
+        msg = await msg.answer('Расписание: ', reply_markup=keyboard)
+    else:
+        data = await state.get_data()
+        await bot.delete_message(user.tele_id, data.get('current_msg'))
+        msg = await msg.answer('В настройках выберите группу')
     await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
     await MenuStates.schedule.set()
 
@@ -58,8 +64,7 @@ async def get_schedule_page(msg: types.Message, user: User, state: FSMContext):
 async def get_settings_page(msg: types.Message, user: User, state: FSMContext):
     await MenuStates.settings.set()
     await msg.delete()
-    chats = await Chat().select_chats_by_creator(user.id)
-    keyboard = await settings.get_keyboard(True if chats else False)
+    keyboard = await settings.get_keyboard(True)
     data = await state.get_data()
     await bot.delete_message(user.tele_id, data.get('current_msg'))
     msg = await msg.answer(_('Настроки:'), reply_markup=keyboard)

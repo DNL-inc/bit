@@ -1,39 +1,60 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from keyboards import inline
 from keyboards.inline import notification, notify_time, back_callback, day, events
 from keyboards.inline.settings import get_keyboard
 from loader import dp
 from models import User, Chat, Notification
 from models.event import Day, Event
 from states import settings, menu
+from states.settings.chat_settings import ChatSettingsStates
 from states.settings.edit_notifications import EditNotificationsStates
 from utils.misc import get_current_user
 
 
 @get_current_user()
 @dp.callback_query_handler(back_callback.filter(category='settings'), state=settings.SettingsStates.notifications)
-async def back_to_settings(callback: types.CallbackQuery, user: User):
+async def back_to_settings(callback: types.CallbackQuery, user: User, state: FSMContext):
     await callback.answer("Вы вернулись обратно")
-    chats = await Chat().select_chats_by_creator(user.id)
-    keyboard = await get_keyboard(True if chats else False)
+    data = await state.get_data()
+    if data.get('chat_id'):
+        chat = await Chat.filter(id=int(data.get('chat_id'))).first()
+        keyboard = await inline.settings.get_keyboard(False)
+        await callback.message.edit_text("Настройки чата - {}".format(chat.title),
+                                         reply_markup=keyboard)
+        await ChatSettingsStates.chat.set()
+        return
+    keyboard = await get_keyboard(True)
     await callback.message.edit_text("Настройки:", reply_markup=keyboard)
     await menu.MenuStates.settings.set()
 
 
 @get_current_user()
 @dp.callback_query_handler(back_callback.filter(category='cancel'), state=settings.SettingsStates.notifications)
-async def notifications_actions(callback: types.CallbackQuery, user: User):
+async def notifications_actions(callback: types.CallbackQuery, user: User, state: FSMContext):
     await callback.answer("Вы вернулись обратно")
     keyboard = await notification.get_keyboard(user)
+    data = await state.get_data()
+    if data.get('chat_id'):
+        chat = await Chat.filter(id=int(data.get('chat_id'))).first()
+        keyboard = await notification.get_keyboard(chat, True)
     await callback.message.edit_text('Уведомления:', reply_markup=keyboard)
 
 
 @get_current_user()
 @dp.callback_query_handler(state=settings.SettingsStates.notifications)
-async def notifications_actions(callback: types.CallbackQuery, user: User):
+async def notifications_actions(callback: types.CallbackQuery, user: User, state: FSMContext):
     if callback.data == 'notification-trigger':
         await callback.answer("")
+        data = await state.get_data()
+        if data.get('chat_id'):
+            chat = await Chat.filter(id=int(data.get('chat_id'))).first()
+            chat.notification = not chat.notification
+            await chat.save()
+            keyboard = await notification.get_keyboard(chat, True)
+            await callback.message.edit_reply_markup(keyboard)
+            return
         user.notification = not user.notification
         await user.save()
         keyboard = await notification.get_keyboard(user)
@@ -45,6 +66,14 @@ async def notifications_actions(callback: types.CallbackQuery, user: User):
     elif callback.data.startswith('notify-'):
         await callback.answer(
             'Ок, уведомление будет приходить за {} минут до начала события!'.format(callback.data.split('-')[-1]))
+        data = await state.get_data()
+        if data.get('chat_id'):
+            chat = await Chat.filter(id=int(data.get('chat_id'))).first()
+            chat.notification_time = callback.data.split('-')[-1]
+            await chat.save()
+            keyboard = await notification.get_keyboard(chat, True)
+            await callback.message.edit_text('Уведомления:', reply_markup=keyboard)
+            return
         user.notification_time = callback.data.split('-')[-1]
         await user.save()
         keyboard = await notification.get_keyboard(user)

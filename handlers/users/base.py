@@ -17,26 +17,6 @@ from models import User, Chat
 async def back_to_menu(callback: types.CallbackQuery, state: FSMContext, user: User):
     await callback.answer(_("Вы вернулись обратно"))
     chats = await Chat().select_chats_by_creator(user.id)
-    keyboard = await get_keyboard(True if chats else False)
+    keyboard = await get_keyboard(True)
     await callback.message.edit_text(_("Настройки:"), reply_markup=keyboard)
     await menu.MenuStates.settings.set()
-
-
-# #should be down
-# @dp.message_handler(state="*")
-# async def unknown_msg(msg: types.Message, state: FSMContext):
-#     state = await state.get_state()
-#     text = f"""
-# {msg.from_user.full_name}, ты что-то делаешь не так.
-# Эхо в состоянии <code>{state}</code>"""
-#     await msg.answer(text)
-
-
-# @dp.callback_query_handler(state="*")
-# async def unknown_call(msg: types.CallbackQuery, state: FSMContext):
-#     state = await state.get_state()
-#     text = f"""
-# {msg.from_user.full_name}, ты что-то делаешь не так.
-# Эхо в состоянии <code>{state}</code>"""
-#     await msg.answer(text)
-
