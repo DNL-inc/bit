@@ -28,6 +28,19 @@ async def back_to_menu(callback: types.CallbackQuery, state: FSMContext, user: U
 
 
 @get_current_user()
+@dp.callback_query_handler(back_callback.filter(category='lang'), state=ChatSettingsStates.lang)
+async def back_to_menu(callback: types.CallbackQuery, state: FSMContext, user: User):
+    data = await state.get_data()
+    chat = await Chat.filter(id=int(data.get('chat_id'))).first()
+    await callback.answer()
+    keyboard = await inline.settings.get_keyboard(False)
+    await callback.message.edit_text("Настройки чата - {}".format(chat.title),
+                                     reply_markup=keyboard)
+    await ChatSettingsStates.chat.set()
+    await state.update_data(chat_id=chat.id)
+
+
+@get_current_user()
 @dp.callback_query_handler(state=SettingsStates.chat_settings)
 async def choose_course(callback: types.CallbackQuery, user: User, state: FSMContext):
     if callback.data == 'add-chat':
@@ -63,7 +76,7 @@ async def back_to_chats(callback: types.CallbackQuery, user: User, state: FSMCon
 @dp.callback_query_handler(back_callback.filter(category='cancel'), state=ChatSettingsStates.add_chat)
 async def back_to_chats(callback: types.CallbackQuery, user: User, state: FSMContext):
     data = await state.get_data()
-    code = await Code.filter(code=data.get('code')).first()
+    code = await Code.filter(key=data.get('code')).first()
     await code.delete()
     await callback.answer("Вы вернулись обратно")
     await settings.SettingsStates.chat_settings.set()
@@ -99,6 +112,15 @@ async def go_to_section_settings(call: types.CallbackQuery, user: User, state: F
         keyboard = await languages.get_keyboard()
         await call.message.edit_text('Выбери язык:', reply_markup=keyboard)
         await ChatSettingsStates.lang.set()
+    elif call.data == 'delete-chat':
+        data = await state.get_data()
+        chat = await Chat.filter(id=int(data.get('chat_id'))).first()
+        await chat.delete()
+        await call.answer("Вы вернулись обратно")
+        await settings.SettingsStates.chat_settings.set()
+        keyboard = await chats.get_keyboard(user.id, True)
+        await call.message.edit_text('Чаты:',
+                                     reply_markup=keyboard)
 
 
 @get_current_user()
@@ -110,7 +132,8 @@ async def choose_lang(call: types.CallbackQuery, user: User, state: FSMContext):
         chat.lang = call.data
         await chat.save()
         await call.answer('Язык установлен')
-        await settings.SettingsStates.chat_settings.set()
-        keyboard = await chats.get_keyboard(user.id, True)
-        await call.message.edit_text('Чаты:',
+        keyboard = await inline.settings.get_keyboard(False)
+        await call.message.edit_text("Настройки чата - {}".format(chat.title),
                                      reply_markup=keyboard)
+        await ChatSettingsStates.chat.set()
+        await state.update_data(chat_id=chat.id)

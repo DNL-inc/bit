@@ -55,7 +55,6 @@ async def choose_lang(call: types.CallbackQuery, user: User, state: FSMContext):
         await call.answer('Язык установлен')
         await call.message.edit_text("Вы успешно изменили группу и подгруппы!")
         await call.message.delete()
-        chats = await Chat().select_chats_by_creator(user.id)
         keyboard = await get_keyboard(True)
         msg = await call.message.answer("Вы успешно изменили язык!", reply_markup=keyboard)
         await state.update_data(current_msg=msg.message_id, current_msg_text=msg.text)

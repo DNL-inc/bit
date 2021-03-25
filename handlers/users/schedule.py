@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 
 from data import config
 from data.config import LOCAL_TZ
+from filters.is_private import IsPrivate
 from keyboards.default import menu
 from keyboards.inline import back_callback
 from keyboards.inline.admin import edit_subgroups, cancel
@@ -47,7 +48,7 @@ async def back_to_menu(call: types.CallbackQuery, user: User, state: FSMContext)
 
 
 @get_current_user()
-@dp.callback_query_handler(state=MenuStates.schedule)
+@dp.callback_query_handler(IsPrivate(), state=MenuStates.schedule)
 async def schedule_manager(callback: types.CallbackQuery, state: FSMContext, user: User):
     await callback.answer()
     keyboard = types.InlineKeyboardMarkup(row_width=1)

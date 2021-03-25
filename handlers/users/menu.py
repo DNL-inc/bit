@@ -5,6 +5,7 @@ from filters.is_private import IsPrivate
 from keyboards.inline.admin import edit_subgroups
 from loader import dp, bot
 from middlewares import _
+from models.event import Day
 from utils.misc import rate_limit, get_current_user
 from models import User, Admin, Chat
 from keyboards.default import menu
@@ -31,7 +32,7 @@ async def show_menu(msg: types.Message, user: User, state: FSMContext):
 
 
 @get_current_user()
-@dp.message_handler(lambda msg: msg.text in list(config.MENU.values()), state=MenuStates.mediate)
+@dp.message_handler(IsPrivate(), lambda msg: msg.text in list(config.MENU.values()), state=MenuStates.mediate)
 async def set_menu_section(msg: types.Message, user: User, state: FSMContext):
     admin = await Admin().select_admin_by_user_id(user.id)
     if msg.text == config.MENU['admin'] and admin:
@@ -44,15 +45,13 @@ async def set_menu_section(msg: types.Message, user: User, state: FSMContext):
         await get_settings_page(msg, user, state)
 
 
-@get_current_user()
 async def get_schedule_page(msg: types.Message, user: User, state: FSMContext):
-    await msg.delete()
+    data = await state.get_data()
     await user.fetch_related("group")
     if user.group:
         keyboard = await edit_subgroups.get_keyboard(user.group.id, False, True, user)
-        data = await state.get_data()
         await bot.delete_message(user.tele_id, data.get('current_msg'))
-        msg = await msg.answer('Расписание: ', reply_markup=keyboard)
+        msg = await msg.answer('Подгруппы: ', reply_markup=keyboard)
     else:
         data = await state.get_data()
         await bot.delete_message(user.tele_id, data.get('current_msg'))

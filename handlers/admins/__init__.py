@@ -4,5 +4,6 @@ from .edit_events import dp
 from .edit_faculty import dp
 from .edit_group import dp
 from .edit_subgroups import dp
+from .edit_admins import dp
 
 __all__ = ["dp"]

@@ -109,6 +109,7 @@ async def choose_group(callback: types.CallbackQuery, state: FSMContext, user: U
             return
         await state.update_data(group_id=int(callback.data.split('-')[-1]))
         await callback.answer(_("Группа выбрана"))
+        data = await state.get_data()
         group_id = data['group_id']
         user_subgroups = await User().select_user_subgroups(user)
         keyboard = await subgroups.get_keyboard(group_id, user_subgroups)

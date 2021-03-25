@@ -1,7 +1,7 @@
 from aiogram import types
 
 from keyboards.inline import soon_be_available, faculties, back_callback
-from keyboards.inline.admin import send_msg, edit_subgroups
+from keyboards.inline.admin import send_msg, edit_subgroups, admins
 from loader import dp
 from models import Admin
 from states import menu
@@ -12,6 +12,7 @@ from utils.misc import get_current_admin
 @get_current_admin()
 @dp.callback_query_handler(state=menu.MenuStates.admin)
 async def get_section_settings(call: types.CallbackQuery, admin: Admin):
+    await call.answer()
     if call.data == 'msg-sender':
         await AdminStates.send_msg.set()
         keyboard = await send_msg.get_keyboard(admin)
@@ -48,5 +49,6 @@ async def get_section_settings(call: types.CallbackQuery, admin: Admin):
         await call.message.edit_text('Выберите подгруппу:', reply_markup=keyboard)
     elif call.data == 'edit-admins':
         await AdminStates.admins.set()
-        await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим',
-                                     reply_markup=soon_be_available.keyboard)
+        keyboard = await admins.get_keyboard(admin)
+        await call.message.edit_text('Админы названием которых группы которые они модерируют',
+                                     reply_markup=keyboard)

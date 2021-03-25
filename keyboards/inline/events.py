@@ -23,13 +23,13 @@ async def get_keyboard(day, group_id=None, editable=False, subgroup_id=None, not
             events = await Event.filter(subgroup=subgroup_id, day=day).all()
 
     if group_id and not events:
-        events = await Event.filter(group=group_id, day=day, subgroup=None).all()
+        events = await Event.filter(group=group_id, day=day).all()
     else:
-        for event in await Event.filter(group=group_id, day=day, subgroup=None).all():
+        for event in await Event.filter(group=group_id, day=day).all():
             if event in events:
                 continue
             else:
-                events += event
+                events.append(event)
 
     for event in events:
         title = event.title if len(event.title) < 15 else event.title[:15] + "..."
