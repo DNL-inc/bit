@@ -49,6 +49,5 @@ async def get_section_settings(call: types.CallbackQuery, admin: Admin):
         await call.message.edit_text('Выберите подгруппу:', reply_markup=keyboard)
     elif call.data == 'edit-admins':
         await AdminStates.admins.set()
-        keyboard = await admins.get_keyboard(admin)
-        await call.message.edit_text('Админы названием которых группы которые они модерируют',
-                                     reply_markup=keyboard)
+        await call.message.edit_text('Это фича пока недоступна, как только она появится мы вам сообщим',
+                                     reply_markup=soon_be_available.keyboard)
