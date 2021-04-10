@@ -8,15 +8,17 @@ from models import Event, Notification
 
 async def get_keyboard(day, group_id=None, editable=False, subgroup_id=None, notify=False, user=None):
     keyboard = types.InlineKeyboardMarkup(row_width=1)
-    events = {}
+    events = list()
 
-    if subgroup_id:
-        if events:
-            events += await Event.filter(subgroup=subgroup_id, day=day).all()
-        else:
+    if subgroup_id and isinstance(subgroup_id, list):
+        for sub_id in subgroup_id:
+            if (sub_id.group_id == group_id):
+                events += await Event.filter(subgroup=sub_id.id, day=day).all()
+    else:
+        if group_id and not subgroup_id:
+            events = await Event.filter(group=group_id, day=day).all()
+        elif subgroup_id:
             events = await Event.filter(subgroup=subgroup_id, day=day).all()
-    elif group_id:
-        events = await Event.filter(group=group_id, day=day).all()
 
     for event in events:
         title = event.title if len(event.title) < 15 else event.title[:15] + "..."

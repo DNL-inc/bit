@@ -66,6 +66,7 @@ async def back_to_choose_event(callback: types.CallbackQuery, state: FSMContext,
 async def entry_manage_events(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
     await callback.answer("")
     if callback.data == "all-events":
+        await state.update_data(subgroup_id=None)
         await callback.message.edit_text("Выберите день: ", reply_markup=day.keyboard)
     elif callback.data.startswith('subgroup-'):
         subgroup_id = callback.data.split('-')[-1]
