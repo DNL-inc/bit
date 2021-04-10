@@ -21,7 +21,8 @@ async def send(bot: Bot):
         notifications = await Notification.filter(user=user.id).all()
         for notification in notifications:
             await notification.fetch_related("event")
-            event = await Event.filter(id=notification.event.id, time=timestamp + user_delta).first()
+            event = await Event.filter(id=notification.event.id, time=timestamp + user_delta,
+                                       day=calendar.day_name[timestamp_now.weekday()].lower()).first()
             if event:
                 try:
                     await bot.send_message(user.tele_id,
