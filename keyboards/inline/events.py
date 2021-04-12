@@ -14,6 +14,12 @@ async def get_keyboard(day, group_id=None, editable=False, subgroup_id=None, not
         for sub_id in subgroup_id:
             if (sub_id.group_id == group_id):
                 events += await Event.filter(subgroup=sub_id.id, day=day).all()
+
+        group_events = await Event.filter(group=group_id, day=day).all()
+        for event in group_events:
+            if event in events: continue
+            events.append(event)
+
     else:
         if group_id and not subgroup_id:
             events = await Event.filter(group=group_id, day=day).all()
