@@ -6,6 +6,7 @@ from data.config import LOCAL_TZ
 from filters.is_private import IsPrivate
 from keyboards.default import menu
 from keyboards.inline import back_callback
+from keyboards.inline.day import days
 from keyboards.inline.admin import edit_subgroups, cancel
 from loader import dp
 from models import User
@@ -13,6 +14,7 @@ from models.event import Day, Event
 from states.menu import MenuStates
 from utils.misc import get_current_user
 from middlewares import _
+
 
 
 @get_current_user()
@@ -41,7 +43,7 @@ async def back_to_menu(call: types.CallbackQuery, user: User, state: FSMContext)
     await call.answer(_("Ты вернулся обратно"))
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     for day in Day:
-        keyboard.add(types.InlineKeyboardButton(day.name, callback_data=day.name))
+        keyboard.add(types.InlineKeyboardButton(days.get(day.name), callback_data=day.name))
     keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='subgroups')))
 
     await call.message.edit_text(_('Выбери день недели:'), reply_markup=keyboard)
@@ -53,7 +55,7 @@ async def schedule_manager(callback: types.CallbackQuery, state: FSMContext, use
     await callback.answer()
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     for day in Day:
-        keyboard.add(types.InlineKeyboardButton(day.name, callback_data=day.name))
+        keyboard.add(types.InlineKeyboardButton(days.get(day.name), callback_data=day.name))
     keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='subgroups')))
     if callback.data.startswith('subgroup-'):
         await state.update_data(subgroup=int(callback.data.split('-')[-1]))

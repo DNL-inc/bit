@@ -23,10 +23,10 @@ async def get_keyboard(group_id, editable=True, for_events=False, user=None):
             keyboard.add(types.InlineKeyboardButton(subgroup.title, callback_data='subgroup-' + str(subgroup.id)))
     else:
         keyboard.add(
-            types.InlineKeyboardButton(_("Нет тут ничего"), callback_data=blank_callback.new(category='subgroup')))
+            types.InlineKeyboardButton(_("У тебя нет подгрупп"), callback_data=blank_callback.new(category='subgroup')))
     if editable:
         keyboard.add(types.InlineKeyboardButton(_('Добавить'), callback_data='add-subgroup'))
     if for_events:
-        keyboard.add(types.InlineKeyboardButton(_('Создать новое'), callback_data='all-events'))
+        keyboard.add(types.InlineKeyboardButton(_('Все события'), callback_data='all-events'))
     keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='lang')))
     return keyboard

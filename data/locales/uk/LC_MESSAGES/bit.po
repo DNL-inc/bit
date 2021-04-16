@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-04-16 02:23+0300\n"
+"POT-Creation-Date: 2021-04-16 23:17+0300\n"
 "PO-Revision-Date: 2021-04-09 02:00+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -38,8 +38,8 @@ msgstr ""
 msgid "Выбери подгруппу или добавь новую:"
 msgstr ""
 
-#: handlers/admins/base.py:44 handlers/users/schedule.py:45
-#: handlers/users/schedule.py:57 keyboards/inline/admin/__init__.py:19
+#: handlers/admins/base.py:44 handlers/users/schedule.py:47
+#: handlers/users/schedule.py:59 keyboards/inline/admin/__init__.py:19
 #: keyboards/inline/admin/admins.py:23
 #: keyboards/inline/admin/all_postpone_msg.py:21
 #: keyboards/inline/admin/back_after_creating.py:6
@@ -48,7 +48,7 @@ msgstr ""
 #: keyboards/inline/admin/event_operations.py:10
 #: keyboards/inline/admin/event_type.py:10
 #: keyboards/inline/admin/send_msg.py:19 keyboards/inline/chats.py:19
-#: keyboards/inline/courses.py:9 keyboards/inline/day.py:9
+#: keyboards/inline/courses.py:9 keyboards/inline/day.py:19
 #: keyboards/inline/events.py:57 keyboards/inline/faculties.py:19
 #: keyboards/inline/groups.py:17 keyboards/inline/languages.py:14
 #: keyboards/inline/notification.py:16 keyboards/inline/notify_time.py:12
@@ -98,7 +98,7 @@ msgstr ""
 #: handlers/admins/edit_events.py:115 handlers/admins/edit_events.py:129
 #: handlers/admins/edit_group.py:16 handlers/admins/send_msg.py:22
 #: handlers/users/auth.py:20 handlers/users/auth.py:66
-#: handlers/users/base.py:18 handlers/users/schedule.py:32
+#: handlers/users/base.py:18 handlers/users/schedule.py:34
 #: handlers/users/settings/base.py:18
 #: handlers/users/settings/chat_settings.py:24
 #: handlers/users/settings/chat_settings.py:82
@@ -222,7 +222,7 @@ msgstr ""
 
 #: handlers/admins/edit_group.py:24 handlers/admins/send_msg.py:31
 #: handlers/users/auth.py:46 handlers/users/auth.py:95
-#: handlers/users/schedule.py:22 handlers/users/schedule.py:41
+#: handlers/users/schedule.py:24 handlers/users/schedule.py:43
 msgid "Ты вернулся обратно"
 msgstr ""
 
@@ -327,14 +327,14 @@ msgstr ""
 msgid "Отлично, твое сообщение будет отправленно в {} с текстом \"{}...\""
 msgstr ""
 
-#: handlers/groups/menu.py:24 handlers/groups/menu.py:37
-#: handlers/users/schedule.py:47 handlers/users/schedule.py:60
-#: handlers/users/schedule.py:62 handlers/users/settings/notifications.py:84
+#: handlers/groups/menu.py:25 handlers/groups/menu.py:38
+#: handlers/users/schedule.py:49 handlers/users/schedule.py:62
+#: handlers/users/schedule.py:64 handlers/users/settings/notifications.py:84
 #: handlers/users/settings/notifications.py:101
 msgid "Выбери день недели:"
 msgstr ""
 
-#: handlers/groups/menu.py:27 handlers/groups/start.py:30
+#: handlers/groups/menu.py:28 handlers/groups/start.py:30
 msgid ""
 "Для того, чтобы я мог работать отправь мне код! Его можно найти в "
 "настройках чатов."
@@ -434,7 +434,7 @@ msgid "Настройки:"
 msgstr ""
 
 #: handlers/users/menu.py:30 handlers/users/menu.py:89
-#: handlers/users/schedule.py:25
+#: handlers/users/schedule.py:27
 msgid "Меню:"
 msgstr ""
 
@@ -448,11 +448,11 @@ msgid ""
 "и возвращайся."
 msgstr ""
 
-#: handlers/users/schedule.py:35
+#: handlers/users/schedule.py:37
 msgid "Расписание:"
 msgstr ""
 
-#: handlers/users/schedule.py:74
+#: handlers/users/schedule.py:76
 msgid "**Расписание**\n"
 msgstr ""
 
@@ -576,7 +576,6 @@ msgstr ""
 
 #: keyboards/inline/admin/__init__.py:18 keyboards/inline/admin/admins.py:21
 #: keyboards/inline/admin/all_postpone_msg.py:20
-#: keyboards/inline/admin/edit_subgroups.py:26
 #: keyboards/inline/admin/send_msg.py:18 keyboards/inline/chats.py:16
 #: keyboards/inline/events.py:54 keyboards/inline/faculties.py:16
 #: keyboards/inline/groups.py:14 keyboards/inline/settings.py:20
@@ -590,6 +589,34 @@ msgstr ""
 
 #: keyboards/inline/courses.py:8
 msgid "-курс"
+msgstr ""
+
+#: keyboards/inline/day.py:7
+msgid "Понедельник"
+msgstr ""
+
+#: keyboards/inline/day.py:8
+msgid "Вторник"
+msgstr ""
+
+#: keyboards/inline/day.py:9
+msgid "Среда"
+msgstr ""
+
+#: keyboards/inline/day.py:10
+msgid "Четверг"
+msgstr ""
+
+#: keyboards/inline/day.py:11
+msgid "Пятница"
+msgstr ""
+
+#: keyboards/inline/day.py:12
+msgid "Суббота"
+msgstr ""
+
+#: keyboards/inline/day.py:13
+msgid "Воскресенье"
 msgstr ""
 
 #: keyboards/inline/admin/edit_subgroups.py:28 keyboards/inline/events.py:56
@@ -662,8 +689,12 @@ msgstr ""
 msgid "Удалить"
 msgstr ""
 
+#: keyboards/inline/admin/edit_subgroups.py:26
+msgid "У тебя нет подгрупп"
+msgstr ""
+
 #: keyboards/inline/admin/edit_subgroups.py:30
-msgid "Создать новое"
+msgid "Все события"
 msgstr ""
 
 #: keyboards/inline/admin/send_msg.py:10
@@ -1140,5 +1171,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Группа добавлена!"
+#~ msgstr ""
+
+#~ msgid "Создать новое"
 #~ msgstr ""
 
