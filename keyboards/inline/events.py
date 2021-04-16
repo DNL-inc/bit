@@ -48,6 +48,6 @@ async def get_keyboard(day, group_id=None, editable=False, subgroup_id=None, not
         keyboard.add(
             types.InlineKeyboardButton(_('Нет тут ничего'), callback_data=blank_callback.new(category='event')))
     if editable:
-        keyboard.add(types.InlineKeyboardButton('Добавить', callback_data='add-event'))
+        keyboard.add(types.InlineKeyboardButton(_('Добавить'), callback_data='add-event'))
     keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='subgroup')))
     return keyboard

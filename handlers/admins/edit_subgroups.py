@@ -10,6 +10,7 @@ from models import Admin, subgroup, User, Subgroup
 from states.admin import AdminStates
 from states.admin.edit_subgroup import EditSubgroupStates
 from utils.misc import get_current_admin, get_current_user
+from middlewares import _
 
 
 @get_current_admin()
@@ -20,10 +21,10 @@ async def delete_subgroup(callback: types.CallbackQuery, admin: Admin, state: FS
     subgroup = await Subgroup.filter(id=subgroup_id).first()
     await subgroup.delete()
     await state.update_data(subgroup=None)
-    await callback.answer('Подгруппа была удалена')
+    await callback.answer(_('Подгруппа была успешно удалена'))
     await admin.fetch_related('group')
     keyboard = await inline.admin.edit_subgroups.get_keyboard(admin.group.id)
-    await callback.message.edit_text('Выберите подгруппу или добавть новый', reply_markup=keyboard)
+    await callback.message.edit_text(_('Выбери подгруппу или добавь новую:'), reply_markup=keyboard)
     await AdminStates.subgroups.set()
 
 
@@ -33,7 +34,7 @@ async def back_from_subgroup(callback: types.CallbackQuery, admin: Admin, state:
     await callback.answer()
     await admin.fetch_related("group")
     keyboard = await inline.admin.edit_subgroups.get_keyboard(admin.group.id)
-    await callback.message.edit_text('Выберите подгруппу или добавть новый', reply_markup=keyboard)
+    await callback.message.edit_text(_('Выбери подгруппу или добавь новую:'), reply_markup=keyboard)
     await AdminStates.subgroups.set()
 
 @get_current_admin()
@@ -48,8 +49,8 @@ async def save_subgroup(callback: types.CallbackQuery, state: FSMContext, user: 
     await subgroup.save()
     await admin.fetch_related('group')
     keyboard = await inline.admin.edit_subgroups.get_keyboard(admin.group.id)
-    await callback.answer("Вы успешно изменили название подгруппы")
-    await bot.edit_message_text("Выберите подгруппу или добавть новый", reply_markup=keyboard, chat_id=user.tele_id,
+    await callback.answer(_("Подгруппа успешно переименована"))
+    await bot.edit_message_text(_("Выбери подгруппу или добавь новую"), reply_markup=keyboard, chat_id=user.tele_id,
                                 message_id=data.get("current_msg"))
     await AdminStates.subgroups.set()
 
@@ -64,7 +65,7 @@ async def create_subgroup(msg: types.Message, state: FSMContext, user: User, adm
     await admin.fetch_related('group')
     await Subgroup.create(title=msg.text, group=admin.group)
     keyboard = await inline.admin.edit_subgroups.get_keyboard(admin.group.id)
-    await bot.edit_message_text("Выберите подгруппу или добавть новый", reply_markup=keyboard, chat_id=user.tele_id,
+    await bot.edit_message_text(_("Выбери подгруппу или добавь новую:"), reply_markup=keyboard, chat_id=user.tele_id,
                                 message_id=data.get("current_msg"))
     await AdminStates.subgroups.set()
 
@@ -80,7 +81,7 @@ async def edit_subgroup(msg: types.Message, state: FSMContext, user: User):
         keyboard = await cancel_or_create.get_keyboard("subgroup")
         await state.update_data(new_subgroup=msg.text)
         await bot.edit_message_text(
-            'Вы пытаетесь изменить название подгруппу "{}" на "{}"'.format(subgroup.title, msg.text),
+            _('Ты пытаешься изменить название подгруппы "{}" на "{}"'.format(subgroup.title, msg.text)),
             reply_markup=keyboard, chat_id=user.tele_id, message_id=data.get("current_msg"))
 
 
@@ -89,13 +90,13 @@ async def edit_subgroup(msg: types.Message, state: FSMContext, user: User):
 async def edit_subgroups(callback: types.CallbackQuery, admin: Admin, state: FSMContext):
     await callback.answer()
     if callback.data == "add-subgroup":
-        await callback.message.edit_text('Напишите название новой подгруппы', reply_markup=cancel.keyboard)
+        await callback.message.edit_text(_('Введи название для новой подгруппы:'), reply_markup=cancel.keyboard)
         await EditSubgroupStates.create.set()
     elif callback.data.startswith("subgroup-"):
         subgroup_id = callback.data.split('-')[-1]
         subgroup = await Subgroup.filter(id=int(subgroup_id)).first()
         keyboard = await cancel_or_delete.get_keyboard("subgroup")
-        await callback.message.edit_text('Напишите название для подгруппы - {}, чтобы изменить'.format(subgroup.title),
+        await callback.message.edit_text(_('Напиши название для подгруппы - {}, чтобы изменить'.format(subgroup.title)),
                                          reply_markup=keyboard)
         await EditSubgroupStates.edit.set()
         await state.update_data(subgroup=int(subgroup_id))

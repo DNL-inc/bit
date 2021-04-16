@@ -9,6 +9,7 @@ from models import Admin, Faculty, User
 from states.admin import AdminStates
 from states.admin.edit_faculty import EditFacultyStates
 from utils.misc import get_current_admin, get_current_user
+from middlewares import _
 
 
 @get_current_admin()
@@ -19,11 +20,11 @@ async def delete_faculty(callback: types.CallbackQuery, admin: Admin, state: FSM
     faculty = await Faculty.filter(id=faculty_id).first()
     await faculty.delete()
     await state.update_data(faculty=None)
-    await callback.answer('Факультет был удален')
+    await callback.answer(_('Факультет был успешно удален'))
     await admin.fetch_related("faculty")
     keyboard = await faculties.get_keyboard(True if admin.role.name == 'supreme' else False,
                                             admin.faculty if admin.role.name == 'improved' else False)
-    await callback.message.edit_text('Выберите факультет или добавть новый', reply_markup=keyboard)
+    await callback.message.edit_text(_('Выбери факультет или добавь новый:'), reply_markup=keyboard)
     await AdminStates.faculties.set()
 
 
@@ -36,7 +37,7 @@ async def back_from_faculty(callback: types.CallbackQuery, admin: Admin, state: 
     await admin.fetch_related("faculty")
     keyboard = await faculties.get_keyboard(True if admin.role.name == 'supreme' else False,
                                             admin.faculty if admin.role.name == 'improved' else False)
-    await callback.message.edit_text('Выберите факультет или добавть новый', reply_markup=keyboard)
+    await callback.message.edit_text(_('Выбери факультет или добавь новый:'), reply_markup=keyboard)
     await AdminStates.faculties.set()
 
 
@@ -51,12 +52,12 @@ async def save_faculty(callback: types.CallbackQuery, state: FSMContext, user: U
     try:
         await faculty.save()
     except IntegrityError:
-        await callback.answer('Такой факультет уже существует')
+        await callback.answer(_('Такой факультет уже существует'))
     await admin.fetch_related("faculty")
     keyboard = await faculties.get_keyboard(True if admin.role.name == 'supreme' else False,
                                             admin.faculty if admin.role.name == 'improved' else False)
-    await callback.answer("Вы успешно изменили название факультета")
-    await bot.edit_message_text("Выберите факультет или добавть новый", reply_markup=keyboard, chat_id=user.tele_id,
+    await callback.answer(_("Факультет успешно переименован"))
+    await bot.edit_message_text(_("Выбери факультет или добавь новый:"), reply_markup=keyboard, chat_id=user.tele_id,
                                 message_id=data.get("current_msg"))
     await AdminStates.faculties.set()
 
@@ -70,14 +71,14 @@ async def create_faculty(msg: types.Message, state: FSMContext, user: User, admi
     try:
         await Faculty.create(title=msg.text.upper())
     except IntegrityError:
-        await bot.edit_message_text('Такой факультет уже существует', reply_markup=cancel.keyboard,
+        await bot.edit_message_text(_('Такой факультет уже существует'), reply_markup=cancel.keyboard,
                                     chat_id=user.tele_id,
                                     message_id=data.get("current_msg"))
         return
     await admin.fetch_related("faculty")
     keyboard = await faculties.get_keyboard(True if admin.role.name == 'supreme' else False,
                                             admin.faculty if admin.role.name == 'improved' else False)
-    await bot.edit_message_text("Выберите факультет или добавть новый", reply_markup=keyboard, chat_id=user.tele_id,
+    await bot.edit_message_text(_("Выбери факультет или добавь новый:"), reply_markup=keyboard, chat_id=user.tele_id,
                                 message_id=data.get("current_msg"))
     await AdminStates.faculties.set()
 
@@ -93,7 +94,7 @@ async def edit_faculty(msg: types.Message, state: FSMContext, user: User):
         keyboard = await cancel_or_create.get_keyboard("faculty")
         await state.update_data(new_faculty=msg.text)
         await bot.edit_message_text(
-            'Вы пытаетесь изменить название факультета "{}" на "{}"'.format(faculty.title, msg.text),
+            _('Ты пытаешься изменить название факультета "{}" на "{}"'.format(faculty.title, msg.text)),
             reply_markup=keyboard, chat_id=user.tele_id, message_id=data.get("current_msg"))
 
 
@@ -102,13 +103,13 @@ async def edit_faculty(msg: types.Message, state: FSMContext, user: User):
 async def edit_faculties(callback: types.CallbackQuery, admin: Admin, state: FSMContext):
     await callback.answer()
     if callback.data == "add-faculty":
-        await callback.message.edit_text('Напишите название нового факультета', reply_markup=cancel.keyboard)
+        await callback.message.edit_text(_('Напиши название нового факультета:'), reply_markup=cancel.keyboard)
         await EditFacultyStates.create.set()
     elif callback.data.startswith("faculty-"):
         faculty_id = callback.data.split('-')[-1]
         faculty = await Faculty.filter(id=int(faculty_id)).first()
         keyboard = await cancel_or_delete.get_keyboard("faculty")
-        await callback.message.edit_text('Напишите название для факультета - {}, чтобы изменить'.format(faculty.title),
+        await callback.message.edit_text(_('Напиши название для факультета - {}, чтобы изменить'.format(faculty.title)),
                                          reply_markup=keyboard)
         await EditFacultyStates.edit.set()
         await state.update_data(faculty=int(faculty_id))

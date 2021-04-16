@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-01-28 23:22+0200\n"
-"PO-Revision-Date: 2021-01-28 23:22+0200\n"
+"POT-Creation-Date: 2021-04-16 02:23+0300\n"
+"PO-Revision-Date: 2021-04-09 01:59+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -18,166 +18,1126 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: handlers/users/auth.py:18 handlers/users/auth.py:38
-#: handlers/users/auth.py:58 handlers/users/auth.py:87
-#: handlers/users/base.py:17 handlers/users/settings/group_and_subgroups.py:14
-#: handlers/users/settings/group_and_subgroups.py:30
-#: handlers/users/settings/group_and_subgroups.py:49
-#: handlers/users/settings/group_and_subgroups.py:77
-msgid "Вы вернулись обратно"
-msgstr "You are back!"
+#: handlers/admins/base.py:20 handlers/admins/send_msg.py:33
+msgid "Выбери из предложеного в меню:"
+msgstr ""
 
-#: handlers/users/auth.py:19 handlers/users/settings/__init__.py:17
-msgid "Выбери язык:"
-msgstr "Choose language:"
+#: handlers/admins/base.py:26 handlers/admins/edit_faculty.py:27
+#: handlers/admins/edit_faculty.py:40 handlers/admins/edit_faculty.py:60
+#: handlers/admins/edit_faculty.py:81
+msgid "Выбери факультет или добавь новый:"
+msgstr ""
 
-#: handlers/users/auth.py:30 handlers/users/settings/__init__.py:45
-msgid "Язык установлен"
-msgstr "Language has been installed"
+#: handlers/admins/base.py:35 handlers/admins/edit_group.py:31
+msgid "Выбери факультет:"
+msgstr ""
 
-#: handlers/users/auth.py:31 handlers/users/auth.py:40
-#: handlers/users/settings/group_and_subgroups.py:23
-#: handlers/users/settings/group_and_subgroups.py:32
-msgid "Выберите ваш факультет:"
-msgstr "Choose your faculty:"
+#: handlers/admins/base.py:41 handlers/admins/edit_subgroups.py:27
+#: handlers/admins/edit_subgroups.py:37 handlers/admins/edit_subgroups.py:68
+msgid "Выбери подгруппу или добавь новую:"
+msgstr ""
 
-#: handlers/users/auth.py:50 handlers/users/settings/group_and_subgroups.py:41
-msgid "Факультет выбран"
-msgstr "Faculty has been installed"
-
-#: handlers/users/auth.py:51 handlers/users/auth.py:59
-#: handlers/users/settings/group_and_subgroups.py:42
-#: handlers/users/settings/group_and_subgroups.py:50
-msgid "Выберите ваш курс:"
-msgstr "Choose your course:"
-
-#: handlers/users/auth.py:69 handlers/users/settings/group_and_subgroups.py:59
-msgid "Курс выбран"
-msgstr "Course has been installed"
-
-#: handlers/users/auth.py:75 handlers/users/auth.py:88
-#: handlers/users/settings/group_and_subgroups.py:65
-#: handlers/users/settings/group_and_subgroups.py:78
-msgid "Выберите вашу группу:"
-msgstr "Choose your group:"
-
-#: handlers/users/auth.py:97 handlers/users/settings/group_and_subgroups.py:87
-msgid "Группа выбрана"
-msgstr "Group has been installed"
-
-#: handlers/users/auth.py:102 handlers/users/settings/group_and_subgroups.py:92
-msgid "Выберите вашу подгруппу:"
-msgstr "Choose your subgroup:"
-
-#: handlers/users/auth.py:113 handlers/users/auth.py:117
-msgid "Вы успешно прошли регистрацию!"
-msgstr "You have successfully registered!"
-
-#: handlers/users/auth.py:132
-#: handlers/users/settings/group_and_subgroups.py:123
-msgid "Выберите ваши подгруппы:"
-msgstr "Choose your subgroups:"
-
-#: handlers/users/base.py:20
-msgid "Настройки:"
-msgstr "Settings:"
-
-#: handlers/users/menu.py:26 handlers/users/menu.py:80
-msgid "Меню:"
-msgstr "Menu:"
-
-#: handlers/users/menu.py:60 handlers/users/settings/group_and_subgroups.py:18
-msgid "Настроки:"
-msgstr "Settings:"
-
-#: handlers/users/menu.py:69
-msgid "Администрирование:"
-msgstr "Admin panel:"
-
-#: handlers/users/start.py:17
-msgid "Привет!"
-msgstr "Yo, boi!"
-
-#: handlers/users/start.py:20
-msgid "Выбери язык: "
-msgstr "Choose your language:"
-
-#: handlers/users/start.py:27
-msgid "Я тебя знаю!"
-msgstr "I remember you!"
-
-#: handlers/users/start.py:35
-msgid "Хватит жать - остановись"
-msgstr "Stop flooding!"
-
-#: handlers/users/settings/__init__.py:29
-#: handlers/users/settings/__init__.py:32
-msgid "Это фича пока недоступна, как только она появится мы вам сообщим"
-msgstr "This feature isn't available yet, we'll notify you when it'll be finished"
-
-#: handlers/users/settings/__init__.py:46
-#: handlers/users/settings/group_and_subgroups.py:104
-#: handlers/users/settings/group_and_subgroups.py:108
-msgid "Вы успешно изменили группу и подгруппы!"
-msgstr "You have successfully changed the group and subgroups! "
-
-#: handlers/users/settings/__init__.py:50
-msgid "Вы успешно изменили язык!"
-msgstr "You have successfully changed language!"
-
-#: keyboards/inline/admin/__init__.py:20 keyboards/inline/courses.py:8
-#: keyboards/inline/faculties.py:12 keyboards/inline/groups.py:15
-#: keyboards/inline/languages.py:13 keyboards/inline/settings.py:18
-#: keyboards/inline/soon_be_available.py:6 keyboards/inline/subgroups.py:20
+#: handlers/admins/base.py:44 handlers/users/schedule.py:45
+#: handlers/users/schedule.py:57 keyboards/inline/admin/__init__.py:19
+#: keyboards/inline/admin/admins.py:23
+#: keyboards/inline/admin/all_postpone_msg.py:21
+#: keyboards/inline/admin/back_after_creating.py:6
+#: keyboards/inline/admin/delete_postpone_msg.py:8
+#: keyboards/inline/admin/edit_subgroups.py:31
+#: keyboards/inline/admin/event_operations.py:10
+#: keyboards/inline/admin/event_type.py:10
+#: keyboards/inline/admin/send_msg.py:19 keyboards/inline/chats.py:19
+#: keyboards/inline/courses.py:9 keyboards/inline/day.py:9
+#: keyboards/inline/events.py:57 keyboards/inline/faculties.py:19
+#: keyboards/inline/groups.py:17 keyboards/inline/languages.py:14
+#: keyboards/inline/notification.py:16 keyboards/inline/notify_time.py:12
+#: keyboards/inline/settings.py:21 keyboards/inline/soon_be_available.py:7
+#: keyboards/inline/subgroups.py:20
 msgid "Назад"
-msgstr "Back"
+msgstr ""
 
-#: keyboards/inline/admin/__init__.py:19 keyboards/inline/faculties.py:11
-#: keyboards/inline/groups.py:14 keyboards/inline/settings.py:17
+#: handlers/admins/base.py:45
+msgid "Хмм.. Похоже ты не староста, ты как сюда попал вообще?"
+msgstr ""
+
+#: handlers/admins/base.py:50 handlers/admins/edit_events.py:40
+msgid "Выбери подгруппу:"
+msgstr ""
+
+#: handlers/admins/base.py:53
+msgid "Это фича пока недоступна, как только она появится мы тебе сообщим.."
+msgstr ""
+
+#: handlers/admins/edit_events.py:48 handlers/admins/edit_events.py:70
+#: handlers/admins/edit_events.py:74
+msgid "Выбери день:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:61 handlers/admins/edit_events.py:134
+#: handlers/admins/edit_events.py:374
+msgid "Выбери событие или создай новое:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:83
+msgid "День выбран"
+msgstr ""
+
+#: handlers/admins/edit_events.py:89 handlers/admins/edit_events.py:149
+msgid "Выберите событие или создайте новое:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:95
+msgid "Событие выбрано"
+msgstr ""
+
+#: handlers/admins/edit_events.py:108 handlers/admins/edit_events.py:159
+msgid "Выбери тип события:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:115 handlers/admins/edit_events.py:129
+#: handlers/admins/edit_group.py:16 handlers/admins/send_msg.py:22
+#: handlers/users/auth.py:20 handlers/users/auth.py:66
+#: handlers/users/base.py:18 handlers/users/schedule.py:32
+#: handlers/users/settings/base.py:18
+#: handlers/users/settings/chat_settings.py:24
+#: handlers/users/settings/chat_settings.py:82
+#: handlers/users/settings/chat_settings.py:92
+#: handlers/users/settings/chat_settings.py:120
+#: handlers/users/settings/group_and_subgroups.py:21
+#: handlers/users/settings/group_and_subgroups.py:44
+#: handlers/users/settings/group_and_subgroups.py:63
+#: handlers/users/settings/group_and_subgroups.py:92
+#: handlers/users/settings/notifications.py:20
+#: handlers/users/settings/notifications.py:37
+#: handlers/users/settings/notifications.py:91
+#: handlers/users/settings/notifications.py:100
+msgid "Ты вернулся назад"
+msgstr ""
+
+#: handlers/admins/edit_events.py:141
+msgid "Событие удалено"
+msgstr ""
+
+#: handlers/admins/edit_events.py:156
+msgid "Укажи новое название события:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:162
+msgid "Выбери новую дату события:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:165
+msgid "Введи новую ссылку:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:168
+msgid "Напиши время начала пары:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:174
+msgid "Уверен, что хочешь удалить \"{}\"?"
+msgstr ""
+
+#: handlers/admins/edit_events.py:197 handlers/admins/edit_events.py:404
+msgid "Неправильный формат или время!"
+msgstr ""
+
+#: handlers/admins/edit_events.py:237
+msgid "Неправильная ссылка!"
+msgstr ""
+
+#: handlers/admins/edit_events.py:268 handlers/admins/edit_events.py:349
+msgid "Дата указывает на прошлое.."
+msgstr ""
+
+#: handlers/admins/edit_events.py:275
+msgid "Дата указана не корректно.."
+msgstr ""
+
+#: handlers/admins/edit_events.py:284
+msgid "Выбрано событие:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:299
+msgid "Тип выбран"
+msgstr ""
+
+#: handlers/admins/edit_events.py:301
+msgid "Укажи название события:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:312
+msgid "Укажи дату до которой будет повторяться событие"
+msgstr ""
+
+#: handlers/admins/edit_events.py:323 handlers/admins/edit_events.py:343
+msgid "Введи ссылку на событие:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:356
+msgid "Дата указана неправильно"
+msgstr ""
+
+#: handlers/admins/edit_events.py:366
+msgid "Событие создано"
+msgstr ""
+
+#: handlers/admins/edit_events.py:417
+msgid "Укажи время начала события:"
+msgstr ""
+
+#: handlers/admins/edit_events.py:425
+msgid "Неправильная ссылка"
+msgstr ""
+
+#: handlers/admins/edit_faculty.py:23
+msgid "Факультет был успешно удален"
+msgstr ""
+
+#: handlers/admins/edit_faculty.py:55 handlers/admins/edit_faculty.py:74
+msgid "Такой факультет уже существует"
+msgstr ""
+
+#: handlers/admins/edit_faculty.py:59
+msgid "Факультет успешно переименован"
+msgstr ""
+
+#: handlers/admins/edit_faculty.py:97
+msgid "Ты пытаешься изменить название факультета \"{}\" на \"{}\""
+msgstr ""
+
+#: handlers/admins/edit_faculty.py:106
+msgid "Напиши название нового факультета:"
+msgstr ""
+
+#: handlers/admins/edit_faculty.py:112
+msgid "Напиши название для факультета - {}, чтобы изменить"
+msgstr ""
+
+#: handlers/admins/edit_group.py:18 handlers/admins/edit_group.py:57
+#: handlers/users/auth.py:67
+msgid "Выбери курс:"
+msgstr ""
+
+#: handlers/admins/edit_group.py:24 handlers/admins/send_msg.py:31
+#: handlers/users/auth.py:46 handlers/users/auth.py:95
+#: handlers/users/schedule.py:22 handlers/users/schedule.py:41
+msgid "Ты вернулся обратно"
+msgstr ""
+
+#: handlers/admins/edit_group.py:38
+#: handlers/users/settings/group_and_subgroups.py:73
+msgid "Курс выбран"
+msgstr ""
+
+#: handlers/admins/edit_group.py:47 handlers/admins/edit_group.py:68
+#: handlers/admins/edit_group.py:102 handlers/admins/edit_group.py:119
+#: handlers/users/auth.py:96
+msgid "Выбери группу:"
+msgstr ""
+
+#: handlers/admins/edit_group.py:53
+#: handlers/users/settings/group_and_subgroups.py:55
+msgid "Факультет выбран"
+msgstr ""
+
+#: handlers/admins/edit_group.py:77
+msgid "Введи название для новой группы:"
+msgstr ""
+
+#: handlers/admins/edit_group.py:83
+msgid "Укажи название для группы - {}, чтобы изменить:"
+msgstr ""
+
+#: handlers/admins/edit_group.py:101
+msgid "Группа успешно переименована"
+msgstr ""
+
+#: handlers/admins/edit_group.py:113
+msgid "Группа была успешно удалена"
+msgstr ""
+
+#: handlers/admins/edit_group.py:134
+msgid "Ты пытаешься изменить название группы \"{}\" на \"{}\""
+msgstr ""
+
+#: handlers/admins/edit_group.py:154
+msgid "Выбери группу или добавь новую:"
+msgstr ""
+
+#: handlers/admins/edit_subgroups.py:24
+msgid "Подгруппа была успешно удалена"
+msgstr ""
+
+#: handlers/admins/edit_subgroups.py:52
+msgid "Подгруппа успешно переименована"
+msgstr ""
+
+#: handlers/admins/edit_subgroups.py:53
+msgid "Выбери подгруппу или добавь новую"
+msgstr ""
+
+#: handlers/admins/edit_subgroups.py:84
+msgid "Ты пытаешься изменить название подгруппы \"{}\" на \"{}\""
+msgstr ""
+
+#: handlers/admins/edit_subgroups.py:93
+msgid "Введи название для новой подгруппы:"
+msgstr ""
+
+#: handlers/admins/edit_subgroups.py:99
+msgid "Напиши название для подгруппы - {}, чтобы изменить"
+msgstr ""
+
+#: handlers/admins/send_msg.py:25 handlers/users/menu.py:78
+msgid "Администрирование:"
+msgstr ""
+
+#: handlers/admins/send_msg.py:40 handlers/admins/send_msg.py:48
+#: handlers/admins/send_msg.py:58
+msgid "Все текущие сообщения:"
+msgstr ""
+
+#: handlers/admins/send_msg.py:52
+msgid "Ты действительно хотишь удалить сообщение?"
+msgstr ""
+
+#: handlers/admins/send_msg.py:62
+msgid "Напиши сообщение для рассылки:"
+msgstr ""
+
+#: handlers/admins/send_msg.py:71
+msgid ""
+"Теперь нужно написать дату и время в котором ты хочешь отправить пост в "
+"формате <DD.MM.YYYY HH:MM>"
+msgstr ""
+
+#: handlers/admins/send_msg.py:94
+msgid ""
+"Дата и время указывают на прошлое - сообщение никогда не будет "
+"отправленно.."
+msgstr ""
+
+#: handlers/admins/send_msg.py:102
+msgid "Нужно написать время в формате <DD.MM.YYYY HH:MM>"
+msgstr ""
+
+#: handlers/admins/send_msg.py:109
+msgid "Отлично, твое сообщение будет отправленно в {} с текстом \"{}...\""
+msgstr ""
+
+#: handlers/groups/menu.py:24 handlers/groups/menu.py:37
+#: handlers/users/schedule.py:47 handlers/users/schedule.py:60
+#: handlers/users/schedule.py:62 handlers/users/settings/notifications.py:84
+#: handlers/users/settings/notifications.py:101
+msgid "Выбери день недели:"
+msgstr ""
+
+#: handlers/groups/menu.py:27 handlers/groups/start.py:30
+msgid ""
+"Для того, чтобы я мог работать отправь мне код! Его можно найти в "
+"настройках чатов."
+msgstr ""
+
+#: handlers/groups/start.py:18
+msgid ""
+"\n"
+"**Доступные команды для бота**\n"
+"/start - увидеть это сообщение снова.\n"
+"/schedule - посмотреть расписание.\n"
+"/enter + код - подключение бота к чату.\n"
+"\n"
+"**Доступный фукнционал**\n"
+"- Отправка ссылок на события до их начала(настраивает человек, который "
+"добавил бота в чат в настройках бота).\n"
+"- Получения расписания по команде /schedule\n"
+"        "
+msgstr ""
+
+#: handlers/groups/start.py:42
+msgid "Группа добавлена! Нажми /start, чтобы узнать, что я умею."
+msgstr ""
+
+#: handlers/groups/start.py:44
+msgid "Хм.. Кто-то уже забрал себе этот чат!"
+msgstr ""
+
+#: handlers/groups/start.py:47
+msgid "Неверный код!"
+msgstr ""
+
+#: handlers/users/auth.py:21 handlers/users/start.py:42
+msgid ""
+"Прежде чем приступить к использованию, давай познакомимся поближе! На "
+"каком языке ты предпочитаешь общаться?"
+msgstr ""
+
+#: handlers/users/auth.py:38 handlers/users/settings/base.py:56
+#: handlers/users/settings/chat_settings.py:135
+msgid "Язык установлен"
+msgstr ""
+
+#: handlers/users/auth.py:39 handlers/users/settings/group_and_subgroups.py:36
+#: handlers/users/settings/group_and_subgroups.py:46
+msgid "На каком факультете ты учишься?"
+msgstr ""
+
+#: handlers/users/auth.py:48
+msgid "Выбери свой факультет:"
+msgstr ""
+
+#: handlers/users/auth.py:58
+msgid "Факультет выбран!"
+msgstr ""
+
+#: handlers/users/auth.py:59 handlers/users/settings/group_and_subgroups.py:56
+#: handlers/users/settings/group_and_subgroups.py:64
+msgid "Ого, впечатляет! А на каком курсе?"
+msgstr ""
+
+#: handlers/users/auth.py:77
+msgid "Курс выбран!"
+msgstr ""
+
+#: handlers/users/auth.py:83 handlers/users/settings/group_and_subgroups.py:79
+#: handlers/users/settings/group_and_subgroups.py:93
+msgid "Неплохо. С какой ты группы?"
+msgstr ""
+
+#: handlers/users/auth.py:105
+#: handlers/users/settings/group_and_subgroups.py:112
+msgid "Группа выбрана!"
+msgstr ""
+
+#: handlers/users/auth.py:110
+#: handlers/users/settings/group_and_subgroups.py:117
+msgid ""
+"Теперь выбери свою подгруппу(можно выбрать несколько). Если у вас нет "
+"подгрупп, то просто нажми продолжить:"
+msgstr ""
+
+#: handlers/users/auth.py:121 handlers/users/auth.py:125
+msgid "Приятно познакомиться! Можешь смело приступать к использованиваю)"
+msgstr ""
+
+#: handlers/users/auth.py:140
+#: handlers/users/settings/group_and_subgroups.py:148
+msgid "Выбери подгруппу(можно несколько):"
+msgstr ""
+
+#: handlers/users/base.py:21 handlers/users/menu.py:69
+#: handlers/users/settings/base.py:20
+#: handlers/users/settings/chat_settings.py:26
+#: handlers/users/settings/notifications.py:30
+msgid "Настройки:"
+msgstr ""
+
+#: handlers/users/menu.py:30 handlers/users/menu.py:89
+#: handlers/users/schedule.py:25
+msgid "Меню:"
+msgstr ""
+
+#: handlers/users/menu.py:54
+msgid "Подгруппы:"
+msgstr ""
+
+#: handlers/users/menu.py:58
+msgid ""
+"Похоже, ты еще не выбрал свою группу.. Бегом в настройки, выбирай группу "
+"и возвращайся."
+msgstr ""
+
+#: handlers/users/schedule.py:35
+msgid "Расписание:"
+msgstr ""
+
+#: handlers/users/schedule.py:74
+msgid "**Расписание**\n"
+msgstr ""
+
+#: handlers/users/start.py:22
+msgid ""
+"\n"
+"    Привет! Меня зовут bit и я попытаюсь сделать твою студентскую жизнь "
+"более приятной!\n"
+"\n"
+"**Как пользоваться**\n"
+"📌 Чтобы подписаться на расписание группы просто пройди простую "
+"регистрацию при первом запуске или выбери группу в разделе «Настройки», "
+"сразу после этого переходи в «Расписание», выбирай нужный день, чтобы "
+"увидеть расписание.\n"
+"\n"
+"📌 Если хочешь, чтобы я напоминал тебе про начало событий из расписания "
+"перейди в «Настройки», затем «Уведомления» и следуй инструкциям.\n"
+"\n"
+"📌 Если хочешь добавить меня в чат группы и получать ссылки на пары, "
+"переходи в соотвествующий раздел в настройках и следуй инструкциям.\n"
+"\n"
+"**Обратная связь**\n"
+"Я работаю некорректно или ты нашёл какой-то баг? - Напиши моему хозяину:"
+" \n"
+"@kidden\n"
+"\n"
+"**Команды**\n"
+"/help - увидеть инструкцию по использованию снова.\n"
+"/menu - выход в главное меню.\n"
+"    "
+msgstr ""
+
+#: handlers/users/start.py:49
+msgid "Давно тебя не было в Уличных Гонках! Заходи!"
+msgstr ""
+
+#: handlers/users/start.py:50
+msgid ""
+"Чёрт.. Не тот скрипт.. Я имею в виду, что мы с тобой уже знакомы. Если "
+"хочешь посмотреть расписание или поковыряться в настройках - просто нажми"
+" на соответсвующие кнопки меню.\n"
+"По всем вопросам: @kidden"
+msgstr ""
+
+#: handlers/users/start.py:58
+msgid "Хватит тыкать! Я с первого раза всё понимаю.."
+msgstr ""
+
+#: handlers/users/settings/base.py:27
+#: handlers/users/settings/chat_settings.py:114
+msgid "Выбери язык:"
+msgstr ""
+
+#: handlers/users/settings/base.py:41
+#: handlers/users/settings/chat_settings.py:72
+#: handlers/users/settings/chat_settings.py:85
+#: handlers/users/settings/chat_settings.py:95
+#: handlers/users/settings/chat_settings.py:123
+msgid "Чаты:"
+msgstr ""
+
+#: handlers/users/settings/base.py:46
+#: handlers/users/settings/chat_settings.py:111
+#: handlers/users/settings/notifications.py:43
+#: handlers/users/settings/notifications.py:76
+#: handlers/users/settings/notifications.py:81
+#: handlers/users/settings/notifications.py:93
+msgid "Уведомления:"
+msgstr ""
+
+#: handlers/users/settings/base.py:57
+#: handlers/users/settings/group_and_subgroups.py:129
+#: handlers/users/settings/group_and_subgroups.py:133
+msgid "Ты успешно изменил группу и подгруппы!"
+msgstr ""
+
+#: handlers/users/settings/base.py:60
+msgid "Язык изменен"
+msgstr ""
+
+#: handlers/users/settings/chat_settings.py:38
+#: handlers/users/settings/chat_settings.py:60
+#: handlers/users/settings/chat_settings.py:137
+#: handlers/users/settings/group_and_subgroups.py:25
+#: handlers/users/settings/group_and_subgroups.py:107
+#: handlers/users/settings/notifications.py:25
+msgid "Настройки чата - {}"
+msgstr ""
+
+#: handlers/users/settings/chat_settings.py:53
+msgid ""
+"Чтобы я мог работать в чате сначала добавь меня в нужный чат, а зачем "
+"отправь этот текст '/enter {}' без скобок в чат. Сразу после этого твой "
+"чат появится в списке и ты сможешь настроить уведомления, язык и т.д."
+msgstr ""
+
+#: handlers/users/settings/group_and_subgroups.py:31
+msgid "Настроки:"
+msgstr ""
+
+#: handlers/users/settings/notifications.py:65
+msgid "За сколько минут до события ты хочешь получать от меня напоминание?"
+msgstr ""
+
+#: handlers/users/settings/notifications.py:69
+msgid "Ок, буду напоминать тебе за {} минут до начала события!"
+msgstr ""
+
+#: handlers/users/settings/notifications.py:113
+#: handlers/users/settings/notifications.py:132
+msgid "Выбери событие:"
+msgstr ""
+
+#: handlers/users/settings/notifications.py:123
+msgid "Напоминание удалено"
+msgstr ""
+
+#: handlers/users/settings/notifications.py:126
+msgid "Напоминание создано"
+msgstr ""
+
+#: keyboards/inline/admin/__init__.py:18 keyboards/inline/admin/admins.py:21
+#: keyboards/inline/admin/all_postpone_msg.py:20
+#: keyboards/inline/admin/edit_subgroups.py:26
+#: keyboards/inline/admin/send_msg.py:18 keyboards/inline/chats.py:16
+#: keyboards/inline/events.py:54 keyboards/inline/faculties.py:16
+#: keyboards/inline/groups.py:14 keyboards/inline/settings.py:20
 #: keyboards/inline/subgroups.py:18
 msgid "Нет тут ничего"
-msgstr "Nothing here.."
+msgstr ""
 
-#: keyboards/inline/soon_be_available.py:5
-msgid "Скоро будет доступно"
-msgstr "Coming soon"
+#: keyboards/inline/chats.py:18
+msgid "➕ Добавить ➕"
+msgstr ""
 
+#: keyboards/inline/courses.py:8
+msgid "-курс"
+msgstr ""
+
+#: keyboards/inline/admin/edit_subgroups.py:28 keyboards/inline/events.py:56
+#: keyboards/inline/faculties.py:18 keyboards/inline/groups.py:16
+msgid "Добавить"
+msgstr ""
+
+#: keyboards/inline/notification.py:10
+msgid "🔴 Выключить 🔴"
+msgstr ""
+
+#: keyboards/inline/notification.py:11
+msgid "⏳ Время оповещения ⏳"
+msgstr ""
+
+#: keyboards/inline/notification.py:13
+msgid "🗓 Cписок напоминаний 🗓"
+msgstr ""
+
+#: keyboards/inline/notification.py:15
+msgid "🟢 Включить 🟢"
+msgstr ""
+
+#: keyboards/inline/notify_time.py:8
+msgid "15 минут"
+msgstr ""
+
+#: keyboards/inline/notify_time.py:9
+msgid "10 минут"
+msgstr ""
+
+#: keyboards/inline/notify_time.py:10
+msgid "5 минут"
+msgstr ""
+
+#: keyboards/inline/notify_time.py:11
+msgid "В момент начала события"
+msgstr ""
+
+#: keyboards/inline/settings.py:15
+msgid "❌ Удалить ❌"
+msgstr ""
+
+#: keyboards/inline/soon_be_available.py:6
+msgid "Когда-то.. здесь обязательно что-то будет"
+msgstr ""
+
+#: keyboards/inline/admin/continue_or_cancel.py:8
 #: keyboards/inline/subgroups.py:21
 msgid "Продолжить"
-msgstr "Continue"
+msgstr ""
+
+#: keyboards/inline/admin/admins.py:22
+msgid "Добавить нового"
+msgstr ""
+
+#: keyboards/inline/admin/cancel.py:6
+#: keyboards/inline/admin/cancel_or_create.py:9
+#: keyboards/inline/admin/cancel_or_delete.py:9
+#: keyboards/inline/admin/continue_or_cancel.py:9
+msgid "Отмена"
+msgstr ""
+
+#: keyboards/inline/admin/cancel_or_create.py:8
+msgid "Сохранить"
+msgstr ""
+
+#: keyboards/inline/admin/cancel_or_delete.py:8
+#: keyboards/inline/admin/delete_postpone_msg.py:7
+msgid "Удалить"
+msgstr ""
+
+#: keyboards/inline/admin/edit_subgroups.py:30
+msgid "Создать новое"
+msgstr ""
+
+#: keyboards/inline/admin/send_msg.py:10
+msgid "Все отправленные сообщения"
+msgstr ""
+
+#: keyboards/inline/admin/send_msg.py:12
+msgid "Отправить всем"
+msgstr ""
+
+#: keyboards/inline/admin/send_msg.py:14
+msgid "Отправить всему факультету"
+msgstr ""
+
+#: keyboards/inline/admin/send_msg.py:16
+msgid "Отправить группе"
+msgstr ""
+
+#: middlewares/current_admin.py:16
+msgid ""
+"\n"
+"Похоже, что ты не админ, напиши @kidden.\n"
+"                "
+msgstr ""
+
+#: middlewares/current_admin.py:28
+msgid ""
+"\n"
+"Похоже, что ты не админ, напиши  @kidden.\n"
+"                "
+msgstr ""
 
 #: middlewares/current_user.py:16
 msgid ""
 "\n"
-"Похоже, что вас нет в базе данных.\n"
-"Чтобы это исправить - нажмите на /start       \n"
+"Похоже, что тебя нет в базе данных.\n"
+"Чтобы это исправить - нажми на /start       \n"
 "                "
 msgstr ""
-"\n"
-"Looks like you are not registered.\n"
-"You can change it by pressing /start          \n"
-"                "
+
 #: middlewares/current_user.py:30
 msgid ""
 "\n"
-"Похоже, что вас нет в базе данных.\n"
-"Чтобы это исправить - нажмите на /start      \n"
+"Похоже, что тебя нет в базе данных.\n"
+"Чтобы это исправить - нажми на /start      \n"
 "                "
 msgstr ""
-"\n"
-"Looks like you are not registered.\n"
-"You can change it by pressing /start          \n"
-"                "
 
-#: middlewares/throttling.py:58
-msgid "Пожалуйста, не флудите, бюджет нерезиновый!"
-msgstr "Stop flooding! Please.."
+#: middlewares/throttling.py:59
+msgid "Пожалуйста, не флуди, бюджет нерезиновый!"
+msgstr ""
 
-#: middlewares/throttling.py:62 middlewares/throttling.py:78
+#: middlewares/throttling.py:63 middlewares/throttling.py:80
 msgid "Unlocked."
-msgstr "Unlocked."
+msgstr ""
 
-#: middlewares/throttling.py:74
-msgid "Пожалуйста, не флудите, бюджет нeрезиновый!"
-msgstr "Stop flooding! Please.."
+#: middlewares/throttling.py:76
+msgid "Пожалуйста, не флуди, бюджет нeрезиновый!"
+msgstr ""
+
+#: utils/send_notification.py:29 utils/send_notification.py:48
+msgid "Осталось {} минут до события [{}]({})!"
+msgstr ""
+
+#~ msgid "Выберите подгруппу:"
+#~ msgstr ""
+
+#~ msgid "Осталось {} минут до начала [{}]({})!"
+#~ msgstr ""
+
+#~ msgid "Выберите день:"
+#~ msgstr ""
+
+#~ msgid "Вы вернулись назад"
+#~ msgstr ""
+
+#~ msgid "Выберите тип события:"
+#~ msgstr ""
+
+#~ msgid "Введите ссылку на событие:"
+#~ msgstr ""
+
+#~ msgid "Введите ссылку на событие"
+#~ msgstr ""
+
+#~ msgid "Выбери факультет или добавь новый"
+#~ msgstr ""
+
+#~ msgid "Выберите факультет или добавьте новый"
+#~ msgstr ""
+
+#~ msgid "Выберите факультет:"
+#~ msgstr ""
+
+#~ msgid "Выберите курс"
+#~ msgstr ""
+
+#~ msgid "Выберите группу"
+#~ msgstr ""
+
+#~ msgid "Выберите группу:"
+#~ msgstr ""
+
+#~ msgid "Выберите подгруппу или добавьте новую"
+#~ msgstr ""
+
+#~ msgid "Ты пытаетесь изменить название подгруппы \"{}\" на \"{}\""
+#~ msgstr ""
+
+#~ msgid "Выберите из предложеного в меню:"
+#~ msgstr ""
+
+#~ msgid "Выберите ваш факультет:"
+#~ msgstr ""
+
+#~ msgid "Выберите ваш курс:"
+#~ msgstr ""
+
+#~ msgid "Вы вернулись обратно"
+#~ msgstr ""
+
+#~ msgid "Выберите вашу группу:"
+#~ msgstr ""
+
+#~ msgid "Выберите день недели"
+#~ msgstr ""
+
+#~ msgid "Выберите день недели:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "Похоже, что вас нет в базе данных.\n"
+#~ "Чтобы это исправить - нажмите на /start       \n"
+#~ "                "
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "Похоже, что вас нет в базе данных.\n"
+#~ "Чтобы это исправить - нажмите на /start      \n"
+#~ "                "
+#~ msgstr ""
+
+#~ msgid "Пожалуйста, не флудите, бюджет нерезиновый!"
+#~ msgstr ""
+
+#~ msgid "Пожалуйста, не флудите, бюджет нeрезиновый!"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Чёрт.. Не тот скрипт.. Я имею в"
+#~ " виду, что мы с тобой уже "
+#~ "знакомы. Если хочешь посмотреть расписание "
+#~ "или поковыряться в настройках - просто"
+#~ " нажми на соответсвующие кнопки меню.\n"
+#~ ""
+#~ "По всем вопросам: @kiiden"
+#~ msgstr ""
+
+#~ msgid "Все события"
+#~ msgstr ""
+
+#~ msgid "Выбери в настройках свою группу"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Похоже, ты еще не выбрал свою "
+#~ "группу.. Бегом в настройки! Выбирай "
+#~ "группу и возвращайся."
+#~ msgstr ""
+
+#~ msgid "Понедельник"
+#~ msgstr ""
+
+#~ msgid "Вторник"
+#~ msgstr ""
+
+#~ msgid "Среда"
+#~ msgstr ""
+
+#~ msgid "Четверг"
+#~ msgstr ""
+
+#~ msgid "Пятница"
+#~ msgstr ""
+
+#~ msgid "Суббота"
+#~ msgstr ""
+
+#~ msgid "Воскресенье"
+#~ msgstr ""
+
+#~ msgid "Привет!"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "А ты хорош! Регистрация успешно "
+#~ "пройдена. Теперь ты можешь получать "
+#~ "расписание перейдя в раздел 'Расписание', "
+#~ "а также изменять личные данные в "
+#~ "разделе 'Настройки'.\n"
+#~ " Если возникли какие-то вопросы - смело пиши @kidden"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "Привет! Меня зовут bit и я "
+#~ "попытаюсь сделать твою студентскую жизнь "
+#~ "более приятной! Внизу я описал, какие"
+#~ " функции у меня есть и как ими"
+#~ " пользоваться.\n"
+#~ "\n"
+#~ "Как пользоваться\n"
+#~ "📌 Чтобы подписаться на расписание группы"
+#~ " просто пройди простую регистрацию при "
+#~ "первом запуске или выбери группу в "
+#~ "разделе «Настройки», сразу после этого "
+#~ "переходи в «Расписание», выбирай нужный "
+#~ "день, чтобы увидеть расписание.\n"
+#~ "\n"
+#~ "📌 Если хочешь, чтобы я напоминал "
+#~ "тебе про начало событий из расписания"
+#~ " перейди в «Настройки», затем «Уведомления»"
+#~ " и следуй инструкциям.\n"
+#~ "\n"
+#~ "📌 Если хочешь добавить меня в чат"
+#~ " группы и получать ссылки на пары,"
+#~ " переходи в соотвествующий раздел в "
+#~ "настройках и следуй инструкциям.\n"
+#~ "\n"
+#~ "Обратная связь\n"
+#~ "\n"
+#~ "Я работаю некорректно или ты нашёл "
+#~ "какой-то баг? - Напиши моему хозяину:"
+#~ " \n"
+#~ "@kidden\n"
+#~ "\n"
+#~ "Команды\n"
+#~ "/help - увидеть инструкцию по использованию снова.\n"
+#~ "/menu - выход в главное меню.\n"
+#~ "    "
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Теперь давай познакомимся поближе. На "
+#~ "каком языке ты предпочитаешь общаться?"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "Привет! Меня зовут bit и я "
+#~ "попытаюсь сделать твою студентскую жизнь "
+#~ "более приятной! Внизу я описал, какие"
+#~ " функции у меня есть и как ими"
+#~ " пользоваться.\n"
+#~ "\n"
+#~ "Как пользоваться\n"
+#~ "📌 Чтобы подписаться на расписание группы"
+#~ " просто пройди простую регистрацию при "
+#~ "первом запуске или выбери группу в "
+#~ "разделе «Настройки», сразу после этого "
+#~ "переходи в «Расписание», выбирай нужный "
+#~ "день, чтобы увидеть расписание.\n"
+#~ "\n"
+#~ "📌 Если хочешь, чтобы я напоминал "
+#~ "тебе про начало событий из расписания"
+#~ " перейди в «Настройки», затем «Уведомления»"
+#~ " и следуй инструкциям.\n"
+#~ "\n"
+#~ "📌 Если хочешь добавить меня в чат"
+#~ " группы и получать ссылки на пары,"
+#~ " переходи в соотвествующий раздел в "
+#~ "настройках и следуй инструкциям.\n"
+#~ "\n"
+#~ "Обратная связь\n"
+#~ "\n"
+#~ "Я работаю некорректно или ты нашёл "
+#~ "какой-то баг? - Напиши моему хозяину:"
+#~ " \n"
+#~ "@kidden\n"
+#~ "\n"
+#~ "Команды\n"
+#~ "/help - увидеть инструкцию по использованию снова.\n"
+#~ "/menu - выход в главное меню.\n"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Приятно познакомиться! Ниже я описал, "
+#~ "что я умею. Как только ознакомишься "
+#~ "- смело начинай пользоваться!\n"
+#~ "\n"
+#~ "**Как пользоваться**\n"
+#~ "📌 Чтобы подписаться на расписание группы"
+#~ " просто пройди простую регистрацию при "
+#~ "первом запуске или выбери группу в "
+#~ "разделе «Настройки», сразу после этого "
+#~ "переходи в «Расписание», выбирай нужный "
+#~ "день, чтобы увидеть расписание.\n"
+#~ "\n"
+#~ "📌 Если хочешь, чтобы я напоминал "
+#~ "тебе про начало событий из расписания"
+#~ " перейди в «Настройки», затем «Уведомления»"
+#~ " и следуй инструкциям.\n"
+#~ "\n"
+#~ "📌 Если хочешь добавить меня в чат"
+#~ " группы и получать ссылки на пары,"
+#~ " переходи в соотвествующий раздел в "
+#~ "настройках и следуй инструкциям.\n"
+#~ "\n"
+#~ "**Обратная связь**\n"
+#~ "\n"
+#~ "Я работаю некорректно или ты нашёл "
+#~ "какой-то баг? - Напиши моему хозяину:"
+#~ " \n"
+#~ "@kidden\n"
+#~ "\n"
+#~ "**Команды**\n"
+#~ "/help - увидеть инструкцию по использованию снова.\n"
+#~ "/menu - выход в главное меню.\n"
+#~ msgstr ""
+
+#~ msgid "пустота1"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Привет! Меня зовут bit и я "
+#~ "попытаюсь сделать твою студентскую жизнь "
+#~ "более приятной! Давай познакомимся немного "
+#~ "ближе и я тебе расскажу, что я "
+#~ "умею!"
+#~ msgstr ""
+
+#~ msgid "На каком языке ты предпочитаешь общаться?"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Приятно познакомиться! Ниже я описал, "
+#~ "что я умею. Как только ознакомишься "
+#~ "- смело начинай пользоваться!\n"
+#~ "\n"
+#~ "**Как пользоваться**\n"
+#~ "📌 Чтобы подписаться на расписание группы"
+#~ " просто пройди простую регистрацию при "
+#~ "первом запуске или выбери группу в "
+#~ "разделе «Настройки», сразу после этого "
+#~ "переходи в «Расписание», выбирай нужный "
+#~ "день, чтобы увидеть расписание.\n"
+#~ "\n"
+#~ "📌 Если хочешь, чтобы я напоминал "
+#~ "тебе про начало событий из расписания"
+#~ " перейди в «Настройки», затем «Уведомления»"
+#~ " и следуй инструкциям.\n"
+#~ "\n"
+#~ "📌 Если хочешь добавить меня в чат"
+#~ " группы и получать ссылки на пары,"
+#~ " переходи в соотвествующий раздел в "
+#~ "настройках и следуй инструкциям.\n"
+#~ "\n"
+#~ "**Обратная связь**\n"
+#~ "Я работаю некорректно или ты нашёл "
+#~ "какой-то баг? - Напиши моему хозяину:"
+#~ " \n"
+#~ "@kidden\n"
+#~ "\n"
+#~ "**Команды**\n"
+#~ "/help - увидеть инструкцию по использованию снова.\n"
+#~ "/menu - выход в главное меню.\n"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Приятно познакомиться! Ниже я описал, "
+#~ "что я умею. Как только ознакомишься "
+#~ "- смело начинай пользоваться!\n"
+#~ "    \n"
+#~ "**Как пользоваться**\n"
+#~ "📌 Чтобы подписаться на расписание группы"
+#~ " просто пройди простую регистрацию при "
+#~ "первом запуске или выбери группу в "
+#~ "разделе «Настройки», сразу после этого "
+#~ "переходи в «Расписание», выбирай нужный "
+#~ "день, чтобы увидеть расписание.\n"
+#~ "\n"
+#~ "📌 Если хочешь, чтобы я напоминал "
+#~ "тебе про начало событий из расписания"
+#~ " перейди в «Настройки», затем «Уведомления»"
+#~ " и следуй инструкциям.\n"
+#~ "\n"
+#~ "📌 Если хочешь добавить меня в чат"
+#~ " группы и получать ссылки на пары,"
+#~ " переходи в соотвествующий раздел в "
+#~ "настройках и следуй инструкциям.\n"
+#~ "\n"
+#~ "**Обратная связь**\n"
+#~ "\n"
+#~ "Я работаю некорректно или ты нашёл "
+#~ "какой-то баг? - Напиши моему хозяину:"
+#~ " \n"
+#~ "@kidden\n"
+#~ "\n"
+#~ "**Команды**\n"
+#~ "/help - увидеть инструкцию по использованию снова.\n"
+#~ "/menu - выход в главное меню.\n"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "Привет! Меня зовут bit и я "
+#~ "попытаюсь сделать твою студентскую жизнь "
+#~ "более приятной!\n"
+#~ "\n"
+#~ "**Как пользоваться**\n"
+#~ "📌 Чтобы подписаться на расписание группы"
+#~ " просто пройди простую регистрацию при "
+#~ "первом запуске или выбери группу в "
+#~ "разделе «Настройки», сразу после этого "
+#~ "переходи в «Расписание», выбирай нужный "
+#~ "день, чтобы увидеть расписание.\n"
+#~ "\n"
+#~ "📌 Если хочешь, чтобы я напоминал "
+#~ "тебе про начало событий из расписания"
+#~ " перейди в «Настройки», затем «Уведомления»"
+#~ " и следуй инструкциям.\n"
+#~ "\n"
+#~ "📌 Если хочешь добавить меня в чат"
+#~ " группы и получать ссылки на пары,"
+#~ " переходи в соотвествующий раздел в "
+#~ "настройках и следуй инструкциям.\n"
+#~ "\n"
+#~ "**Обратная связь**\n"
+#~ "Я работаю некорректно или ты нашёл "
+#~ "какой-то баг? - Напиши моему хозяину:"
+#~ " \n"
+#~ "@kidden\n"
+#~ "\n"
+#~ "**Команды**\n"
+#~ "/help - увидеть инструкцию по использованию снова.\n"
+#~ "/menu - выход в главное меню.\n"
+#~ msgstr ""
+
+#~ msgid "Чтобы я мог работать в твой группе перешли этот код '{}' в чат"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Чтобы я мог работать в чате "
+#~ "сначала добавь меня туда, а зачем "
+#~ "отправь этот текст '/enter {}' без "
+#~ "скобок в чат"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Чтобы я мог работать в чате "
+#~ "сначала добавь меня туда, а зачем "
+#~ "отправь этот текст '/enter {}' без "
+#~ "скобок в чат. Сразу после этого "
+#~ "твой чат появится в списке и ты"
+#~ " сможешь настроить уведомления, язык и "
+#~ "т.д."
+#~ msgstr ""
+
+#~ msgid "Время оповещения"
+#~ msgstr ""
+
+#~ msgid "Редактировать напоминание"
+#~ msgstr ""
+
+#~ msgid "Выключить"
+#~ msgstr ""
+
+#~ msgid "Включить"
+#~ msgstr ""
+
+#~ msgid "Так не пойдёт, сперва отправьте мне код!"
+#~ msgstr ""
+
+#~ msgid "Группа добавлена!"
+#~ msgstr ""
 

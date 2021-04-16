@@ -3,8 +3,17 @@ import enum
 from tortoise import fields
 from tortoise.models import Model
 
+# from middlewares import _
 
 class Day(enum.Enum):
+    # monday = _('Понедельник')
+    # tuesday = _('Вторник')
+    # wednesday = _('Среда')
+    # thursday = _('Четверг')
+    # friday = _('Пятница')
+    # saturday = _('Суббота')
+    # sunday = _('Воскресенье')
+
     monday = 'monday'
     tuesday = 'tuesday'
     wednesday = 'wednesday'
@@ -12,7 +21,6 @@ class Day(enum.Enum):
     friday = 'friday'
     saturday = 'saturday'
     sunday = 'sunday'
-
 
 class Event(Model):
     id = fields.IntField(pk=True)
