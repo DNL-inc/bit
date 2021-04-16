@@ -1,7 +1,6 @@
 import datetime
 from typing import List
 import calendar
-from middlewares import _
 
 import pytz
 from aiogram import Bot
@@ -22,12 +21,13 @@ async def send(bot: Bot):
         notifications = await Notification.filter(user=user.id).all()
         for notification in notifications:
             await notification.fetch_related("event")
-            event = await Event.filter(id=notification.event.id, time=timestamp + user_delta).first()
+            event = await Event.filter(id=notification.event.id, time=timestamp + user_delta,
+                                       day=calendar.day_name[timestamp_now.weekday()].lower()).first()
             if event:
                 try:
                     await bot.send_message(user.tele_id,
                                            _("Осталось {} минут до события [{}]({})!".format(user.notification_time,
-                                                                                           event.title, event.link)),
+                                                                                           event.title, event.link),
                                            parse_mode="Markdown", disable_web_page_preview=True, )
                 except BotBlocked:
                     pass
@@ -45,8 +45,8 @@ async def send(bot: Bot):
             if timestamp + chat_delta == time:
                 try:
                     await bot.send_message(chat.tele_id,
-                                           _("Осталось {} минут до события [{}]({})!".format(chat.notification_time,
-                                                                                           event.title, event.link)),
+                                           _("Осталось {} минут до события [{}]({})!".format(user.notification_time,
+                                                                                           event.title, event.link),
                                            parse_mode="Markdown", disable_web_page_preview=True, )
                 except BotBlocked:
                     pass

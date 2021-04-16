@@ -69,14 +69,18 @@ async def schedule_manager(callback: types.CallbackQuery, state: FSMContext, use
                                                                                                    'time').all()
         else:
             await user.fetch_related("group")
-            events = await Event.filter(group=user.group.id, day=callback.data).order_by('time',
-                                                                                         'time').all()
+            events = await Event.filter(group=user.group.id, day=callback.data).order_by('time', 'time').all()
         text = _("**Расписание**\n")
+
         for i in range(1, len(events) + 1):
             text += "{}. **{}** [{}]({}) в {}\n".format(i, config.TYPE_EVENT.get(events[i - 1].type),
                                                         events[i - 1].title if len(events[i - 1].title) < 12 else
                                                         events[i - 1].title[:12] + "...",
                                                         events[i - 1].link,
                                                         events[i - 1].time.strftime('%H:%M'))
-        await callback.message.edit_text(text, reply_markup=cancel.keyboard, parse_mode="Markdown",
-                                         disable_web_page_preview=True)
+        if not events:
+            await callback.message.edit_text("Атдыхай", reply_markup=cancel.keyboard, parse_mode="Markdown",
+                                             disable_web_page_preview=True)
+        else:
+            await callback.message.edit_text(text, reply_markup=cancel.keyboard, parse_mode="Markdown",
+                                             disable_web_page_preview=True)
