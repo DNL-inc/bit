@@ -1,6 +1,7 @@
 import datetime
 from typing import List
 import calendar
+from middlewares import _
 
 import pytz
 from aiogram import Bot
@@ -25,8 +26,8 @@ async def send(bot: Bot):
             if event:
                 try:
                     await bot.send_message(user.tele_id,
-                                           "Осталось {} минут до события [{}]({})!".format(user.notification_time,
-                                                                                           event.title, event.link),
+                                           _("Осталось {} минут до события [{}]({})!".format(user.notification_time,
+                                                                                           event.title, event.link)),
                                            parse_mode="Markdown", disable_web_page_preview=True, )
                 except BotBlocked:
                     pass
@@ -44,8 +45,8 @@ async def send(bot: Bot):
             if timestamp + chat_delta == time:
                 try:
                     await bot.send_message(chat.tele_id,
-                                           "Осталось {} минут до события [{}]({})!".format(chat.notification_time,
-                                                                                           event.title, event.link),
+                                           _("Осталось {} минут до события [{}]({})!".format(chat.notification_time,
+                                                                                           event.title, event.link)),
                                            parse_mode="Markdown", disable_web_page_preview=True, )
                 except BotBlocked:
                     pass

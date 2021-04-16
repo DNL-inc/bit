@@ -2,6 +2,7 @@ from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.dispatcher.handler import CancelHandler, current_handler
 from aiogram import types
 from models import Admin
+from middlewares import *
 
 
 class CurrentAdminMiddleware(BaseMiddleware):
@@ -12,9 +13,9 @@ class CurrentAdminMiddleware(BaseMiddleware):
             if admin:
                 data['admin'] = admin
             else:
-                await msg.answer("""
-Похоже, что вы не админ, напишите сюда @kidden.      
-                """)
+                await msg.answer(_("""
+Похоже, что ты не админ, напиши @kidden.
+                """))
                 raise CancelHandler()
 
     async def on_process_callback_query(self, callback: types.CallbackQuery, data: dict):
@@ -24,7 +25,7 @@ class CurrentAdminMiddleware(BaseMiddleware):
             if admin:
                 data['admin'] = admin
             else:
-                await callback.answer("""
-Похоже, что вы не админ, напишите сюда @kidden.   
-                """)
+                await callback.answer(_("""
+Похоже, что ты не админ, напиши  @kidden.
+                """))
                 raise CancelHandler()

@@ -13,29 +13,29 @@ from middlewares import _
 @get_current_admin()
 @dp.callback_query_handler(back_callback.filter(category='course'), state=EditGroupStates.course)
 async def back_choose_course(callback: types.CallbackQuery, state: FSMContext):
-    await callback.answer(_("Вы вернулись обратно"))
+    await callback.answer(_("Ты вернулся назад"))
     await EditGroupStates.faculty.set()
-    await callback.message.edit_text('Выберите курс', reply_markup=courses.keyboard)
+    await callback.message.edit_text(_('Выбери курс:'), reply_markup=courses.keyboard)
 
 
 @get_current_admin()
 @dp.callback_query_handler(back_callback.filter(category='faculty'), state=EditGroupStates.faculty)
 async def back_choose_faculty(callback: types.CallbackQuery, state: FSMContext, admin: Admin):
-    await callback.answer(_("Вы вернулись обратно"))
+    await callback.answer(_("Ты вернулся обратно"))
     keyboard = None
     if admin.role.name == 'supreme':
         keyboard = await faculties.get_keyboard()
     else:
         await admin.fetch_related('faculty')
         keyboard = await faculties.get_keyboard(one_faculty=admin.faculty)
-    await callback.message.edit_text(_("Выберите факультет:"), reply_markup=keyboard)
+    await callback.message.edit_text(_("Выбери факультет:"), reply_markup=keyboard)
     await AdminStates.groups.set()
 
 
 @get_current_admin()
 @dp.callback_query_handler(state=EditGroupStates.faculty)
 async def choose_course(callback: types.CallbackQuery, state: FSMContext):
-    await callback.answer("Вы выбрали курс")
+    await callback.answer(_("Курс выбран"))
     if callback.data.startswith('course-'):
         await EditGroupStates.course.set()
         await state.update_data(course=int(callback.data.split('-')[-1]))
@@ -44,17 +44,17 @@ async def choose_course(callback: types.CallbackQuery, state: FSMContext):
         data['faculty'] = args['faculty']
         data['course'] = args['course']
         keyboard = await groups.get_keyboard(data, True)
-        await callback.message.edit_text('Выберите группу', reply_markup=keyboard)
+        await callback.message.edit_text(_('Выбери группу:'), reply_markup=keyboard)
 
 
 @get_current_admin()
 @dp.callback_query_handler(state=AdminStates.groups)
 async def choose_faculty(callback: types.CallbackQuery, state: FSMContext):
-    await callback.answer("Вы выбрали факультет")
+    await callback.answer(_("Факультет выбран"))
     if callback.data.startswith('faculty-'):
         await EditGroupStates.faculty.set()
         await state.update_data(faculty=int(callback.data.split('-')[-1]))
-        await callback.message.edit_text('Выберите курс', reply_markup=courses.keyboard)
+        await callback.message.edit_text(_('Выбери курс:'), reply_markup=courses.keyboard)
 
 
 @get_current_admin()
@@ -65,7 +65,7 @@ async def back_choose_group(callback: types.CallbackQuery, admin: Admin, state: 
     data['faculty'] = args['faculty']
     data['course'] = args['course']
     keyboard = await groups.get_keyboard(data, True)
-    await callback.message.edit_text('Выберите группу', reply_markup=keyboard)
+    await callback.message.edit_text(_('Выбери группу:'), reply_markup=keyboard)
     await EditGroupStates.course.set()
 
 
@@ -74,13 +74,13 @@ async def back_choose_group(callback: types.CallbackQuery, admin: Admin, state: 
 async def edit_groups(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
     if callback.data == "add-group":
-        await callback.message.edit_text('Напишите название новой группы', reply_markup=cancel.keyboard)
+        await callback.message.edit_text(_('Введи название для новой группы:'), reply_markup=cancel.keyboard)
         await EditGroupStates.create.set()
     elif callback.data.startswith("group-"):
         group_id = callback.data.split('-')[-1]
         group = await Group.filter(id=int(group_id)).first()
         keyboard = await cancel_or_delete.get_keyboard("group")
-        await callback.message.edit_text('Напишите название для группы - {}, чтобы изменить'.format(group.title),
+        await callback.message.edit_text(_('Укажи название для группы - {}, чтобы изменить:'.format(group.title)),
                                          reply_markup=keyboard)
         await EditGroupStates.edit.set()
         await state.update_data(group=int(group_id))
@@ -98,8 +98,8 @@ async def save_group(callback: types.CallbackQuery, state: FSMContext, user: Use
     data['faculty'] = args['faculty']
     data['course'] = args['course']
     keyboard = await groups.get_keyboard(data, True)
-    await callback.answer("Вы успешно изменили название группы")
-    await bot.edit_message_text("Выберите группу", reply_markup=keyboard, chat_id=user.tele_id, message_id=args.get("current_msg"))
+    await callback.answer(_("Группа успешно переименована"))
+    await bot.edit_message_text(_("Выбери группу:"), reply_markup=keyboard, chat_id=user.tele_id, message_id=args.get("current_msg"))
     await EditGroupStates.course.set()
 
 @get_current_admin()
@@ -110,13 +110,13 @@ async def delete_group(callback: types.CallbackQuery, admin: Admin, state: FSMCo
     group = await Group.filter(id=group_id).first()
     await group.delete()
     await state.update_data(group=None)
-    await callback.answer('Группа была удалена')
+    await callback.answer(_('Группа была успешно удалена'))
     args = await state.get_data()
     data = dict()
     data['faculty'] = args['faculty']
     data['course'] = args['course']
     keyboard = await groups.get_keyboard(data, True)
-    await callback.message.edit_text('Выберите группу', reply_markup=keyboard)
+    await callback.message.edit_text(_('Выбери группу:'), reply_markup=keyboard)
     await EditGroupStates.course.set()
 
 
@@ -131,7 +131,7 @@ async def edit_group(msg: types.Message, state: FSMContext, user: User):
         keyboard = await cancel_or_create.get_keyboard("group")
         await state.update_data(new_group=msg.text)
         await bot.edit_message_text(
-            'Вы пытаетесь изменить название группы "{}" на "{}"'.format(group.title, msg.text),
+            _('Ты пытаешься изменить название группы "{}" на "{}"'.format(group.title, msg.text)),
             reply_markup=keyboard, chat_id=user.tele_id, message_id=data.get("current_msg"))
 
 
@@ -151,7 +151,7 @@ async def create_faculty(msg: types.Message, state: FSMContext, user: User):
     faculty = await Faculty.filter(id=args['faculty']).first()
     await Group.create(title=msg.text.upper(), faculty=faculty, course=args['course'])
     keyboard = await groups.get_keyboard(data, True)
-    await bot.edit_message_text("Выберите группу или добавть новый", reply_markup=keyboard, chat_id=user.tele_id,
+    await bot.edit_message_text(_("Выбери группу или добавь новую:"), reply_markup=keyboard, chat_id=user.tele_id,
                                 message_id=args.get("current_msg"))
     await EditGroupStates.course.set()
 

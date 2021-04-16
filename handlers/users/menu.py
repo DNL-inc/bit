@@ -51,11 +51,11 @@ async def get_schedule_page(msg: types.Message, user: User, state: FSMContext):
     if user.group:
         keyboard = await edit_subgroups.get_keyboard(user.group.id, False, True, user)
         await bot.delete_message(user.tele_id, data.get('current_msg'))
-        msg = await msg.answer('Подгруппы: ', reply_markup=keyboard)
+        msg = await msg.answer(_('Подгруппы:'), reply_markup=keyboard)
     else:
         data = await state.get_data()
         await bot.delete_message(user.tele_id, data.get('current_msg'))
-        msg = await msg.answer('В настройках выберите группу')
+        msg = await msg.answer(_('Похоже, ты еще не выбрал свою группу.. Бегом в настройки, выбирай группу и возвращайся.'))
     await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
     await MenuStates.schedule.set()
 
@@ -66,7 +66,7 @@ async def get_settings_page(msg: types.Message, user: User, state: FSMContext):
     keyboard = await settings.get_keyboard(True)
     data = await state.get_data()
     await bot.delete_message(user.tele_id, data.get('current_msg'))
-    msg = await msg.answer(_('Настроки:'), reply_markup=keyboard)
+    msg = await msg.answer(_('Настройки:'), reply_markup=keyboard)
     await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
 
 

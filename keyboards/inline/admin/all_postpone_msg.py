@@ -1,6 +1,6 @@
 from aiogram import types
 from datetime import datetime
-
+from middlewares import _
 from tortoise.timezone import localtime
 
 from data.config import LOCAL_TZ
@@ -17,6 +17,6 @@ async def get_keyboard(admin: Admin):
             sending_time = localtime(message.sending_time, LOCAL_TZ.zone)
             keyboard.add(types.InlineKeyboardButton("На " + sending_time.strftime("%d.%m.%Y %H:%M") + " " + message.text[:10] + "...", callback_data='msg-'+str(message.id)))
     else:
-        keyboard.add(types.InlineKeyboardButton("Нет тут ничего", callback_data=blank_callback.new(category='settings')))
-    keyboard.add(types.InlineKeyboardButton('Назад', callback_data=back_callback.new(category='send_msg')))
+        keyboard.add(types.InlineKeyboardButton(_("Нет тут ничего"), callback_data=blank_callback.new(category='settings')))
+    keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='send_msg')))
     return keyboard

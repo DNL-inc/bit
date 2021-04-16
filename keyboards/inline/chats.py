@@ -15,6 +15,6 @@ async def get_keyboard(user_id, editable=False):
         keyboard.add(
             types.InlineKeyboardButton(_("Нет тут ничего"), callback_data=blank_callback.new(category='chat')))
     if editable:
-        keyboard.add(types.InlineKeyboardButton('Добавить', callback_data='add-chat'))
+        keyboard.add(types.InlineKeyboardButton(_('➕ Добавить ➕'), callback_data='add-chat'))
     keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='lang')))
     return keyboard

@@ -1,6 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-
+from middlewares import _
 from data import config
 from filters.is_chat import IsChat
 from keyboards.default import menu
@@ -16,11 +16,16 @@ from utils.misc import get_current_user
 @get_current_user()
 @dp.message_handler(IsChat(), commands=['schedule'], state='*')
 async def show_menu(msg: types.Message, user: User, state: FSMContext):
+    chat = await Chat.filter(tele_id=msg.chat.id).first()
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     for day in Day:
         keyboard.add(types.InlineKeyboardButton(day.name, callback_data=day.name))
-    await msg.reply('Выберите день недели',
+    if chat:
+        await msg.reply(_('Выбери день недели:'),
                     reply_markup=keyboard)
+    else:
+        await msg.reply(_('Для того, чтобы я мог работать отправь мне код! Его можно найти в настройках чатов.'))
+        await ChatStates.wait_for_code.set()
 
 
 @get_current_user()
@@ -29,7 +34,7 @@ async def back_menu_sections(callback: types.CallbackQuery):
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     for day in Day:
         keyboard.add(types.InlineKeyboardButton(day.name, callback_data=day.name))
-    await callback.message.edit_text('Выберите день недели',
+    await callback.message.edit_text(_('Выбери день недели:'),
                                      reply_markup=keyboard)
 
 

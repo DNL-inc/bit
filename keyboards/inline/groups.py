@@ -13,6 +13,6 @@ async def get_keyboard(filters, editable=False):
     else:
         keyboard.add(types.InlineKeyboardButton(_("Нет тут ничего"), callback_data=blank_callback.new(category='group')))
     if editable:
-        keyboard.add(types.InlineKeyboardButton('Добавить', callback_data='add-group'))
+        keyboard.add(types.InlineKeyboardButton(_('Добавить'), callback_data='add-group'))
     keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='course')))
     return keyboard

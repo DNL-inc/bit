@@ -56,7 +56,7 @@ class ThrottlingMiddleware(BaseMiddleware):
             key = f"{self.prefix}_message"
         delta = throttled.rate - throttled.delta
         if throttled.exceeded_count <= 2:
-            msg = await message.reply(_('Пожалуйста, не флудите, бюджет нерезиновый!'))
+            msg = await message.reply(_('Пожалуйста, не флуди, бюджет нерезиновый!'))
         await asyncio.sleep(delta)
         thr = await dispatcher.check_key(key)
         if thr.exceeded_count == throttled.exceeded_count:
@@ -73,7 +73,7 @@ class ThrottlingMiddleware(BaseMiddleware):
             key = f"{self.prefix}_message"
         delta = throttled.rate - throttled.delta
         if throttled.exceeded_count <= 2:
-            msg = await callback.message.answer(_('Пожалуйста, не флудите, бюджет нeрезиновый!'))
+            msg = await callback.message.answer(_('Пожалуйста, не флуди, бюджет нeрезиновый!'))
         await asyncio.sleep(delta)
         thr = await dispatcher.check_key(key)
         if thr.exceeded_count == throttled.exceeded_count:

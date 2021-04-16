@@ -19,7 +19,7 @@ from middlewares import _
 @dp.callback_query_handler(back_callback.filter(category='lang'), state=MenuStates.schedule)
 async def back_to_menu(call: types.CallbackQuery, user: User, state: FSMContext):
     await call.message.delete()
-    await call.answer("Вы вернулись обратно")
+    await call.answer(_("Ты вернулся обратно"))
     await MenuStates.mediate.set()
     keyboard = await menu.get_keyboard(user)
     msg = await call.message.answer(_('Меню:'), reply_markup=keyboard)
@@ -29,7 +29,7 @@ async def back_to_menu(call: types.CallbackQuery, user: User, state: FSMContext)
 @get_current_user()
 @dp.callback_query_handler(back_callback.filter(category='subgroups'), state=MenuStates.schedule)
 async def back_to_menu(call: types.CallbackQuery, user: User, state: FSMContext):
-    await call.answer("Вы вернулись обратно")
+    await call.answer(_("Ты вернулся назад"))
     await user.fetch_related("group")
     keyboard = await edit_subgroups.get_keyboard(user.group.id, False, True, user)
     await call.message.edit_text(_('Расписание:'), reply_markup=keyboard)
@@ -38,13 +38,13 @@ async def back_to_menu(call: types.CallbackQuery, user: User, state: FSMContext)
 @get_current_user()
 @dp.callback_query_handler(back_callback.filter(category='cancel'), state=MenuStates.schedule)
 async def back_to_menu(call: types.CallbackQuery, user: User, state: FSMContext):
-    await call.answer("Вы вернулись обратно")
+    await call.answer(_("Ты вернулся обратно"))
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     for day in Day:
         keyboard.add(types.InlineKeyboardButton(day.name, callback_data=day.name))
     keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='subgroups')))
 
-    await call.message.edit_text('Выберите день недели', reply_markup=keyboard)
+    await call.message.edit_text(_('Выбери день недели:'), reply_markup=keyboard)
 
 
 @get_current_user()
@@ -57,9 +57,9 @@ async def schedule_manager(callback: types.CallbackQuery, state: FSMContext, use
     keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='subgroups')))
     if callback.data.startswith('subgroup-'):
         await state.update_data(subgroup=int(callback.data.split('-')[-1]))
-        await callback.message.edit_text('Выберите день недели', reply_markup=keyboard)
+        await callback.message.edit_text(_('Выбери день недели:'), reply_markup=keyboard)
     elif callback.data == 'all-events':
-        await callback.message.edit_text('Выберите день недели', reply_markup=keyboard)
+        await callback.message.edit_text(_('Выбери день недели:'), reply_markup=keyboard)
     elif callback.data in [day.name for day in Day]:
         await state.update_data(day=callback.data)
         data = await state.get_data()
@@ -71,7 +71,7 @@ async def schedule_manager(callback: types.CallbackQuery, state: FSMContext, use
             await user.fetch_related("group")
             events = await Event.filter(group=user.group.id, day=callback.data).order_by('time',
                                                                                          'time').all()
-        text = "**Расписание**\n"
+        text = _("**Расписание**\n")
         for i in range(1, len(events) + 1):
             text += "{}. **{}** [{}]({}) в {}\n".format(i, config.TYPE_EVENT.get(events[i - 1].type),
                                                         events[i - 1].title if len(events[i - 1].title) < 12 else
