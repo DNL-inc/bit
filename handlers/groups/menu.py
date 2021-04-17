@@ -6,6 +6,7 @@ from filters.is_chat import IsChat
 from keyboards.default import menu
 from keyboards.inline import back_callback
 from keyboards.inline.admin import cancel
+from keyboards.inline.day import days
 from loader import bot, dp
 from models import User, Chat
 from models.event import Day, Event
@@ -19,7 +20,7 @@ async def show_menu(msg: types.Message, user: User, state: FSMContext):
     chat = await Chat.filter(tele_id=msg.chat.id).first()
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     for day in Day:
-        keyboard.add(types.InlineKeyboardButton(day.name, callback_data=day.name))
+        keyboard.add(types.InlineKeyboardButton(days.get(day.name), callback_data=day.name))
     if chat:
         await msg.reply(_('Выбери день недели:'),
                     reply_markup=keyboard)
@@ -33,7 +34,7 @@ async def show_menu(msg: types.Message, user: User, state: FSMContext):
 async def back_menu_sections(callback: types.CallbackQuery):
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     for day in Day:
-        keyboard.add(types.InlineKeyboardButton(day.name, callback_data=day.name))
+        keyboard.add(types.InlineKeyboardButton(days.get(day.name), callback_data=day.name))
     await callback.message.edit_text(_('Выбери день недели:'),
                                      reply_markup=keyboard)
 
@@ -42,7 +43,7 @@ async def back_menu_sections(callback: types.CallbackQuery):
 @dp.callback_query_handler(IsChat(), state='*')
 async def choose_day(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
-    if callback.data in [day.name for day in Day]:
+    if callback.data in [days.get(day.name) for day in Day]:
         await state.update_data(day=callback.data)
         chat = await Chat.filter(tele_id=callback.message.chat.id).first()
         await chat.fetch_related("group")
