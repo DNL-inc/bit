@@ -6,3 +6,7 @@ src/.DS_Store
 .DS_Store
 *.pem
 *.pkl
+logs
+*.env
+vars.sh
+.idea/
