@@ -50,7 +50,9 @@ async def choose_course(callback: types.CallbackQuery, user: User, state: FSMCon
         await state.update_data(code=code)
         await Code.create(key=code, user=user)
         keyboard = await continue_or_cancel.get_keyboard('chat')
-        await callback.message.edit_text(_("Чтобы я мог работать в чате сначала добавь меня в нужный чат, а зачем отправь этот текст '/enter {}' без скобок в чат. Сразу после этого твой чат появится в списке и ты сможешь настроить уведомления, язык и т.д.".format(code)),
+        await callback.message.edit_text(_(
+            "Чтобы я мог работать в чате сначала добавь меня в нужный чат, а зачем отправь этот текст '/enter {}' без скобок в чат. Сразу после этого твой чат появится в списке и ты сможешь настроить уведомления и т.д.".format(
+                code)),
                                          reply_markup=keyboard)
         await ChatSettingsStates.add_chat.set()
     if callback.data.startswith('chat-'):

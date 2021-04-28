@@ -9,15 +9,15 @@ from models import User
 from utils.misc import rate_limit, get_current_user
 from states.auth import AuthStates
 from states.menu import MenuStates
-from keyboards.inline import languages, back_callback
+from keyboards.inline import languages, back_callback, faculties
 from keyboards.default import menu
 
 
 @dp.message_handler(IsPrivate(), CommandStart(), state='*')
 async def start(msg: types.Message, state: FSMContext):
     is_created = await User().create_user(tele_id=msg.from_user.id, firstname=msg.from_user.first_name,
-                                            lastname=msg.from_user.last_name, username=msg.from_user.username,
-                                            welcome_message_id=0)
+                                          lastname=msg.from_user.last_name, username=msg.from_user.username,
+                                          welcome_message_id=0)
     if is_created:
         welcome_message = await msg.answer(_("""
     Привет! Меня зовут bit и я попытаюсь сделать твою студентскую жизнь более приятной!
@@ -37,9 +37,13 @@ async def start(msg: types.Message, state: FSMContext):
 /help - увидеть инструкцию по использованию снова.
 /menu - выход в главное меню.
     """))
-        is_created.welcome_message_id=welcome_message.message_id
+        is_created.welcome_message_id = welcome_message.message_id
         await is_created.save()
-        await msg.answer(_("Прежде чем приступить к использованию, давай познакомимся поближе! На каком языке ты предпочитаешь общаться?"), reply_markup=languages.keyboard)
+        # На каком языке ты предпочитаешь общаться?
+        keyboard = await faculties.get_keyboard()
+        await msg.answer(
+            _("Прежде чем приступить к использованию, давай познакомимся поближе! На каком факультете ты учишься?"),
+            reply_markup=keyboard)
         await AuthStates.choose_lang.set()
         await msg.delete()
     else:
@@ -47,7 +51,9 @@ async def start(msg: types.Message, state: FSMContext):
         user = await User().select_user_by_tele_id(msg.from_user.id)
         keyboard = await menu.get_keyboard(user)
         msg = await msg.answer(_("Давно тебя не было в Уличных Гонках! Заходи!"))
-        await msg.answer(_("Чёрт.. Не тот скрипт.. Я имею в виду, что мы с тобой уже знакомы. Если хочешь посмотреть расписание или поковыряться в настройках - просто нажми на соответсвующие кнопки меню.\nПо всем вопросам: @kidden"), reply_markup=keyboard)
+        await msg.answer(_(
+            "Чёрт.. Не тот скрипт.. Я имею в виду, что мы с тобой уже знакомы. Если хочешь посмотреть расписание или поковыряться в настройках - просто нажми на соответсвующие кнопки меню.\nПо всем вопросам: @kidden"),
+            reply_markup=keyboard)
         await MenuStates.mediate.set()
         await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
 

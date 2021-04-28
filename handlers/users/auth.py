@@ -10,15 +10,16 @@ from models import User
 from states.auth import AuthStates
 from states.menu import MenuStates
 from utils.misc import get_current_user, rate_limit
-from keyboards.default import menu   
-
+from keyboards.default import menu
 
 
 @get_current_user()
 @dp.callback_query_handler(back_callback.filter(category='lang'), state=AuthStates.choose_faculty)
 async def back_choose_lang(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer(_("Ты вернулся назад"))
-    await callback.message.edit_text(_("Прежде чем приступить к использованию, давай познакомимся поближе! На каком языке ты предпочитаешь общаться?"), reply_markup=languages.keyboard)
+    await callback.message.edit_text(_(
+        "Прежде чем приступить к использованию, давай познакомимся поближе! На каком языке ты предпочитаешь общаться?"),
+        reply_markup=languages.keyboard)
     await AuthStates.choose_lang.set()
 
 
@@ -26,18 +27,21 @@ async def back_choose_lang(callback: types.CallbackQuery, state: FSMContext):
 @rate_limit(2, 'lang')
 @dp.callback_query_handler(state=AuthStates.choose_lang)
 async def choose_lang(callback: types.CallbackQuery, state: FSMContext, user: User):
-    if callback.data in config.LANGUAGES.keys():
-        await state.update_data(lang=callback.data)
-        user.lang = callback.data
-        await user.save()
+    # callback.data in config.LANGUAGES.keys()
+    if callback.data.startswith('faculty'):
+        # await state.update_data(lang=callback.data)
+        await state.update_data(faculty=callback.data.split('-')[-1])
+        # user.lang = callback.data
+        # await user.save()
         keyboard = await faculties.get_keyboard()
         # try:
         #     await bot.edit_message_text(_("пустота1", locale = callback.data), chat_id=user.tele_id, message_id=user.welcome_message_id)
         # except MessageNotModified:
         #     pass
-        await callback.answer(_("Язык установлен", locale = callback.data))
-        await callback.message.edit_text(_("На каком факультете ты учишься?", locale = callback.data), reply_markup=keyboard)
-        await AuthStates.next()
+        # await callback.answer(_("Язык установлен", locale = callback.data))
+        await callback.message.edit_text(_("Ого, впечатляет! А на каком курсе?", locale=callback.data),
+                                         reply_markup=courses.keyboard)
+        await AuthStates.choose_course.set()
 
 
 @get_current_user()
@@ -107,7 +111,9 @@ async def choose_group(callback: types.CallbackQuery, state: FSMContext, user: U
         group_id = data['group_id']
         user_subgroups = await User().select_user_subgroups(user)
         keyboard = await subgroups.get_keyboard(group_id, user_subgroups)
-        await callback.message.edit_text(_("Теперь выбери свою подгруппу(можно выбрать несколько). Если у вас нет подгрупп, то просто нажми продолжить:"), reply_markup=keyboard)
+        await callback.message.edit_text(_(
+            "Теперь выбери свою подгруппу(можно выбрать несколько). Если у вас нет подгрупп, то просто нажми продолжить:"),
+            reply_markup=keyboard)
         await AuthStates.next()
 
 
@@ -122,9 +128,10 @@ async def auth_complete(callback: types.CallbackQuery, state: FSMContext, user: 
     await MenuStates.mediate.set()
     keyboard = await menu.get_keyboard(user)
     await callback.message.delete()
-    msg = await callback.message.answer(_("Приятно познакомиться! Можешь смело приступать к использованиваю)"), reply_markup=keyboard)
+    msg = await callback.message.answer(_("Приятно познакомиться! Можешь смело приступать к использованиваю)"),
+                                        reply_markup=keyboard)
     await state.update_data(current_msg=msg.message_id, current_msg_text=msg.text)
-    
+
 
 @get_current_user()
 @dp.callback_query_handler(state=AuthStates.choose_subgroups)

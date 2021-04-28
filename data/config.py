@@ -28,7 +28,8 @@ TORTOISE_ORM = {
 
 LANGUAGES = {'ru': '🇷🇺 Русский', 'en': '🇺🇸 English', 'ua': '🇺🇦 Українська'}
 MENU = {'schedule': '🔮 Рacпиcaниe 🔮', 'settings': '⚙️ Нacтрoйки ⚙️', 'admin': '📝 Aдминиcтрирoвaниe 📝'}
-SETTIGS = {'notifications': '📢 Уведомления 📢', 'group-and-subgroups': '🔤 Выбор группы 🔤', 'lang': '🇺🇦 Язык 🇺🇸',
+SETTIGS = {'notifications': '📢 Уведомления 📢', 'group-and-subgroups': '🔤 Выбор группы 🔤',
+           # 'lang': '🇺🇦 Язык 🇺🇸',
            'chat-settings': '💬 Настройки чата 💬'}
 ADMIN = {'msg-sender': 'Отправить сообщение', 'edit-faculties': 'Редактирование факультетов',
          'edit-groups': 'Редактирование групп', 'edit-subgroups': 'Редактирование подгрупп',

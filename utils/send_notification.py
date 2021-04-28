@@ -8,6 +8,7 @@ from aiogram.utils.exceptions import BotBlocked
 
 from data.config import LOCAL_TZ
 from models import Admin, User, Group, Event, Notification, Chat
+from middlewares import _
 
 
 async def send(bot: Bot):
@@ -25,10 +26,10 @@ async def send(bot: Bot):
                                        day=calendar.day_name[timestamp_now.weekday()].lower()).first()
             if event:
                 try:
-                    await bot.send_message(user.tele_id,
-                                           _("Осталось {} минут до события [{}]({})!".format(user.notification_time,
-                                                                                           event.title, event.link),
-                                           parse_mode="Markdown", disable_web_page_preview=True, )
+                    await bot.send_message(user.tele_id, _(
+                        "Осталось {} минут до события [{}]({})!".format(user.notification_time, event.title,
+                                                                        event.link)),
+                                           parse_mode="Markdown", disable_web_page_preview=True)
                 except BotBlocked:
                     pass
 
@@ -46,7 +47,7 @@ async def send(bot: Bot):
                 try:
                     await bot.send_message(chat.tele_id,
                                            _("Осталось {} минут до события [{}]({})!".format(user.notification_time,
-                                                                                           event.title, event.link),
-                                           parse_mode="Markdown", disable_web_page_preview=True, )
+                                                                                             event.title, event.link)),
+                                           parse_mode="Markdown", disable_web_page_preview=True)
                 except BotBlocked:
                     pass
