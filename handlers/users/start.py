@@ -36,7 +36,7 @@ async def start(msg: types.Message, state: FSMContext):
 **Команды**
 /help - увидеть инструкцию по использованию снова.
 /menu - выход в главное меню.
-    """))
+    """), parse_mode="Markdown")
         is_created.welcome_message_id = welcome_message.message_id
         await is_created.save()
         # На каком языке ты предпочитаешь общаться?
