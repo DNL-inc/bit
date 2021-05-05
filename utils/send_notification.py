@@ -45,9 +45,11 @@ async def send(bot: Bot):
             time = event.time.replace(tzinfo=None)
             if timestamp + chat_delta == time:
                 try:
-                    await bot.send_message(chat.tele_id,
-                                           _("Осталось {} минут до события [{}]({})!".format(user.notification_time,
-                                                                                             event.title, event.link)),
-                                           parse_mode="Markdown", disable_web_page_preview=True)
+                    msg = await bot.send_message(chat.tele_id,
+                                                 _("Осталось {} минут до события [{}]({})!".format(
+                                                     user.notification_time,
+                                                     event.title, event.link)),
+                                                 parse_mode="Markdown", disable_web_page_preview=True)
+                    await bot.pin_chat_message(chat.tele_id, msg.message_id)
                 except:
                     pass
