@@ -6,7 +6,7 @@ from utils.misc import logging
 
 from data import config
 
-bot = Bot(config.API_TOKEN, validate_token=True, parse_mode="Markdown")
+bot = Bot(config.API_TOKEN, validate_token=True, parse_mode="MarkdownV2")
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 db = None
