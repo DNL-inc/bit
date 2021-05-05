@@ -30,7 +30,7 @@ async def send(bot: Bot):
                         "Осталось {} минут до события [{}]({})!".format(user.notification_time, event.title,
                                                                         event.link)),
                                            parse_mode="Markdown", disable_web_page_preview=True)
-                except BotBlocked:
+                except:
                     pass
 
     chats = await Chat.filter(notification=True).all()
@@ -49,5 +49,5 @@ async def send(bot: Bot):
                                            _("Осталось {} минут до события [{}]({})!".format(user.notification_time,
                                                                                              event.title, event.link)),
                                            parse_mode="Markdown", disable_web_page_preview=True)
-                except BotBlocked:
+                except:
                     pass

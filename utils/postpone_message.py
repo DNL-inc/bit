@@ -3,7 +3,7 @@ import datetime
 from typing import List
 
 from aiogram import Bot
-from aiogram.utils.exceptions import BotBlocked
+from aiogram.utils.exceptions import BotBlocked, ChatNotFound
 
 from data.config import LOCAL_TZ
 from models import PostponeMessage, Admin, User, Group, Chat
@@ -32,14 +32,14 @@ async def send_postpone_messages(bot: Bot):
             try:
                 msg = await bot.send_message(user.tele_id, message.text)
                 await bot.pin_chat_message(user.tele_id, msg.message_id)
-            except BotBlocked:
+            except:
                 pass
 
         for chat in chats:
             try:
                 msg = await bot.send_message(chat.tele_id, message.text)
                 await bot.pin_chat_message(chat.tele_id, msg.message_id)
-            except BotBlocked:
+            except:
                 pass
 
         await message.delete()
