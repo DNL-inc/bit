@@ -1,7 +1,7 @@
 from aiogram import types
 
 from keyboards.inline import soon_be_available, faculties, back_callback
-from keyboards.inline.admin import send_msg, edit_subgroups, admins
+from keyboards.inline.admin import send_msg, edit_subgroups, admins, edit_admins
 from loader import dp
 from models import Admin
 from states import menu
@@ -42,13 +42,14 @@ async def get_section_settings(call: types.CallbackQuery, admin: Admin):
         else:
             keyboard = types.InlineKeyboardMarkup(row_width=1)
             keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='lang')))
-            await call.message.edit_text(_('Хмм.. Похоже ты не староста, ты как сюда попал вообще?'), reply_markup=keyboard)
+            await call.message.edit_text(_('Хмм.. Похоже ты не староста, ты как сюда попал вообще?'),
+                                         reply_markup=keyboard)
     elif call.data == 'edit-events':
         await AdminStates.events.set()
         await admin.fetch_related('group')
         keyboard = await edit_subgroups.get_keyboard(admin.group.id, editable=False, for_events=True)
-        await call.message.edit_text(_('Выбери подгруппу:'), reply_markup=keyboard)
+        await call.message.edit_text(_('Выбеdри подгруппу:'), reply_markup=keyboard)
     elif call.data == 'edit-admins':
         await AdminStates.admins.set()
-        await call.message.edit_text(_('Это фича пока недоступна, как только она появится мы тебе сообщим..'),
-                                     reply_markup=soon_be_available.keyboard)
+        await call.message.edit_text(_('Отправь мне сообщение падавана, которому ты хочешь дать Силу джедая'),
+                                     reply_markup=edit_admins.keyboard)

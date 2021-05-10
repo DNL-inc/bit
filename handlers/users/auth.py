@@ -24,7 +24,6 @@ async def back_choose_lang(callback: types.CallbackQuery, state: FSMContext):
 
 
 @get_current_user()
-@rate_limit(2, 'lang')
 @dp.callback_query_handler(state=AuthStates.choose_lang)
 async def choose_lang(callback: types.CallbackQuery, state: FSMContext, user: User):
     # callback.data in config.LANGUAGES.keys()
@@ -54,7 +53,6 @@ async def back_choose_faculty(callback: types.CallbackQuery, state: FSMContext):
 
 
 @get_current_user()
-@rate_limit(2, 'faculty')
 @dp.callback_query_handler(state=AuthStates.choose_faculty)
 async def choose_faculty(callback: types.CallbackQuery, state: FSMContext):
     if callback.data.startswith('faculty'):
@@ -73,7 +71,6 @@ async def back_choose_course(callback: types.CallbackQuery, state: FSMContext):
 
 
 @get_current_user()
-@rate_limit(2, 'course')
 @dp.callback_query_handler(state=AuthStates.choose_course)
 async def choose_course(callback: types.CallbackQuery, state: FSMContext):
     if callback.data.startswith('course'):

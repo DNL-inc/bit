@@ -58,7 +58,6 @@ async def start(msg: types.Message, state: FSMContext):
         await state.update_data(current_msg_text=msg.text, current_msg=msg.message_id)
 
 
-@rate_limit(10, 'blank')
 @dp.callback_query_handler(text_contains='blank', state="*")
 async def blank_calls(call: types.CallbackQuery):
     await call.answer(cache_time=60, text=_('Хватит тыкать! Я с первого раза всё понимаю..'))

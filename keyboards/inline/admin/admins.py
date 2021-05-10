@@ -15,10 +15,20 @@ async def get_keyboard(admin: Admin):
     if admins:
         for a in admins:
             await a.fetch_related("group")
-            keyboard.add(types.InlineKeyboardButton(a.group.title, callback_data='admin-' + str(a.id)))
+            await a.fetch_related("faculty")
+            await a.fetch_related('user')
+            if a.role.name == 'ordinary':
+                keyboard.add(
+                    types.InlineKeyboardButton("Админ {} - ".format(a.faculty.title) + a.group.title,
+                                               callback_data='admin-' + str(a.id)))
+            elif a.role.name == 'improved':
+                keyboard.add(types.InlineKeyboardButton("Админ факультета - " + a.faculty.title,
+                                                        callback_data='admin-' + str(a.id)))
+            else:
+                keyboard.add(
+                    types.InlineKeyboardButton("Джедай - " + a.user.username, callback_data='admin-' + str(a.id)))
     else:
         keyboard.add(
             types.InlineKeyboardButton(_("Нет тут ничего"), callback_data=blank_callback.new(category='blank')))
-    keyboard.add(types.InlineKeyboardButton(_('Добавить нового'), callback_data="add-admin"))
     keyboard.add(types.InlineKeyboardButton(_('Назад'), callback_data=back_callback.new(category='lang')))
     return keyboard
